@@ -17,23 +17,22 @@ import edu.wpi.first.wpilibj.geometry.Translation2d;
 import edu.wpi.first.wpilibj.interfaces.Gyro;
 import edu.wpi.first.wpilibj.kinematics.DifferentialDriveOdometry;
 import edu.wpi.first.wpilibj.kinematics.DifferentialDriveWheelSpeeds;
+import edu.wpi.first.wpilibj.smartdashboard.Field2d;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+
+import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonFX;
 import edu.wpi.first.wpilibj.SPI;
 
 public class DriveSubsystem extends SubsystemBase {
   // The motors on the left side of the drive.
-  private final SpeedControllerGroup m_leftMotors =
-      new SpeedControllerGroup(
-          new WPI_TalonFX(DriveConstants.kLeftMotor1Port),
-          new WPI_TalonFX(DriveConstants.kLeftMotor2Port));
+  private final WPI_TalonFX m_leftMotors = new WPI_TalonFX(DriveConstants.kLeftMotor1Port);
+  private final WPI_TalonFX m_leftFollower = new WPI_TalonFX(DriveConstants.kLeftMotor2Port);
 
   // The motors on the right side of the drive.
-  private final SpeedControllerGroup m_rightMotors =
-      new SpeedControllerGroup(
-          new WPI_TalonFX(DriveConstants.kRightMotor1Port),
-          new WPI_TalonFX(DriveConstants.kRightMotor2Port));
-
+  private final WPI_TalonFX m_rightMotors = new WPI_TalonFX(DriveConstants.kRightMotor1Port);
+  private final WPI_TalonFX m_rightFollower = new WPI_TalonFX(DriveConstants.kRightMotor2Port);
   // The robot's drive
   private final DifferentialDrive m_drive = new DifferentialDrive(m_leftMotors, m_rightMotors);
 
@@ -47,6 +46,8 @@ public class DriveSubsystem extends SubsystemBase {
   // The gyro sensor
   private final Gyro m_gyro = new AHRS(SPI.Port.kMXP);
 
+
+  private Field2d m_field;
   // Odometry class for tracking robot pose
   private final DifferentialDriveOdometry m_odometry;
 
@@ -54,25 +55,32 @@ public class DriveSubsystem extends SubsystemBase {
   NetworkTableEntry m_yEntry = NetworkTableInstance.getDefault().getTable("troubleshooting").getEntry("Y");
   NetworkTableEntry m_thetaEntry = NetworkTableInstance.getDefault().getTable("troubleshooting").getEntry("theta");
 
-
+  private double maxSpeed;
   /** Creates a new DriveSubsystem. */
   public DriveSubsystem() {
     // Sets the distance per pulse for the encoders
     resetEncoders();
     m_odometry = new DifferentialDriveOdometry(m_gyro.getRotation2d());
+    m_rightFollower.follow(m_rightMotors);
+    m_leftFollower.follow(m_leftMotors);
+    m_field = new Field2d();
+    SmartDashboard.putData("Field", m_field);
   }
-
+  
+  public void setMaxSpeed(double maxSpeed) {
+    this.maxSpeed = maxSpeed;
+  }
   @Override
   public void periodic() {
     // Update the odometry in the periodic block
     m_odometry.update(
         m_gyro.getRotation2d(), m_leftEncoder.getSelectedSensorPosition()*DriveConstants.kEncoderDistancePerPulse, -1*m_rightEncoder.getSelectedSensorPosition()*DriveConstants.kEncoderDistancePerPulse);
-    
+    m_field.setRobotPose(m_odometry.getPoseMeters());
     Pose2d translation = m_odometry.getPoseMeters();
     m_xEntry.setNumber(translation.getX());
     m_yEntry.setNumber(translation.getY());
     m_thetaEntry.setNumber(translation.getRotation().getDegrees());
-
+    m_field.setRobotPose(m_odometry.getPoseMeters());
   }
 
   /**
@@ -90,7 +98,7 @@ public class DriveSubsystem extends SubsystemBase {
    * @return The current wheel speeds.
    */
   public DifferentialDriveWheelSpeeds getWheelSpeeds() {
-    return new DifferentialDriveWheelSpeeds(m_leftEncoder.getSelectedSensorVelocity()*DriveConstants.kEncoderDistancePerPulse*0.1, m_rightEncoder.getSelectedSensorVelocity()*DriveConstants.kEncoderDistancePerPulse*0.1);
+    return new DifferentialDriveWheelSpeeds(m_leftEncoder.getSelectedSensorVelocity()*DriveConstants.kEncoderDistancePerPulse*10, m_rightEncoder.getSelectedSensorVelocity()*DriveConstants.kEncoderDistancePerPulse*-10);
   }
 
   /**
@@ -114,7 +122,7 @@ public class DriveSubsystem extends SubsystemBase {
   }
 
   public void tankDrivePercentOutput(double left, double right) {
-    m_drive.tankDrive(left, right);
+    m_drive.tankDrive(-1*maxSpeed*left, -1*maxSpeed*right);
   }
 
   /**
@@ -127,6 +135,14 @@ public class DriveSubsystem extends SubsystemBase {
     m_leftMotors.setVoltage(leftVolts);
     m_rightMotors.setVoltage(-rightVolts);
     m_drive.feed();
+  }
+
+  public void tankDriveVelocity(double leftVel, double rightVel) {
+    m_leftMotors.set(ControlMode.Velocity, (1/(10*DriveConstants.kEncoderDistancePerPulse))*leftVel);
+    System.out.println( (1/(10*DriveConstants.kEncoderDistancePerPulse))*leftVel);
+    m_leftFollower.feed();
+    m_rightMotors.set(ControlMode.Velocity, -(1/(10*DriveConstants.kEncoderDistancePerPulse))*rightVel);
+    System.out.println((1/(10*DriveConstants.kEncoderDistancePerPulse))*rightVel);
   }
 
   /** Resets the drive encoders to currently read a position of 0. */
