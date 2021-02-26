@@ -104,7 +104,7 @@ public class DifferentialDriveOdometry extends DifferentialDriveOdometry{
 
     var newPose =
         m_poseMeters.exp(
-            new Twist2d(averageDeltaDistance, 0.0, deltaAngle.getRadians());
+            new Twist2d(averageDeltaDistance, 0.0, deltaAngle.getRadians()));
 
     // m_previousAngle = angle;
 
