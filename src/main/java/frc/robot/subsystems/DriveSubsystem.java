@@ -15,7 +15,8 @@ import frc.robot.Constants.DriveConstants;
 import edu.wpi.first.wpilibj.geometry.Pose2d;
 import edu.wpi.first.wpilibj.geometry.Translation2d;
 import edu.wpi.first.wpilibj.interfaces.Gyro;
-import lib.DifferentialDriveOdometry;
+import lib.CustomDifferentialDriveOdometry;
+import edu.wpi.first.wpilibj.kinematics.DifferentialDriveOdometry;
 import edu.wpi.first.wpilibj.kinematics.DifferentialDriveWheelSpeeds;
 import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -71,8 +72,8 @@ public class DriveSubsystem extends SubsystemBase {
   public void setMaxSpeed(double maxSpeed) {
     this.maxSpeed = maxSpeed;
   }
-  @Override
-  public void periodic() {
+
+  public void customPeriodic() {
     // Update the odometry in the periodic block
     m_odometry.update(
         m_gyro.getRotation2d(), m_leftEncoder.getSelectedSensorPosition()*DriveConstants.kEncoderDistancePerPulse, -1*m_rightEncoder.getSelectedSensorPosition()*DriveConstants.kEncoderDistancePerPulse);

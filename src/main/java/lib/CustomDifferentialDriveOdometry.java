@@ -21,7 +21,7 @@ import edu.wpi.first.wpilibj.kinematics.DifferentialDriveOdometry;
  * <p>It is important that you reset your encoders to zero before using this class. Any subsequent
  * pose resets also require the encoders to be reset to zero.
  */
-public class DifferentialDriveOdometry extends DifferentialDriveOdometry{
+public class CustomDifferentialDriveOdometry extends DifferentialDriveOdometry{
   private Pose2d m_poseMeters;
 
   private Rotation2d m_gyroOffset;
@@ -30,17 +30,21 @@ public class DifferentialDriveOdometry extends DifferentialDriveOdometry{
   private double m_prevLeftDistance;
   private double m_prevRightDistance;
 
+  private double trackwidth;
+
   /**
    * Constructs a DifferentialDriveOdometry object.
    *
    * @param gyroAngle The angle reported by the gyroscope.
    * @param initialPoseMeters The starting position of the robot on the field.
    */
-  public DifferentialDriveOdometry(Rotation2d gyroAngle, Pose2d initialPoseMeters) {
+  public CustomDifferentialDriveOdometry(Rotation2d gyroAngle, Pose2d initialPoseMeters, double trackwidth) {
+    super(gyroAngle, initialPoseMeters);
     m_poseMeters = initialPoseMeters;
     m_gyroOffset = m_poseMeters.getRotation().minus(gyroAngle);
     m_previousAngle = initialPoseMeters.getRotation();
     MathSharedStore.reportUsage(MathUsageId.kOdometry_DifferentialDrive, 1);
+    this.trackwidth = trackwidth;
   }
 
   /**
@@ -48,8 +52,8 @@ public class DifferentialDriveOdometry extends DifferentialDriveOdometry{
    *
    * @param gyroAngle The angle reported by the gyroscope.
    */
-  public DifferentialDriveOdometry(Rotation2d gyroAngle) {
-    this(gyroAngle, new Pose2d());
+  public CustomDifferentialDriveOdometry(Rotation2d gyroAngle, double trackwidth) {
+    this(gyroAngle, new Pose2d(), trackwidth);
   }
 
   /**
@@ -100,7 +104,7 @@ public class DifferentialDriveOdometry extends DifferentialDriveOdometry{
     m_prevRightDistance = rightDistanceMeters;
 
     double averageDeltaDistance = (deltaLeftDistance + deltaRightDistance) / 2.0;
-    var deltaAngle = new Rotation2d((deltaRightDistance - deltaLeftDistance)/d);
+    var deltaAngle = new Rotation2d((deltaRightDistance - deltaLeftDistance)/trackwidth);
 
     var newPose =
         m_poseMeters.exp(
@@ -108,7 +112,7 @@ public class DifferentialDriveOdometry extends DifferentialDriveOdometry{
 
     // m_previousAngle = angle;
 
-    m_poseMeters = new Pose2d(newPose.getTranslation(), angle);
+    m_poseMeters = newPose;
     return m_poseMeters;
   }
 }

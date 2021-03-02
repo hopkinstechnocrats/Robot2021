@@ -5,6 +5,7 @@
 package frc.robot;
 
 import edu.wpi.first.wpilibj.TimedRobot;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 
@@ -28,6 +29,7 @@ public class Robot extends TimedRobot {
     // Instantiate our RobotContainer.  This will perform all our button bindings, and put our
     // autonomous chooser on the dashboard.
     m_robotContainer = new RobotContainer();
+    addPeriodic(m_robotContainer.m_robotDrive::customPeriodic,0.01,0.01);
   }
 
   /**
@@ -44,6 +46,8 @@ public class Robot extends TimedRobot {
     // and running subsystem periodic() methods.  This must be called from the robot's periodic
     // block in order for anything in the Command-based framework to work.
     CommandScheduler.getInstance().run();
+    SmartDashboard.putNumber("Left Drivetrain Error", m_robotContainer.leftPIDController.getPositionError()); //ACTUALLY VELOCITY ERROR
+    SmartDashboard.putNumber("Right Drivetrain Error", m_robotContainer.rightPIDController.getPositionError());
   }
 
   /** This function is called once each time the robot enters Disabled mode. */
