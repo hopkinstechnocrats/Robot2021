@@ -26,7 +26,7 @@ public final class Constants {
     public static final boolean kLeftEncoderReversed = false;
     public static final boolean kRightEncoderReversed = false;
 
-    public static final double kTrackwidthMeters = 0.69;
+    public static final double kTrackwidthMeters = 0.55;
     public static final DifferentialDriveKinematics kDriveKinematics =
         new DifferentialDriveKinematics(kTrackwidthMeters);
 
@@ -47,7 +47,7 @@ public final class Constants {
     public static final double kaVoltSecondsSquaredPerMeter = 0.0361;
 
     // Example value only - as above, this must be tuned for your drive!
-    public static final double kPDriveVel = 1.07;
+    public static final double kPDriveVel = 3;
     public static final double kDDriveVel = 0;
   }
 
@@ -56,8 +56,8 @@ public final class Constants {
   }
 
   public static final class AutoConstants {
-    public static final double kMaxSpeedMetersPerSecond = 1;
-    public static final double kMaxAccelerationMetersPerSecondSquared = 1;
+    public static final double kMaxSpeedMetersPerSecond = 2.25;
+    public static final double kMaxAccelerationMetersPerSecondSquared = 1.25;
 
     // Reasonable baseline values for a RAMSETE follower in units of meters and seconds
     public static final double kRamseteB = 2;
