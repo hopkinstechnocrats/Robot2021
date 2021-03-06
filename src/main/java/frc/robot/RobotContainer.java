@@ -9,6 +9,7 @@ import static edu.wpi.first.wpilibj.XboxController.Button;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Filesystem;
 import edu.wpi.first.wpilibj.GenericHID;
+import edu.wpi.first.wpilibj.RobotController;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.controller.PIDController;
@@ -39,234 +40,224 @@ import edu.wpi.first.wpilibj2.command.button.POVButton;
 import java.io.IOException;
 import java.nio.file.Path;
 import java.sql.Driver;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.List;
 
+import static java.util.stream.Collectors.toList;
+
+import badlog.lib.BadLog;
+
 /**
- * This class is where the bulk of the robot should be declared. Since Command-based is a
- * "declarative" paradigm, very little robot logic should actually be handled in the {@link Robot}
- * periodic methods (other than the scheduler calls). Instead, the structure of the robot (including
- * subsystems, commands, and button mappings) should be declared here.
+ * This class is where the bulk of the robot should be declared. Since
+ * Command-based is a "declarative" paradigm, very little robot logic should
+ * actually be handled in the {@link Robot} periodic methods (other than the
+ * scheduler calls). Instead, the structure of the robot (including subsystems,
+ * commands, and button mappings) should be declared here.
  */
 public class RobotContainer {
-  // The robot's subsystems
-  public final DriveSubsystem m_robotDrive = new DriveSubsystem();
-  public PIDController leftPIDController;
-  public PIDController rightPIDController;
-  public Timer m_autoTimer;
-  public double startAutoTime;
-  public double finishAutoTime;
+    // The robot's subsystems
+    public final DriveSubsystem m_robotDrive = new DriveSubsystem();
+    public BadLog log;
+    public PIDController leftPIDController;
+    public PIDController rightPIDController;
+    public Timer m_autoTimer;
+    public double startAutoTime;
+    public double finishAutoTime;
 
-  // The driver's controller
-  XboxController m_driverController = new XboxController(OIConstants.kDriverControllerPort);
-  SimpleMotorFeedforward feedforward;
+    // The driver's controller
+    XboxController m_driverController = new XboxController(OIConstants.kDriverControllerPort);
+    SimpleMotorFeedforward feedforward;
 
-  /** The container for the robot. Contains subsystems, OI devices, and commands. */
-  public RobotContainer() {
-    // Configure the button bindings
-    configureButtonBindings();
-    feedforward = new SimpleMotorFeedforward(DriveConstants.ksVolts, DriveConstants.kvVoltSecondsPerMeter, DriveConstants.kaVoltSecondsSquaredPerMeter);
-    POVButton upButton = new POVButton(m_driverController,0);
-    POVButton rightButton = new POVButton(m_driverController,90);
-    POVButton downButton = new POVButton(m_driverController,180);
-    POVButton leftButton = new POVButton(m_driverController,270);
+    /**
+     * The container for the robot. Contains subsystems, OI devices, and commands.
+     */
+    public RobotContainer() {
+        // Configure the button bindings
+        configureButtonBindings();
+        feedforward = new SimpleMotorFeedforward(DriveConstants.ksVolts, DriveConstants.kvVoltSecondsPerMeter,
+                DriveConstants.kaVoltSecondsSquaredPerMeter);
+        POVButton upButton = new POVButton(m_driverController, 0);
+        POVButton rightButton = new POVButton(m_driverController, 90);
+        POVButton downButton = new POVButton(m_driverController, 180);
+        POVButton leftButton = new POVButton(m_driverController, 270);
 
-    upButton.whenPressed(new InstantCommand((()-> {m_robotDrive.setMaxSpeed(1);}), m_robotDrive));
-    rightButton.whenPressed(new InstantCommand((()-> {m_robotDrive.setMaxSpeed(0.75);}), m_robotDrive));
-    downButton.whenPressed(new InstantCommand((()-> {m_robotDrive.setMaxSpeed(0.6);}), m_robotDrive));
-    leftButton.whenPressed(new InstantCommand((()-> {m_robotDrive.setMaxSpeed(0.4);}), m_robotDrive));
-    m_robotDrive.setMaxSpeed(.6);
-    getAutonomousCommand();
+        upButton.whenPressed(new InstantCommand((() -> {
+            m_robotDrive.setMaxSpeed(1);
+        }), m_robotDrive));
+        rightButton.whenPressed(new InstantCommand((() -> {
+            m_robotDrive.setMaxSpeed(0.75);
+        }), m_robotDrive));
+        downButton.whenPressed(new InstantCommand((() -> {
+            m_robotDrive.setMaxSpeed(0.6);
+        }), m_robotDrive));
+        leftButton.whenPressed(new InstantCommand((() -> {
+            m_robotDrive.setMaxSpeed(0.4);
+        }), m_robotDrive));
+        m_robotDrive.setMaxSpeed(.6);
+        getAutonomousCommand();
 
-    // Configure default commands
-    // Set the default drive command to split-stick arcade drive
-    m_robotDrive.setDefaultCommand(
-        // A split-stick arcade command, with forward/backward controlled by the left
-        // hand, and turning controlled by the right.
-        new RunCommand(
-            () ->
-                m_robotDrive.tankDrivePercentOutput(
-                    m_driverController.getY(GenericHID.Hand.kLeft),
-                    m_driverController.getY(GenericHID.Hand.kRight)),
-            m_robotDrive)
-    );
+        // Configure default commands
+        // Set the default drive command to split-stick arcade drive
+        m_robotDrive.setDefaultCommand(
+                // A split-stick arcade command, with forward/backward controlled by the left
+                // hand, and turning controlled by the right.
+                new RunCommand(() -> m_robotDrive.tankDrivePercentOutput(m_driverController.getY(GenericHID.Hand.kLeft),
+                        m_driverController.getY(GenericHID.Hand.kRight)), m_robotDrive));
+    }
 
-    // JoystickButton xButton = new JoystickButton(m_driverController, 0);
-    // var autoVoltageConstraint =
-    //     new DifferentialDriveVoltageConstraint(
-    //         new SimpleMotorFeedforward(
-    //             DriveConstants.ksVolts,
-    //             DriveConstants.kvVoltSecondsPerMeter,
-    //             DriveConstants.kaVoltSecondsSquaredPerMeter),
-    //         DriveConstants.kDriveKinematics,
-    //         10);
+  public void initializeAutoLog() {
+      String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(Calendar.getInstance().getTime());
+      log = BadLog.init(timeStamp+".bag");
 
-    // // Create config for trajectory
-    // TrajectoryConfig config =
-    //     new TrajectoryConfig(
-    //             AutoConstants.kMaxSpeedMetersPerSecond,
-    //             AutoConstants.kMaxAccelerationMetersPerSecondSquared)
-    //         // Add kinematics to ensure max speed is actually obeyed
-    //         .setKinematics(DriveConstants.kDriveKinematics)
-    //         // Apply the voltage constraint
-    //         .addConstraint(autoVoltageConstraint);
+      //DriveConstants
+      BadLog.createValue("DriveConstants/TrackWidthMeters", ""+Constants.DriveConstants.kTrackwidthMeters);
+      BadLog.createValue("DriveConstants/EncoderCPR", ""+Constants.DriveConstants.kEncoderCPR);
+      BadLog.createValue("DriveConstants/GearRatio", ""+Constants.DriveConstants.kGearRatio);
+      BadLog.createValue("DriveConstants/WheelDiameterMeters", ""+Constants.DriveConstants.kWheelDiameterMeters);
+      BadLog.createValue("DriveConstants/EncoderDistancePerPulse", ""+Constants.DriveConstants.kEncoderDistancePerPulse);
+      BadLog.createValue("DriveConstants/ksVolts", ""+Constants.DriveConstants.ksVolts);
+      BadLog.createValue("DriveConstants/kvVoltSecondsPerMeter", ""+Constants.DriveConstants.kvVoltSecondsPerMeter);
+      BadLog.createValue("DriveConstants/kaVoltSecondsSquaredPerMeter", ""+Constants.DriveConstants.kaVoltSecondsSquaredPerMeter);
+      BadLog.createValue("DriveConstants/kPDriveVel", ""+Constants.DriveConstants.kPDriveVel);
+      BadLog.createValue("DriveConstants/kDDriveVel", ""+Constants.DriveConstants.kDDriveVel);
 
-    // // An example trajectory to follow.  All units in meters.
-    // Trajectory exampleTrajectory =
-    //     TrajectoryGenerator.generateTrajectory(
-    //         // Start at the origin facing the +X direction
-    //         m_robotDrive.getPose(),
-    //         List.of(
-    //             new Translation2d(0,0)
-    //         ),
-    //         // Pass through these two interior waypoints, making an 's' curve path
-    //         // End 3 meters straight ahead of where we started, facing forward
-    //         new Pose2d(0, 0, new Rotation2d(0)),
-    //         // Pass config
-    //         config);
+      //AutoConstants
+      BadLog.createValue("AutoConstants/MaxSpeedMetersPerSecond", ""+Constants.AutoConstants.kMaxSpeedMetersPerSecond);
+      BadLog.createValue("AutoConstants/MaxAccelerationMetersPerSecondSquared", ""+Constants.AutoConstants.kMaxAccelerationMetersPerSecondSquared);
+      BadLog.createValue("AutoConstants/RamseteB", ""+Constants.AutoConstants.kRamseteB);
+      BadLog.createValue("AutoConstants/RamseteZeta", ""+Constants.AutoConstants.kRamseteZeta);
 
-    // feedforward = new SimpleMotorFeedforward(DriveConstants.ksVolts, DriveConstants.kvVoltSecondsPerMeter);
-
-    // xButton.whenPressed(
-    // new RamseteCommand(
-    //     exampleTrajectory,
-    //     m_robotDrive::getPose,
-    //     new RamseteController(AutoConstants.kRamseteB, AutoConstants.kRamseteZeta),
-    //     new SimpleMotorFeedforward(
-    //         DriveConstants.ksVolts,
-    //         DriveConstants.kvVoltSecondsPerMeter,
-    //         DriveConstants.kaVoltSecondsSquaredPerMeter),
-    //     DriveConstants.kDriveKinematics,
-    //     m_robotDrive::getWheelSpeeds,
-    //     new PIDController(0, 0, 0),
-    //     new PIDController(0, 0, 0),
-    //     // RamseteCommand passes volts to the callback
-    //     m_robotDrive::tankDriveVolts,
-    //     m_robotDrive));
+      BadLog.createTopic("FPGA Time", "s", () -> Timer.getFPGATimestamp(), "xaxis");
+      BadLog.createTopic("Drivetrain/Robot Pose X", "m", () -> m_robotDrive.getPose().getX());
+      BadLog.createTopic("Drivetrain/Robot Pose Y", "m", () -> m_robotDrive.getPose().getY());
+      BadLog.createTopic("Drivetrain/Robot Pose Heading", "degrees", () -> m_robotDrive.getPose().getRotation().getDegrees());
+      BadLog.createTopic("Drivetrain/Left Wheel Speed", "m/s", () -> m_robotDrive.getWheelSpeeds().leftMetersPerSecond);
+      BadLog.createTopic("Drivetrain/Right Wheel Speed", "m/s", () -> m_robotDrive.getWheelSpeeds().rightMetersPerSecond);
+      BadLog.createTopic("Drivetrain/Left Wheel Setpoint", "m/s" ,() -> leftPIDController.getSetpoint());
+      BadLog.createTopic("Drivetrain/Right Wheel Setpoint", "m/s", () -> rightPIDController.getSetpoint());
+      BadLog.createTopic("Battery Voltage", "V", () -> RobotController.getBatteryVoltage());
   }
 
-  /**
-   * Use this method to define your button->command mappings. Buttons can be created by
-   * instantiating a {@link GenericHID} or one of its subclasses ({@link
-   * edu.wpi.first.wpilibj.Joystick} or {@link XboxController}), and then calling passing it to a
-   * {@link JoystickButton}.
-   */
-  private void configureButtonBindings() {
-    // Drive at half speed when the right bumper is held
-    new JoystickButton(m_driverController, Button.kBumperRight.value)
-        .whenPressed(() -> m_robotDrive.setMaxOutput(0.4));
-    
-    new JoystickButton(m_driverController, Button.kBumperLeft.value)
-        .whenPressed(() -> m_robotDrive.setMaxOutput(0.8));
-  }
+    /**
+     * Use this method to define your button->command mappings. Buttons can be
+     * created by instantiating a {@link GenericHID} or one of its subclasses
+     * ({@link edu.wpi.first.wpilibj.Joystick} or {@link XboxController}), and then
+     * calling passing it to a {@link JoystickButton}.
+     */
+    private void configureButtonBindings() {
+        // Drive at half speed when the right bumper is held
+        new JoystickButton(m_driverController, Button.kBumperRight.value)
+                .whenPressed(() -> m_robotDrive.setMaxOutput(0.4));
 
-  /**
-   * Use this to pass the autonomous command to the main {@link Robot} class.
-   *
-   * @return the command to run in autonomous
-   */
-  public Command getAutonomousCommand() {
+        new JoystickButton(m_driverController, Button.kBumperLeft.value)
+                .whenPressed(() -> m_robotDrive.setMaxOutput(0.8));
+    }
 
-    // Create a voltage constraint to ensure we don't accelerate too fast
-    var autoVoltageConstraint =
-        new DifferentialDriveVoltageConstraint(
-            new SimpleMotorFeedforward(
-                DriveConstants.ksVolts,
-                DriveConstants.kvVoltSecondsPerMeter,
-                DriveConstants.kaVoltSecondsSquaredPerMeter),
-            DriveConstants.kDriveKinematics,
-            10);
+    /**
+     * Use this to pass the autonomous command to the main {@link Robot} class.
+     *
+     * @return the command to run in autonomous
+     */
+    public Command getAutonomousCommand() {
 
-    // Create config for trajectory
-    TrajectoryConfig config =
-        new TrajectoryConfig(
-                AutoConstants.kMaxSpeedMetersPerSecond,
+        // Create a voltage constraint to ensure we don't accelerate too fast
+        var autoVoltageConstraint = new DifferentialDriveVoltageConstraint(
+                new SimpleMotorFeedforward(DriveConstants.ksVolts, DriveConstants.kvVoltSecondsPerMeter,
+                        DriveConstants.kaVoltSecondsSquaredPerMeter),
+                DriveConstants.kDriveKinematics, 10);
+        BadLog.createValue("AutoConstants/MaxVoltage", "10");
+
+        // Create config for trajectory
+        TrajectoryConfig config = new TrajectoryConfig(AutoConstants.kMaxSpeedMetersPerSecond,
                 AutoConstants.kMaxAccelerationMetersPerSecondSquared)
-            // Add kinematics to ensure max speed is actually obeyed
-            .setKinematics(DriveConstants.kDriveKinematics)
-            // Apply the voltage constraint
-            .addConstraint(autoVoltageConstraint);
+                        // Add kinematics to ensure max speed is actually obeyed
+                        .setKinematics(DriveConstants.kDriveKinematics)
+                        // Apply the voltage constraint
+                        .addConstraint(autoVoltageConstraint);
 
-    // An example trajectory to follow.  All units in meters.
-    Trajectory exampleTrajectory =
-        TrajectoryGenerator.generateTrajectory(
-            // Start at the origin facing the +X direction
-            new Pose2d(0, 0, new Rotation2d(0)),
-            // Pass through these two interior waypoints, making an 's' curve path
-            List.of(
-            new Translation2d(2.286, 0.3048), 
-            new Translation2d(3.3528, -0.762),
-            new Translation2d(2.286, -1.8288),
-            new Translation2d(1.2192, -0.762),
-            new Translation2d(2.286, 0.3048),
-            new Translation2d(4.572, -0.3048),
-            new Translation2d(5.6388, 0.762),
-            new Translation2d(4.572, 1.8288),
-            new Translation2d(3.5052, 0.762),
-            new Translation2d(4.572, -0.3048),
-            new Translation2d(6.096, -1.8288),
-            new Translation2d(7.1628, -0.762),
-            new Translation2d(6.096, 0.3048)
-            ),
-            // End 3 meters straight ahead of where we started, facing forward
-            new Pose2d(-1, 0.25, new Rotation2d(Math.PI)),
-            // Pass config
-            config);
+        Pose2d start = new Pose2d(0, 0, new Rotation2d(0));
+        Pose2d finish = new Pose2d(-1,0.25, new Rotation2d(Math.PI));
+        List<Translation2d> waypoints = List.of(new Translation2d(2.286, 0.3048), new Translation2d(3.3528, -0.762),
+        new Translation2d(2.286, -1.8288), new Translation2d(1.2192, -0.762),
+        new Translation2d(2.286, 0.3048), new Translation2d(4.572, -0.3048),
+        new Translation2d(5.6388, 0.762), new Translation2d(4.572, 1.8288),
+        new Translation2d(3.5052, 0.762), new Translation2d(4.572, -0.3048),
+        new Translation2d(6.096, -1.8288), new Translation2d(7.1628, -0.762),
+        new Translation2d(6.096, 0.3048));
 
-    // String trajectoryJSON = "Paths/BarrelRacer.path";
-    // Path trajectoryPath = Filesystem.getDeployDirectory().toPath().resolve(trajectoryJSON);
-    // try {
-    //     exampleTrajectory = TrajectoryUtil.fromPathweaverJson(trajectoryPath);
-    // } catch (IOException e) {
-    //     DriverStation.reportError("Unable to open trajectory: "+ trajectoryJSON, e.getStackTrace());
-    // }
+        BadLog.createValue("Trajectory/Initial Desired Pose", ""+start);
+        BadLog.createValue("Trajectory/Final Desired Pose", ""+finish);
 
-    feedforward = new SimpleMotorFeedforward(DriveConstants.ksVolts, DriveConstants.kvVoltSecondsPerMeter);
-    leftPIDController = new PIDController(DriveConstants.kPDriveVel, 0, 0);
-    rightPIDController = new PIDController(DriveConstants.kPDriveVel, 0, 0);
+        List<String> waypointStrings = waypoints.stream().map((o) -> o.toString()).collect(toList());
+        BadLog.createValue("Trajectory/Interior Waypoints", String.join("", waypointStrings));
+        // An example trajectory to follow. All units in meters.
+        Trajectory exampleTrajectory = TrajectoryGenerator.generateTrajectory(
+                // Start at the origin facing the +X direction
+                start,
+                // Pass through these two interior waypoints, making an 's' curve path
+                waypoints,
+                // End 3 meters straight ahead of where we started, facing forward
+                finish,
+                // Pass config
+                config);
 
-    Command startClockCommand = new InstantCommand(() -> {this.startAutoTime = Timer.getFPGATimestamp();}, m_robotDrive);
-    Command stopClockCommand = new InstantCommand(() -> {this.finishAutoTime = Timer.getFPGATimestamp(); 
-        double elapsedTime = this.finishAutoTime-this.startAutoTime; 
-        System.out.println("Elapsed Time: "+elapsedTime);}, m_robotDrive);
+        // String trajectoryJSON = "Paths/BarrelRacer.path";
+        // Path trajectoryPath =
+        // Filesystem.getDeployDirectory().toPath().resolve(trajectoryJSON);
+        // try {
+        // exampleTrajectory = TrajectoryUtil.fromPathweaverJson(trajectoryPath);
+        // } catch (IOException e) {
+        // DriverStation.reportError("Unable to open trajectory: "+ trajectoryJSON,
+        // e.getStackTrace());
+        // }
 
+        feedforward = new SimpleMotorFeedforward(DriveConstants.ksVolts, DriveConstants.kvVoltSecondsPerMeter);
+        leftPIDController = new PIDController(DriveConstants.kPDriveVel, 0, 0);
+        rightPIDController = new PIDController(DriveConstants.kPDriveVel, 0, 0);
 
-    RamseteCommand ramseteCommand =
-        new RamseteCommand(
-            exampleTrajectory,
-            m_robotDrive::getPose,
-            new RamseteController(AutoConstants.kRamseteB, AutoConstants.kRamseteZeta),
-            new SimpleMotorFeedforward(
-                DriveConstants.ksVolts,
-                DriveConstants.kvVoltSecondsPerMeter,
-                DriveConstants.kaVoltSecondsSquaredPerMeter),
-            DriveConstants.kDriveKinematics,
-            m_robotDrive::getWheelSpeeds,
-            leftPIDController,
-            rightPIDController,
-            // RamseteCommand passes volts to the callback
-            m_robotDrive::tankDriveVolts,
-            m_robotDrive);
+        Command startClockCommand = new InstantCommand(() -> {
+            this.startAutoTime = Timer.getFPGATimestamp();
+        }, m_robotDrive);
+        Command stopClockCommand = new InstantCommand(() -> {
+            this.finishAutoTime = Timer.getFPGATimestamp();
+            double elapsedTime = this.finishAutoTime - this.startAutoTime;
+            System.out.println("Elapsed Time: " + elapsedTime);
+            BadLog.createValue("Elapsed Auto Time", ""+elapsedTime);
+        }, m_robotDrive);
 
-    
+        RamseteCommand ramseteCommand = new RamseteCommand(exampleTrajectory, m_robotDrive::getPose,
+                new RamseteController(AutoConstants.kRamseteB, AutoConstants.kRamseteZeta),
+                new SimpleMotorFeedforward(DriveConstants.ksVolts, DriveConstants.kvVoltSecondsPerMeter,
+                        DriveConstants.kaVoltSecondsSquaredPerMeter),
+                DriveConstants.kDriveKinematics, m_robotDrive::getWheelSpeeds, leftPIDController, rightPIDController,
+                // RamseteCommand passes volts to the callback
+                m_robotDrive::tankDriveVolts, m_robotDrive);
 
-    // Reset odometry to the starting pose of the trajectory.
-    m_robotDrive.resetOdometry(exampleTrajectory.getInitialPose());
+        // Reset odometry to the starting pose of the trajectory.
+        m_robotDrive.resetOdometry(exampleTrajectory.getInitialPose());
 
-    // Run path following command, then stop at the end.
-    // return ramseteCommand.andThen(() -> m_robotDrive.tankDriveVolts(0, 0));
+        // Run path following command, then stop at the end.
+        // return ramseteCommand.andThen(() -> m_robotDrive.tankDriveVolts(0, 0));
 
-    PIDController pidController = new PIDController(DriveConstants.kPDriveVel, 0, DriveConstants.kDDriveVel);
-    // return new RunCommand(() -> {
-    //     double leftVolts = feedforward.calculate(0.5)+pidController.calculate(m_robotDrive.getWheelSpeeds().leftMetersPerSecond, 0.5);
-    //     double rightVolts = feedforward.calculate(0.5)+pidController.calculate(m_robotDrive.getWheelSpeeds().rightMetersPerSecond, 0.5);
-    //     m_robotDrive.tankDriveVolts(leftVolts, rightVolts);
-    //     SmartDashboard.putNumber("Left Desired Speed", 0.5);
-    //     SmartDashboard.putNumber("Right Desired Speed", 0.5);
-    //     SmartDashboard.putNumber("Left Feedforward Voltage", leftVolts);
-    //     SmartDashboard.putNumber("Right Feedforward Voltage", rightVolts);
-    //     SmartDashboard.putNumber("Left Wheel Speed", m_robotDrive.getWheelSpeeds().leftMetersPerSecond);
-    //     SmartDashboard.putNumber("Right Wheel Speed", m_robotDrive.getWheelSpeeds().rightMetersPerSecond);
-    // }, m_robotDrive);
-    return new SequentialCommandGroup(startClockCommand, ramseteCommand, stopClockCommand);
-}
+        PIDController pidController = new PIDController(DriveConstants.kPDriveVel, 0, DriveConstants.kDDriveVel);
+        // return new RunCommand(() -> {
+        // double leftVolts =
+        // feedforward.calculate(0.5)+pidController.calculate(m_robotDrive.getWheelSpeeds().leftMetersPerSecond,
+        // 0.5);
+        // double rightVolts =
+        // feedforward.calculate(0.5)+pidController.calculate(m_robotDrive.getWheelSpeeds().rightMetersPerSecond,
+        // 0.5);
+        // m_robotDrive.tankDriveVolts(leftVolts, rightVolts);
+        // SmartDashboard.putNumber("Left Desired Speed", 0.5);
+        // SmartDashboard.putNumber("Right Desired Speed", 0.5);
+        // SmartDashboard.putNumber("Left Feedforward Voltage", leftVolts);
+        // SmartDashboard.putNumber("Right Feedforward Voltage", rightVolts);
+        // SmartDashboard.putNumber("Left Wheel Speed",
+        // m_robotDrive.getWheelSpeeds().leftMetersPerSecond);
+        // SmartDashboard.putNumber("Right Wheel Speed",
+        // m_robotDrive.getWheelSpeeds().rightMetersPerSecond);
+        // }, m_robotDrive);
+        return new SequentialCommandGroup(startClockCommand, ramseteCommand, stopClockCommand);
+    }
 }

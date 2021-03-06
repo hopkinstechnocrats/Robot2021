@@ -61,6 +61,7 @@ public class Robot extends TimedRobot {
   @Override
   public void autonomousInit() {
     m_autonomousCommand = m_robotContainer.getAutonomousCommand();
+    m_robotContainer.initializeAutoLog();
 
     /*
      * String autoSelected = SmartDashboard.getString("Auto Selector",
@@ -77,7 +78,10 @@ public class Robot extends TimedRobot {
 
   /** This function is called periodically during autonomous. */
   @Override
-  public void autonomousPeriodic() {}
+  public void autonomousPeriodic() {
+    m_robotContainer.log.updateTopics();
+    m_robotContainer.log.log();
+  }
 
   @Override
   public void teleopInit() {
