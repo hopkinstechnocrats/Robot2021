@@ -19,6 +19,7 @@ import frc.robot.Constants.AutoConstants;
 import frc.robot.Constants.DriveConstants;
 import frc.robot.Constants.OIConstants;
 import frc.robot.subsystems.DriveSubsystem;
+import lib.AutoCourses;
 import edu.wpi.first.wpilibj.geometry.Pose2d;
 import edu.wpi.first.wpilibj.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.geometry.Translation2d;
@@ -180,7 +181,11 @@ public class RobotContainer {
      * @return the command to run in autonomous
      */
     public Command getAutonomousCommand() {
-
+ 
+        AutoCourses autoCourses = new AutoCourses();
+        Trajectory exampleTrajectory = autoCourses.barrelRacer;
+        BadLog.createValue("Course", "BarrelRacer");
+/*
         // Create a voltage constraint to ensure we don't accelerate too fast
         var autoVoltageConstraint = new DifferentialDriveVoltageConstraint(
                 new SimpleMotorFeedforward(DriveConstants.ksVolts, DriveConstants.kvVoltSecondsPerMeter,
@@ -224,7 +229,8 @@ public class RobotContainer {
                 // End 3 meters straight ahead of where we started, facing forward
                 finish,
                 // Pass config
-                config);
+                config);*/
+
 
         // String trajectoryJSON = "Paths/BarrelRacer.path";
         // Path trajectoryPath =
