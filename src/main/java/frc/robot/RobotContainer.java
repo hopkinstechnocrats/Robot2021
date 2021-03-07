@@ -29,6 +29,7 @@ import edu.wpi.first.wpilibj.trajectory.TrajectoryConfig;
 import edu.wpi.first.wpilibj.trajectory.TrajectoryGenerator;
 import edu.wpi.first.wpilibj.trajectory.TrajectoryUtil;
 import edu.wpi.first.wpilibj.trajectory.constraint.DifferentialDriveVoltageConstraint;
+import edu.wpi.first.wpilibj.util.Units;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.RamseteCommand;
@@ -37,6 +38,7 @@ import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import edu.wpi.first.wpilibj2.command.button.POVButton;
 
+import java.io.File;
 import java.io.IOException;
 import java.nio.file.Path;
 import java.sql.Driver;
@@ -95,8 +97,10 @@ public class RobotContainer {
             m_robotDrive.setMaxSpeed(0.4);
         }), m_robotDrive));
         m_robotDrive.setMaxSpeed(.6);
-        getAutonomousCommand();
 
+        feedforward = new SimpleMotorFeedforward(DriveConstants.ksVolts, DriveConstants.kvVoltSecondsPerMeter);
+        leftPIDController = new PIDController(DriveConstants.kPDriveVel, 0, 0);
+        rightPIDController = new PIDController(DriveConstants.kPDriveVel, 0, 0);
         // Configure default commands
         // Set the default drive command to split-stick arcade drive
         m_robotDrive.setDefaultCommand(
@@ -108,7 +112,15 @@ public class RobotContainer {
 
   public void initializeAutoLog() {
       String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(Calendar.getInstance().getTime());
-      log = BadLog.init(timeStamp+".bag");
+      String filepath = "/home/lvuser/"+timeStamp+".bag";
+      File file = new File(filepath);
+      try {
+          file.createNewFile();
+      } catch (IOException e) {
+          DriverStation.reportError("File Creation error", e.getStackTrace());
+      }
+      
+      log = BadLog.init(filepath);
 
       //DriveConstants
       BadLog.createValue("DriveConstants/TrackWidthMeters", ""+Constants.DriveConstants.kTrackwidthMeters);
@@ -137,6 +149,14 @@ public class RobotContainer {
       BadLog.createTopic("Drivetrain/Left Wheel Setpoint", "m/s" ,() -> leftPIDController.getSetpoint());
       BadLog.createTopic("Drivetrain/Right Wheel Setpoint", "m/s", () -> rightPIDController.getSetpoint());
       BadLog.createTopic("Battery Voltage", "V", () -> RobotController.getBatteryVoltage());
+
+      //Gyro Data
+      BadLog.createTopic("NavX/WorldLinearAccelX", "m/s^2", () -> (double) m_robotDrive.navX.getWorldLinearAccelX());
+      BadLog.createTopic("NavX/WorldLinearAccelY", "m/s^2", () -> (double) m_robotDrive.navX.getWorldLinearAccelX());
+      BadLog.createTopic("NavX/WorldLinearAccelZ", "m/s^2", () -> (double) m_robotDrive.navX.getWorldLinearAccelX());
+      BadLog.createTopic("NavX/RawAccelX", "m/s^2", () -> (double) m_robotDrive.navX.getRawAccelX());
+      BadLog.createTopic("NavX/RawAccelY", "m/s^2", () -> (double) m_robotDrive.navX.getRawAccelX());
+      BadLog.createTopic("NavX/RawAccelZ", "m/s^2", () -> (double) m_robotDrive.navX.getRawAccelX());
   }
 
     /**
@@ -176,15 +196,19 @@ public class RobotContainer {
                         // Apply the voltage constraint
                         .addConstraint(autoVoltageConstraint);
 
+
+        //BARREL RACER
         Pose2d start = new Pose2d(0, 0, new Rotation2d(0));
-        Pose2d finish = new Pose2d(-1,0.25, new Rotation2d(Math.PI));
+        Pose2d finish = new Pose2d(-1.5, 0.3, new Rotation2d(Math.PI));
         List<Translation2d> waypoints = List.of(new Translation2d(2.286, 0.3048), new Translation2d(3.3528, -0.762),
         new Translation2d(2.286, -1.8288), new Translation2d(1.2192, -0.762),
         new Translation2d(2.286, 0.3048), new Translation2d(4.572, -0.3048),
         new Translation2d(5.6388, 0.762), new Translation2d(4.572, 1.8288),
         new Translation2d(3.5052, 0.762), new Translation2d(4.572, -0.3048),
         new Translation2d(6.096, -1.8288), new Translation2d(7.1628, -0.762),
-        new Translation2d(6.096, 0.3048));
+        new Translation2d(6.096, 0.3048)); //Used Autonav Waypoint Calculator Sheet
+
+
 
         BadLog.createValue("Trajectory/Initial Desired Pose", ""+start);
         BadLog.createValue("Trajectory/Final Desired Pose", ""+finish);
@@ -211,10 +235,6 @@ public class RobotContainer {
         // DriverStation.reportError("Unable to open trajectory: "+ trajectoryJSON,
         // e.getStackTrace());
         // }
-
-        feedforward = new SimpleMotorFeedforward(DriveConstants.ksVolts, DriveConstants.kvVoltSecondsPerMeter);
-        leftPIDController = new PIDController(DriveConstants.kPDriveVel, 0, 0);
-        rightPIDController = new PIDController(DriveConstants.kPDriveVel, 0, 0);
 
         Command startClockCommand = new InstantCommand(() -> {
             this.startAutoTime = Timer.getFPGATimestamp();
