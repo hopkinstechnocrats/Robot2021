@@ -29,6 +29,8 @@ public class AutoCourses {
     private Pose2d startBarrel = new Pose2d(0, 0, new Rotation2d(0));
     private List<String> waypointBarrelStrings;
     private List<String> waypointSlalomStrings;
+    private Pose2d finishBounce = new Pose2d(7.096, 0, new Rotation2d(Math.PI));
+    private Pose2d startBounce = new Pose2d(0, 0, new Rotation2d(0));
 
     public AutoCourses() {
         // Create a voltage constraint to ensure we don't accelerate too fast
@@ -95,35 +97,26 @@ public class AutoCourses {
                 config);
 
         
-/*
         //Bounce
-        Pose2d startBounce = new Pose2d(0, 0, new Rotation2d(0));
-        Pose2d finishBarrel = new Pose2d(-1.5, 0.3, new Rotation2d(Math.PI));
-        List<Translation2d> waypointsBarrel = List.of(new Translation2d(2.286, 0.3048), new Translation2d(3.3528, -0.762),
-        new Translation2d(2.286, -1.8288), new Translation2d(1.2192, -0.762),
-        new Translation2d(2.286, 0.3048), new Translation2d(4.572, -0.3048),
-        new Translation2d(5.6388, 0.762), new Translation2d(4.572, 1.8288),
-        new Translation2d(3.5052, 0.762), new Translation2d(4.572, -0.3048),
-        new Translation2d(6.096, -1.8288), new Translation2d(7.1628, -0.762),
-        new Translation2d(6.096, 0.3048)); //Used Autonav Waypoint Calculator Sheet
+        List<Translation2d> waypointsBounce = List.of(new Translation2d(0.762, 0.762), new Translation2d(0.762, 1.676),
+        new Translation2d(0.762, 0.762), new Translation2d(1.524, -0.762),
+        new Translation2d(2.286, 1.524), new Translation2d(3.048, -0.762),
+        new Translation2d(3.048, 1.676), new Translation2d(3.048, -0.762),
+        new Translation2d(3.81, -1.524), new Translation2d(4.572, -1.524),
+        new Translation2d(5.334, -0.762), new Translation2d(6.096, 0)); //Used Autonav Waypoint Calculator Sheet
 
 
-
-        BadLog.createValue("Trajectory/Initial Desired Pose", ""+startBarrel);
-        BadLog.createValue("Trajectory/Final Desired Pose", ""+finishBarrel);
-
-        List<String> waypointSBarreltrings = waypointsBarrel.stream().map((o) -> o.toString()).collect(toList());
-        BadLog.createValue("Trajectory/Interior Waypoints", String.join("", waypointSBarreltrings));
+        List<String> waypointBounceStrings = waypointsBounce.stream().map((o) -> o.toString()).collect(toList());
         // An example trajectory to follow. All units in meters.
-        barrelRacer = TrajectoryGenerator.generateTrajectory(
+        bounceCourse = TrajectoryGenerator.generateTrajectory(
                 // Start at the origin facing the +X direction
-                startBarrel,
+                startBounce,
                 // Pass through these two interior waypoints, making an 's' curve path
-                waypointsBarrel,
+                waypointsBounce,
                 // End 3 meters straight ahead of where we started, facing forward
-                finishBarrel,
+                finishBounce,
                 // Pass config
-                config);*/
+                config);
     }
 
     public Trajectory getBarrelRacer() {
