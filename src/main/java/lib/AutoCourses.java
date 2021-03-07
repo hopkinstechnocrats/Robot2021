@@ -23,6 +23,12 @@ public class AutoCourses {
     public Trajectory barrelRacer;
     public Trajectory slalom;
     public Trajectory bounceCourse;
+    private Pose2d startSlalom = new Pose2d(0, 0, new Rotation2d(0));
+    private Pose2d finishSlalom = new Pose2d(-1.5, 0.3, new Rotation2d(Math.PI));
+    private Pose2d finishBarrel = new Pose2d(-1.5, 0.3, new Rotation2d(Math.PI));
+    private Pose2d startBarrel = new Pose2d(0, 0, new Rotation2d(0));
+    private List<String> waypointBarrelStrings;
+    private List<String> waypointSlalomStrings;
 
     public AutoCourses() {
         // Create a voltage constraint to ensure we don't accelerate too fast
@@ -43,9 +49,6 @@ public class AutoCourses {
 
 
 
-        //Barrel
-        Pose2d startBarrel = new Pose2d(0, 0, new Rotation2d(0));
-        Pose2d finishBarrel = new Pose2d(-1.5, 0.3, new Rotation2d(Math.PI));
         List<Translation2d> waypointsBarrel = List.of(new Translation2d(2.286, 0.3048), new Translation2d(3.3528, -0.762),
         new Translation2d(2.286, -1.8288), new Translation2d(1.2192, -0.762),
         new Translation2d(2.286, 0.3048), new Translation2d(4.572, -0.3048),
@@ -55,12 +58,7 @@ public class AutoCourses {
         new Translation2d(6.096, 0.3048)); //Used Autonav Waypoint Calculator Sheet
 
 
-
-        BadLog.createValue("Trajectory/Initial Desired Pose", ""+startBarrel);
-        BadLog.createValue("Trajectory/Final Desired Pose", ""+finishBarrel);
-
-        List<String> waypointBarrelStrings = waypointsBarrel.stream().map((o) -> o.toString()).collect(toList());
-        BadLog.createValue("Trajectory/Interior Waypoints", String.join("", waypointBarrelStrings));
+        waypointBarrelStrings = waypointsBarrel.stream().map((o) -> o.toString()).collect(toList());
         // An example trajectory to follow. All units in meters.
         barrelRacer = TrajectoryGenerator.generateTrajectory(
                 // Start at the origin facing the +X direction
@@ -74,9 +72,6 @@ public class AutoCourses {
 
 
 
-        //Slalom
-        Pose2d startSlalom = new Pose2d(0, 0, new Rotation2d(0));
-        Pose2d finishSlalom = new Pose2d(-1.5, 0.3, new Rotation2d(Math.PI));
         List<Translation2d> waypointsSlalom = List.of(new Translation2d(2.286, 0.3048), new Translation2d(3.3528, -0.762),
         new Translation2d(2.286, -1.8288), new Translation2d(1.2192, -0.762),
         new Translation2d(2.286, 0.3048), new Translation2d(4.572, -0.3048),
@@ -87,11 +82,8 @@ public class AutoCourses {
 
 
 
-        BadLog.createValue("Trajectory/Initial Desired Pose", ""+startSlalom);
-        BadLog.createValue("Trajectory/Final Desired Pose", ""+finishSlalom);
 
-        List<String> waypointSlalomStrings = waypointsSlalom.stream().map((o) -> o.toString()).collect(toList());
-        BadLog.createValue("Trajectory/Interior Waypoints", String.join("", waypointSlalomStrings));
+        waypointSlalomStrings = waypointsSlalom.stream().map((o) -> o.toString()).collect(toList());
         // An example trajectory to follow. All units in meters.
         slalom = TrajectoryGenerator.generateTrajectory(
                 // Start at the origin facing the +X direction
@@ -133,5 +125,21 @@ public class AutoCourses {
                 finishBarrel,
                 // Pass config
                 config);*/
+    }
+
+    public Trajectory getBarrelRacer() {
+        BadLog.createValue("Trajectory/Initial Desired Pose", ""+startBarrel);
+        BadLog.createValue("Trajectory/Final Desired Pose", ""+finishBarrel);
+        BadLog.createValue("Trajectory/Course", "Barrel Racer");
+        BadLog.createValue("Trajectory/Interior Waypoints", String.join("", waypointBarrelStrings));
+        return barrelRacer;
+    }
+
+    public Trajectory getSlalom() {
+        BadLog.createValue("Trajectory/Initial Desired Pose", ""+startSlalom);
+        BadLog.createValue("Trajectory/Final Desired Pose", ""+finishSlalom);
+        BadLog.createValue("Trajectory/Course", "Slalom");
+        BadLog.createValue("Trajectory/Interior Waypoints", String.join("", waypointSlalomStrings));
+        return slalom;
     }
 }

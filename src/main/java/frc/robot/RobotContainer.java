@@ -187,8 +187,7 @@ public class RobotContainer {
     public Command getAutonomousCommand() {
  
         AutoCourses autoCourses = new AutoCourses();
-        Trajectory exampleTrajectory = autoCourses.barrelRacer;
-        BadLog.createValue("Course", "BarrelRacer");
+        Trajectory exampleTrajectory = autoCourses.getBarrelRacer();
 /*
         // Create a voltage constraint to ensure we don't accelerate too fast
         var autoVoltageConstraint = new DifferentialDriveVoltageConstraint(
