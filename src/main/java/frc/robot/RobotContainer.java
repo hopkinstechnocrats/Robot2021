@@ -41,6 +41,7 @@ import edu.wpi.first.wpilibj2.command.button.POVButton;
 
 import java.io.BufferedWriter;
 import java.io.File;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.nio.file.Path;
 import java.sql.Driver;
@@ -117,10 +118,10 @@ public class RobotContainer {
   public void initializeAutoLog() {
       String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(Calendar.getInstance().getTime());
       String filepath = "/home/lvuser/logs"+timeStamp+".bag";
-      File file = new File(filepath);
-
+      File file = new File(filepath);      
       try {
           file.createNewFile();
+          logFileWriter = new BufferedWriter(new FileWriter(file));
       } catch (IOException e) {
           DriverStation.reportError("File Creation error", e.getStackTrace());
       }
@@ -187,7 +188,7 @@ public class RobotContainer {
     public Command getAutonomousCommand() {
  
         AutoCourses autoCourses = new AutoCourses();
-        Trajectory exampleTrajectory = autoCourses.getBarrelRacer();
+        Trajectory exampleTrajectory = autoCourses.getSlalom();
 /*
         // Create a voltage constraint to ensure we don't accelerate too fast
         var autoVoltageConstraint = new DifferentialDriveVoltageConstraint(
