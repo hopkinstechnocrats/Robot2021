@@ -38,6 +38,7 @@ import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import edu.wpi.first.wpilibj2.command.button.POVButton;
 
+import java.io.BufferedWriter;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Path;
@@ -66,6 +67,8 @@ public class RobotContainer {
     public Timer m_autoTimer;
     public double startAutoTime;
     public double finishAutoTime;
+    public File logFile;
+    public BufferedWriter logFileWriter;
 
     // The driver's controller
     XboxController m_driverController = new XboxController(OIConstants.kDriverControllerPort);
@@ -112,8 +115,9 @@ public class RobotContainer {
 
   public void initializeAutoLog() {
       String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(Calendar.getInstance().getTime());
-      String filepath = "/home/lvuser/"+timeStamp+".bag";
-      File file = new File(filepath);
+      String filepath = "/home/lvuser/logs"+timeStamp+".bag";
+      file = new File(filepath);
+
       try {
           file.createNewFile();
       } catch (IOException e) {
@@ -243,7 +247,11 @@ public class RobotContainer {
             this.finishAutoTime = Timer.getFPGATimestamp();
             double elapsedTime = this.finishAutoTime - this.startAutoTime;
             System.out.println("Elapsed Time: " + elapsedTime);
-            BadLog.createValue("Elapsed Auto Time", ""+elapsedTime);
+            try {
+                logFileWriter.append("{\"elapsed_auto_time\":"+elapsedTime+"}");
+            } catch (IOException e) {
+                DriverStation.reportError("Cannot write auto time", e.getStackTrace());
+            }
         }, m_robotDrive);
 
         RamseteCommand ramseteCommand = new RamseteCommand(exampleTrajectory, m_robotDrive::getPose,
