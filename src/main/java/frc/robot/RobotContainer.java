@@ -253,6 +253,7 @@ public class RobotContainer {
             this.finishAutoTime = Timer.getFPGATimestamp();
             double elapsedTime = this.finishAutoTime - this.startAutoTime;
             System.out.println("Elapsed Time: " + elapsedTime);
+            SmartDashboard.putNumber("Elapsed Auto Time", elapsedTime);
             try {
                 logFileWriter.append("{\"elapsed_auto_time\":"+elapsedTime+"}");
             } catch (IOException e) {
