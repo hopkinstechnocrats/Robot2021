@@ -116,7 +116,7 @@ public class RobotContainer {
   public void initializeAutoLog() {
       String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(Calendar.getInstance().getTime());
       String filepath = "/home/lvuser/logs"+timeStamp+".bag";
-      file = new File(filepath);
+      File file = new File(filepath);
 
       try {
           file.createNewFile();
