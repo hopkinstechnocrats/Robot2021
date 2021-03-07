@@ -24,7 +24,7 @@ public class AutoCourses {
     public Trajectory slalom;
     public Trajectory bounceCourse;
     private Pose2d startSlalom = new Pose2d(0, -1.524, new Rotation2d(0));
-    private Pose2d finishSlalom = new Pose2d(-1.5, 0.3, new Rotation2d(Math.PI));
+    private Pose2d finishSlalom = new Pose2d(-1, 0.3, new Rotation2d(Math.PI));
     private Pose2d finishBarrel = new Pose2d(-1.5, 0.3, new Rotation2d(Math.PI));
     private Pose2d startBarrel = new Pose2d(0, 0, new Rotation2d(0));
     private List<String> waypointBarrelStrings;
@@ -77,9 +77,9 @@ public class AutoCourses {
         List<Translation2d> waypointsSlalom = List.of(new Translation2d(0.762, -0.762), new Translation2d(1.524, 0),
         new Translation2d(4.572, 0), new Translation2d(5.334, -0.762),
         new Translation2d(6.096, -1.524), new Translation2d(6.858, -0.762),
-        new Translation2d(6.096, 0), new Translation2d(5.334, -0.762),
+        new Translation2d(6.096, 0), new Translation2d(5.234, -0.762),
         new Translation2d(4.572, -1.524), new Translation2d(1.524, -1.524),
-        new Translation2d(0.762, -0.762), new Translation2d(0, 0)); //Used Autonav Waypoint Calculator Sheet
+        new Translation2d(0.762, -0.762), new Translation2d(0, 0.3)); //Used Autonav Waypoint Calculator Sheet
 
 
 
