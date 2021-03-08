@@ -4,6 +4,9 @@
 
 package frc.robot;
 
+import edu.wpi.first.networktables.NetworkTable;
+import edu.wpi.first.networktables.NetworkTableEntry;
+import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -18,6 +21,9 @@ import edu.wpi.first.wpilibj2.command.CommandScheduler;
 public class Robot extends TimedRobot {
   private Command m_autonomousCommand;
 
+  NetworkTableEntry maxVelocity;
+  NetworkTableEntry maxAcceleration;
+
   private RobotContainer m_robotContainer;
 
   /**
@@ -30,6 +36,12 @@ public class Robot extends TimedRobot {
     // autonomous chooser on the dashboard.
     m_robotContainer = new RobotContainer();
     addPeriodic(m_robotContainer.m_robotDrive::customPeriodic,0.01,0.01);
+
+    NetworkTableInstance inst = NetworkTableInstance.getDefault();
+    NetworkTable autoLogTable = inst.getTable("autolog");
+
+    maxAcceleration = autoLogTable.getEntry("maxAcceleration");
+    maxVelocity = autoLogTable.getEntry("maxVelocity");
   }
 
   /**
@@ -64,6 +76,8 @@ public class Robot extends TimedRobot {
     m_autonomousCommand = m_robotContainer.getAutonomousCommand();
     m_robotContainer.log.finishInitialization();
 
+    maxAcceleration.getDouble(Constants.AutoConstants.kMaxAccelerationMetersPerSecondSquared);
+    maxVelocity.getDouble(Constants.AutoConstants.kMaxSpeedMetersPerSecond);
     /*
      * String autoSelected = SmartDashboard.getString("Auto Selector",
      * "Default"); switch(autoSelected) { case "My Auto": autonomousCommand

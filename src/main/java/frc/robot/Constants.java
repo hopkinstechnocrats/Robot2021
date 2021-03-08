@@ -4,6 +4,7 @@
 
 package frc.robot;
 
+import edu.wpi.first.networktables.NetworkTableEntry;
 import edu.wpi.first.wpilibj.kinematics.DifferentialDriveKinematics;
 
 /**
@@ -56,8 +57,8 @@ public final class Constants {
   }
 
   public static final class AutoConstants {
-    public static final double kMaxSpeedMetersPerSecond = 2;
-    public static final double kMaxAccelerationMetersPerSecondSquared = 1.25;
+    public final static double kMaxSpeedMetersPerSecond = 2;
+    public final static double kMaxAccelerationMetersPerSecondSquared = 1.25;
 
     // Reasonable baseline values for a RAMSETE follower in units of meters and seconds
     public static final double kRamseteB = 2;

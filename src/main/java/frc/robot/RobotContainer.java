@@ -189,6 +189,8 @@ public class RobotContainer {
  
         AutoCourses autoCourses = new AutoCourses();
         Trajectory exampleTrajectory = autoCourses.getSlalom();
+
+        
 /*
         // Create a voltage constraint to ensure we don't accelerate too fast
         var autoVoltageConstraint = new DifferentialDriveVoltageConstraint(
