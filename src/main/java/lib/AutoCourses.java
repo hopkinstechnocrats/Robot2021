@@ -28,7 +28,7 @@ public class AutoCourses {
     public Trajectory bounceCourse2;
     public Trajectory bounceCourse3;
     public Trajectory bounceCourse4;
-    public Trajectory[] bounceCourse;
+    public Trajectory bounceCourse;
     private final Pose2d startSlalom = new Pose2d(0, -1.524, new Rotation2d(0));
     private final Pose2d finishSlalom = new Pose2d(-1, 0.3, new Rotation2d(Math.PI));
     private final Pose2d finishBarrel = new Pose2d(-1.5, 0.3, new Rotation2d(Math.PI));
@@ -189,20 +189,24 @@ public class AutoCourses {
                 reverseConfig);
     }
 
-    public Trajectory getBarrelRacer() {
+    public List<Trajectory> getBarrelRacer() {
+        final List<Trajectory> barrelRacerTrajectories = new ArrayList<Trajectory>();
         BadLog.createValue("Trajectory/Initial Desired Pose", ""+startBarrel);
         BadLog.createValue("Trajectory/Final Desired Pose", ""+finishBarrel);
         BadLog.createValue("Trajectory/Course", "Barrel Racer");
         BadLog.createValue("Trajectory/Interior Waypoints", String.join("", waypointBarrelStrings));
-        return barrelRacer;
+        barrelRacerTrajectories.add(barrelRacer);
+        return barrelRacerTrajectories;
     }
 
-    public Trajectory getSlalom() {
+    public List<Trajectory> getSlalom() {
+        final List<Trajectory> slalomTrajectories = new ArrayList<Trajectory>();
         BadLog.createValue("Trajectory/Initial Desired Pose", ""+startSlalom);
         BadLog.createValue("Trajectory/Final Desired Pose", ""+finishSlalom);
         BadLog.createValue("Trajectory/Course", "Slalom");
         BadLog.createValue("Trajectory/Interior Waypoints", String.join("", waypointSlalomStrings));
-        return slalom;
+        slalomTrajectories.add(slalom);
+        return slalomTrajectories;
     }
     public List<Trajectory> getBounce() {
         BadLog.createValue("Trajectory/Initial Desired Pose", ""+startBounce1);
@@ -215,7 +219,6 @@ public class AutoCourses {
         waypointBounceStrings.addAll(waypointBounce3Strings);
         waypointBounceStrings.addAll(waypointBounce4Strings);
         BadLog.createValue("Trajectory/Interior Waypoints", String.join("", waypointBounceStrings));
-
         final List<Trajectory> bounceCourseTrajectories = new ArrayList<Trajectory>();
         bounceCourseTrajectories.add(bounceCourse1);
         bounceCourseTrajectories.add(bounceCourse2);
