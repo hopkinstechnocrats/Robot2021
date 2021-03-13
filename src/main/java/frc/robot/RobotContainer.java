@@ -20,8 +20,10 @@ import edu.wpi.first.wpilibj.controller.RamseteController;
 import edu.wpi.first.wpilibj.controller.SimpleMotorFeedforward;
 import frc.robot.Constants.AutoConstants;
 import frc.robot.Constants.DriveConstants;
+import frc.robot.Constants.LauncherConstants;
 import frc.robot.Constants.OIConstants;
 import frc.robot.subsystems.DriveSubsystem;
+import frc.robot.subsystems.LauncherSubsystem;
 import frc.robot.subsystems.PreLaunchSubsystem;
 import lib.AutoCourses;
 import lib.TrajectoryCommandGenerator;
@@ -73,6 +75,7 @@ public class RobotContainer {
     // The robot's subsystems
     public final PreLaunchSubsystem m_PreLaunch = new PreLaunchSubsystem();
     public final DriveSubsystem m_robotDrive = new DriveSubsystem();
+    public final LauncherSubsystem m_launcherSubsystem = new LauncherSubsystem();
     public BadLog log;
     public PIDController leftPIDController;
     public PIDController rightPIDController;
@@ -199,10 +202,18 @@ public class RobotContainer {
         new JoystickButton(m_driverController, Button.kBumperLeft.value)
                 .whenPressed(() -> m_robotDrive.setMaxOutput(0.8));
 
+        
+        new JoystickButton(m_driverController, Button.kA.value)
+                .whileHeld(new RunCommand(() -> m_launcherSubsystem.spinLauncher(LauncherConstants.speed)));
+    
+        m_launcherSubsystem.setDefaultCommand(new RunCommand(() -> m_launcherSubsystem.spinLauncher(0)));
+
+
         new JoystickButton(m_driverController, Button.kB.value)
                 .whileHeld(() -> m_PreLaunch.spin(speed));
 
         m_PreLaunch.setDefaultCommand(new RunCommand(() -> m_PreLaunch.spin(0)));
+
     }
 
     /**
