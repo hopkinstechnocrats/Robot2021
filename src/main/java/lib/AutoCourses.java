@@ -37,14 +37,14 @@ public class AutoCourses {
     private final List<String> waypointSlalomStrings;
     private final List<String> waypointBounce2Strings;
     private final List<String> waypointBounce1Strings;
-    private final Pose2d finishBounce1 = new Pose2d(0.762, 1.676, new Rotation2d(Math.PI));
+    private final Pose2d finishBounce1 = new Pose2d(0.762, 1.676, new Rotation2d(Math.PI/2));
     private final Pose2d startBounce1 = new Pose2d(0, 0, new Rotation2d(0));
-    private final Pose2d finishBounce2 = new Pose2d(3.048, 1.676, new Rotation2d(Math.PI));
-    private final Pose2d startBounce2 = new Pose2d(0.762, 1.676, new Rotation2d(-90));
-    private final Pose2d finishBounce3 = new Pose2d(5.334, 1.676, new Rotation2d(Math.PI));
-    private final Pose2d startBounce3 = new Pose2d(3.048, 1.676, new Rotation2d(90));
-    private final Pose2d finishBounce4 = new Pose2d(7.096, 0.305, new Rotation2d(Math.PI));
-    private final Pose2d startBounce4 = new Pose2d(5.334, 1.676, new Rotation2d(-90));
+    private final Pose2d finishBounce2 = new Pose2d(3.048, 1.6, new Rotation2d(3*Math.PI/2));
+    private final Pose2d startBounce2 = new Pose2d(0.762, 1.676, new Rotation2d(Math.PI/2));
+    private final Pose2d finishBounce3 = new Pose2d(5.334, 1.676, new Rotation2d(3*Math.PI/2));
+    private final Pose2d startBounce3 = new Pose2d(3.048, 1.6, new Rotation2d(Math.PI/2));
+    private final Pose2d finishBounce4 = new Pose2d(7.096, 0.305, new Rotation2d(3*Math.PI));
+    private final Pose2d startBounce4 = new Pose2d(5.334, 1.676, new Rotation2d(Math.PI/2));
     private final List<String> waypointBounce4Strings;
     private final List<String> waypointBounce3Strings;
 
@@ -70,7 +70,9 @@ public class AutoCourses {
                 // Add kinematics to ensure max speed is actually obeyed
                 .setKinematics(DriveConstants.kDriveKinematics)
                 // Apply the voltage constraint
-                .addConstraint(autoVoltageConstraint);  
+                .addConstraint(autoVoltageConstraint)
+                
+                .setReversed(true);  
 
 
 
@@ -137,7 +139,7 @@ public class AutoCourses {
 
         //Bounce2
         final List<Translation2d> waypointsBounce2 = List.of(new Translation2d(0.762, 0.762), new Translation2d(1.524, -0.762),
-        new Translation2d(2.286, 1.524), new Translation2d(3.048, -0.762)); //Used Autonav Waypoint Calculator Sheet
+        new Translation2d(2.286, -1.45), new Translation2d(3.048, -0.762)); //Used Autonav Waypoint Calculator Sheet
 
 
         waypointBounce2Strings = waypointsBounce2.stream().map((o) -> o.toString()).collect(toList());
@@ -155,7 +157,7 @@ public class AutoCourses {
 
         //Bounce3
         final List<Translation2d> waypointsBounce3 = List.of(new Translation2d(3.048, -0.762),
-        new Translation2d(3.81, -1.524), new Translation2d(4.572, -1.524), new Translation2d(5.334, -0.762)); //Used Autonav Waypoint Calculator Sheet
+        new Translation2d(3.81, -1.45), new Translation2d(4.572, -1.45), new Translation2d(5.334, -0.762)); //Used Autonav Waypoint Calculator Sheet
 
 
         waypointBounce3Strings = waypointsBounce3.stream().map((o) -> o.toString()).collect(toList()); 
@@ -220,10 +222,10 @@ public class AutoCourses {
         waypointBounceStrings.addAll(waypointBounce4Strings);
         BadLog.createValue("Trajectory/Interior Waypoints", String.join("", waypointBounceStrings));
         final ArrayList<Trajectory> bounceCourseTrajectories = new ArrayList<Trajectory>();
-        bounceCourseTrajectories.add(bounceCourse1);
+        // bounceCourseTrajectories.add(bounceCourse1);
         bounceCourseTrajectories.add(bounceCourse2);
-        bounceCourseTrajectories.add(bounceCourse3);
-        bounceCourseTrajectories.add(bounceCourse4);
+        // bounceCourseTrajectories.add(bounceCourse3);
+        // bounceCourseTrajectories.add(bounceCourse4);
         return bounceCourseTrajectories;
     }
 }
