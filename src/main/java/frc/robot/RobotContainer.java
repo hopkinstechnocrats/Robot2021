@@ -230,7 +230,7 @@ public class RobotContainer {
                 m_robotDrive::tankDriveVolts, m_robotDrive);
 
         // Reset odometry to the starting pose of the trajectory.
-        m_robotDrive.resetOdometry(exampleTrajectory.getInitialPose());
+        m_robotDrive.resetOdometry(exampleTrajectory.getInitialPose()); command group of start timer, trajerctory, end timer
 
         // Run path following command, then stop at the end.
         // return ramseteCommand.andThen(() -> m_robotDrive.tankDriveVolts(0, 0));
