@@ -189,8 +189,8 @@ public class AutoCourses {
                 reverseConfig);
     }
 
-    public List<Trajectory> getBarrelRacer() {
-        final List<Trajectory> barrelRacerTrajectories = new ArrayList<Trajectory>();
+    public ArrayList<Trajectory> getBarrelRacer() {
+        final ArrayList<Trajectory> barrelRacerTrajectories = new ArrayList<Trajectory>();
         BadLog.createValue("Trajectory/Initial Desired Pose", ""+startBarrel);
         BadLog.createValue("Trajectory/Final Desired Pose", ""+finishBarrel);
         BadLog.createValue("Trajectory/Course", "Barrel Racer");
@@ -199,8 +199,8 @@ public class AutoCourses {
         return barrelRacerTrajectories;
     }
 
-    public List<Trajectory> getSlalom() {
-        final List<Trajectory> slalomTrajectories = new ArrayList<Trajectory>();
+    public ArrayList<Trajectory> getSlalom() {
+        final ArrayList<Trajectory> slalomTrajectories = new ArrayList<Trajectory>();
         BadLog.createValue("Trajectory/Initial Desired Pose", ""+startSlalom);
         BadLog.createValue("Trajectory/Final Desired Pose", ""+finishSlalom);
         BadLog.createValue("Trajectory/Course", "Slalom");
@@ -208,18 +208,18 @@ public class AutoCourses {
         slalomTrajectories.add(slalom);
         return slalomTrajectories;
     }
-    public List<Trajectory> getBounce() {
+    public ArrayList<Trajectory> getBounce() {
         BadLog.createValue("Trajectory/Initial Desired Pose", ""+startBounce1);
         BadLog.createValue("Trajectory/Final Desired Pose", ""+finishBounce4);
         BadLog.createValue("Trajectory/Course", "Bounce");
 
-        final List<String> waypointBounceStrings = new ArrayList<String>();
+        final ArrayList<String> waypointBounceStrings = new ArrayList<String>();
         waypointBounceStrings.addAll(waypointBounce1Strings);
         waypointBounceStrings.addAll(waypointBounce2Strings);
         waypointBounceStrings.addAll(waypointBounce3Strings);
         waypointBounceStrings.addAll(waypointBounce4Strings);
         BadLog.createValue("Trajectory/Interior Waypoints", String.join("", waypointBounceStrings));
-        final List<Trajectory> bounceCourseTrajectories = new ArrayList<Trajectory>();
+        final ArrayList<Trajectory> bounceCourseTrajectories = new ArrayList<Trajectory>();
         bounceCourseTrajectories.add(bounceCourse1);
         bounceCourseTrajectories.add(bounceCourse2);
         bounceCourseTrajectories.add(bounceCourse3);

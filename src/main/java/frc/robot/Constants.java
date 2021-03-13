@@ -14,14 +14,14 @@ import edu.wpi.first.wpilibj.kinematics.DifferentialDriveKinematics;
  *
  * <p>It is advised to statically import this class (or one of its inner classes) wherever the
  * constants are needed, to reduce verbosity.
- */
-public final class Constants {
+ */ public class Constants {
   public static final class DriveConstants {
     public static final int kLeftMotor1Port = 1;
     public static final int kLeftMotor2Port = 2;
     public static final int kRightMotor1Port = 3;
     public static final int kRightMotor2Port = 4;
 
+    
     public static final int[] kLeftEncoderPorts = new int[] {0, 1};
     public static final int[] kRightEncoderPorts = new int[] {2, 3};
     public static final boolean kLeftEncoderReversed = false;
@@ -57,8 +57,8 @@ public final class Constants {
   }
 
   public static final class AutoConstants {
-    public final static double kMaxSpeedMetersPerSecond = 2;
-    public final static double kMaxAccelerationMetersPerSecondSquared = 1.25;
+    public final static double kMaxSpeedMetersPerSecond = 1.3;
+    public final static double kMaxAccelerationMetersPerSecondSquared = 1.15;
 
     // Reasonable baseline values for a RAMSETE follower in units of meters and seconds
     public static final double kRamseteB = 2;
