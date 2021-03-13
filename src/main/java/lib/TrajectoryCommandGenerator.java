@@ -1,12 +1,7 @@
 package lib;
 
-<<<<<<< HEAD
-=======
-import java.lang.reflect.Method;
 import java.util.ArrayList;
-import java.util.List;
 
->>>>>>> 606ff692d4fed80d83d1d5785c22b47d13ae86d4
 import edu.wpi.first.wpilibj.controller.PIDController;
 import edu.wpi.first.wpilibj.controller.RamseteController;
 import edu.wpi.first.wpilibj.controller.SimpleMotorFeedforward;
