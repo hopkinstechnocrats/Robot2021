@@ -20,6 +20,7 @@ import frc.robot.Constants.DriveConstants;
 import frc.robot.Constants.OIConstants;
 import frc.robot.subsystems.DriveSubsystem;
 import lib.AutoCourses;
+import lib.TrajectoryCommandGenerator;
 import edu.wpi.first.wpilibj.geometry.Pose2d;
 import edu.wpi.first.wpilibj.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.geometry.Translation2d;
@@ -190,9 +191,9 @@ public class RobotContainer {
      */
     public Command getAutonomousCommand() {
         
-        final List<Trajectory> exampleTrajectory = new ArrayList<Trajectory>();
+        ArrayList<Trajectory> exampleTrajectory = new ArrayList<Trajectory>();
         AutoCourses autoCourses = new AutoCourses();
-        exampleTrajectory = autoCourses.getSlalom();
+        exampleTrajectory = autoCourses.getBounce();
 
 
 
@@ -221,16 +222,25 @@ public class RobotContainer {
             }
         }, m_robotDrive);
 
+
+        ArrayList<RamseteCommand> RamseteCommandList;
+        
+        RamseteCommandList = TrajectoryCommandGenerator.getTrajectoryCommand(exampleTrajectory, m_robotDrive, leftPIDController, rightPIDController);
+/*
         RamseteCommand ramseteCommand = new RamseteCommand(exampleTrajectory, m_robotDrive::getPose,
                 new RamseteController(AutoConstants.kRamseteB, AutoConstants.kRamseteZeta),
                 new SimpleMotorFeedforward(DriveConstants.ksVolts, DriveConstants.kvVoltSecondsPerMeter,
                         DriveConstants.kaVoltSecondsSquaredPerMeter),
                 DriveConstants.kDriveKinematics, m_robotDrive::getWheelSpeeds, leftPIDController, rightPIDController,
                 // RamseteCommand passes volts to the callback
-                m_robotDrive::tankDriveVolts, m_robotDrive);
+                m_robotDrive::tankDriveVolts, m_robotDrive);*/
 
         // Reset odometry to the starting pose of the trajectory.
-        m_robotDrive.resetOdometry(exampleTrajectory.getInitialPose()); command group of start timer, trajerctory, end timer
+<<<<<<< HEAD
+        m_robotDrive.resetOdometry(exampleTrajectory.,get(0)getInitialPose());
+=======
+        m_robotDrive.resetOdometry(exampleTrajectory.get(0).getInitialPose());
+>>>>>>> 606ff692d4fed80d83d1d5785c22b47d13ae86d4
 
         // Run path following command, then stop at the end.
         // return ramseteCommand.andThen(() -> m_robotDrive.tankDriveVolts(0, 0));
@@ -253,6 +263,12 @@ public class RobotContainer {
         // SmartDashboard.putNumber("Right Wheel Speed",
         // m_robotDrive.getWheelSpeeds().rightMetersPerSecond);
         // }, m_robotDrive);
-        return new SequentialCommandGroup(startClockCommand, ramseteCommand, stopClockCommand);
+
+        SequentialCommandGroup ramseteCommandGroup = new SequentialCommandGroup();
+        for(RamseteCommand b:RamseteCommandList){
+            ramseteCommandGroup.addCommands(b);
+        }
+
+        return new SequentialCommandGroup(startClockCommand, ramseteCommandGroup, stopClockCommand);
     }
 }
