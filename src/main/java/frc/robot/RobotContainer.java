@@ -6,6 +6,9 @@ package frc.robot;
 
 import static edu.wpi.first.wpilibj.XboxController.Button;
 
+import edu.wpi.first.networktables.NetworkTable;
+import edu.wpi.first.networktables.NetworkTableEntry;
+import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Filesystem;
 import edu.wpi.first.wpilibj.GenericHID;
@@ -19,6 +22,8 @@ import frc.robot.Constants.AutoConstants;
 import frc.robot.Constants.DriveConstants;
 import frc.robot.Constants.OIConstants;
 import frc.robot.subsystems.DriveSubsystem;
+import jdk.javadoc.internal.doclets.formats.html.markup.Table;
+import jdk.vm.ci.meta.MetaAccessProvider;
 import lib.AutoCourses;
 import lib.TrajectoryCommandGenerator;
 import edu.wpi.first.wpilibj.geometry.Pose2d;
@@ -75,6 +80,10 @@ public class RobotContainer {
     public double finishAutoTime;
     public File logFile;
     public BufferedWriter logFileWriter;
+    NetworkTableInstance metaLogTableBIG = NetworkTableInstance.getDefault();
+    NetworkTable metaLogTable = metaLogTableBIG.getTable("metalog");
+    NetworkTableEntry Tmestamp = metaLogTable.getEntry("Timestamp");
+    NetworkTableEntry ElapsedAutoTime = metaLogTable.getEntry("elapsedAutoTime");
 
     // The driver's controller
     XboxController m_driverController = new XboxController(OIConstants.kDriverControllerPort);
@@ -122,6 +131,8 @@ public class RobotContainer {
   public void initializeAutoLog() {
       String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(Calendar.getInstance().getTime());
       String filepath = "/home/lvuser/logs"+timeStamp+".bag";
+      //timestamp table metalog value timestamp or elapsed_auto_time
+      Tmestamp.setString(timeStamp);
       File file = new File(filepath);      
       try {
           file.createNewFile();
@@ -213,6 +224,9 @@ public class RobotContainer {
         Command stopClockCommand = new InstantCommand(() -> {
             this.finishAutoTime = Timer.getFPGATimestamp();
             double elapsedTime = this.finishAutoTime - this.startAutoTime;
+
+            ElapsedAutoTime.setDouble(elapsedTime);
+
             System.out.println("Elapsed Time: " + elapsedTime);
             SmartDashboard.putNumber("Elapsed Auto Time", elapsedTime);
             try {
