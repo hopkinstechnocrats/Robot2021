@@ -23,6 +23,7 @@ import frc.robot.Constants.DriveConstants;
 import frc.robot.Constants.OIConstants;
 import frc.robot.subsystems.DriveSubsystem;
 import lib.AutoCourses;
+import lib.TrajectoryCommandGenerator;
 import edu.wpi.first.wpilibj.geometry.Pose2d;
 import edu.wpi.first.wpilibj.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.geometry.Translation2d;
@@ -50,8 +51,11 @@ import java.nio.file.Path;
 import java.security.Timestamp;
 import java.sql.Driver;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
+
+import javax.swing.TransferHandler;
 
 import static java.util.stream.Collectors.toList;
 
@@ -198,54 +202,11 @@ public class RobotContainer {
      * @return the command to run in autonomous
      */
     public Command getAutonomousCommand() {
- 
+        
+        ArrayList<Trajectory> exampleTrajectory = new ArrayList<Trajectory>();
         AutoCourses autoCourses = new AutoCourses();
-        Trajectory exampleTrajectory = autoCourses.getBarrelRacer();
-/*
-        // Create a voltage constraint to ensure we don't accelerate too fast
-        var autoVoltageConstraint = new DifferentialDriveVoltageConstraint(
-                new SimpleMotorFeedforward(DriveConstants.ksVolts, DriveConstants.kvVoltSecondsPerMeter,
-                        DriveConstants.kaVoltSecondsSquaredPerMeter),
-                DriveConstants.kDriveKinematics, 10);
-        BadLog.createValue("AutoConstants/MaxVoltage", "10");
-
-        // Create config for trajectory
-        TrajectoryConfig config = new TrajectoryConfig(AutoConstants.kMaxSpeedMetersPerSecond,
-                AutoConstants.kMaxAccelerationMetersPerSecondSquared)
-                        // Add kinematics to ensure max speed is actually obeyed
-                        .setKinematics(DriveConstants.kDriveKinematics)
-                        // Apply the voltage constraint
-                        .addConstraint(autoVoltageConstraint);
-
-
-        //BARREL RACER
-        Pose2d start = new Pose2d(0, 0, new Rotation2d(0));
-        Pose2d finish = new Pose2d(-1.5, 0.3, new Rotation2d(Math.PI));
-        List<Translation2d> waypoints = List.of(new Translation2d(2.286, 0.3048), new Translation2d(3.3528, -0.762),
-        new Translation2d(2.286, -1.8288), new Translation2d(1.2192, -0.762),
-        new Translation2d(2.286, 0.3048), new Translation2d(4.572, -0.3048),
-        new Translation2d(5.6388, 0.762), new Translation2d(4.572, 1.8288),
-        new Translation2d(3.5052, 0.762), new Translation2d(4.572, -0.3048),
-        new Translation2d(6.096, -1.8288), new Translation2d(7.1628, -0.762),
-        new Translation2d(6.096, 0.3048)); //Used Autonav Waypoint Calculator Sheet
-
-
-
-        BadLog.createValue("Trajectory/Initial Desired Pose", ""+start);
-        BadLog.createValue("Trajectory/Final Desired Pose", ""+finish);
-
-        List<String> waypointStrings = waypoints.stream().map((o) -> o.toString()).collect(toList());
-        BadLog.createValue("Trajectory/Interior Waypoints", String.join("", waypointStrings));
-        // An example trajectory to follow. All units in meters.
-        Trajectory exampleTrajectory = TrajectoryGenerator.generateTrajectory(
-                // Start at the origin facing the +X direction
-                start,
-                // Pass through these two interior waypoints, making an 's' curve path
-                waypoints,
-                // End 3 meters straight ahead of where we started, facing forward
-                finish,
-                // Pass config
-                config);*/
+        
+        exampleTrajectory = autoCourses.getBounce();
 
 
         // String trajectoryJSON = "Paths/BarrelRacer.path";
@@ -276,16 +237,21 @@ public class RobotContainer {
             }
         }, m_robotDrive);
 
+
+        ArrayList<RamseteCommand> RamseteCommandList;
+        
+        RamseteCommandList = TrajectoryCommandGenerator.getTrajectoryCommand(exampleTrajectory, m_robotDrive, leftPIDController, rightPIDController);
+/*
         RamseteCommand ramseteCommand = new RamseteCommand(exampleTrajectory, m_robotDrive::getPose,
                 new RamseteController(AutoConstants.kRamseteB, AutoConstants.kRamseteZeta),
                 new SimpleMotorFeedforward(DriveConstants.ksVolts, DriveConstants.kvVoltSecondsPerMeter,
                         DriveConstants.kaVoltSecondsSquaredPerMeter),
                 DriveConstants.kDriveKinematics, m_robotDrive::getWheelSpeeds, leftPIDController, rightPIDController,
                 // RamseteCommand passes volts to the callback
-                m_robotDrive::tankDriveVolts, m_robotDrive);
+                m_robotDrive::tankDriveVolts, m_robotDrive);*/
 
         // Reset odometry to the starting pose of the trajectory.
-        m_robotDrive.resetOdometry(exampleTrajectory.getInitialPose());
+        m_robotDrive.resetOdometry(exampleTrajectory.get(0).getInitialPose());
 
         // Run path following command, then stop at the end.
         // return ramseteCommand.andThen(() -> m_robotDrive.tankDriveVolts(0, 0));
@@ -308,6 +274,12 @@ public class RobotContainer {
         // SmartDashboard.putNumber("Right Wheel Speed",
         // m_robotDrive.getWheelSpeeds().rightMetersPerSecond);
         // }, m_robotDrive);
-        return new SequentialCommandGroup(startClockCommand, ramseteCommand, stopClockCommand);
+
+        SequentialCommandGroup ramseteCommandGroup = new SequentialCommandGroup();
+        for(RamseteCommand b:RamseteCommandList){
+            ramseteCommandGroup.addCommands(b);
+        }
+
+        return new SequentialCommandGroup(startClockCommand, ramseteCommandGroup, stopClockCommand);
     }
 }
