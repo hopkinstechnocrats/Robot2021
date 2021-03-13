@@ -9,9 +9,12 @@ import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.wpilibj.ADXRS450_Gyro;
 import edu.wpi.first.wpilibj.Encoder;
 import com.kauailabs.navx.frc.AHRS;
+
+import badlog.lib.BadLog;
 import edu.wpi.first.wpilibj.SpeedControllerGroup;
 import edu.wpi.first.wpilibj.drive.DifferentialDrive;
 import frc.robot.Constants.DriveConstants;
+import frc.robot.Constants.LauncherConstants;
 import edu.wpi.first.wpilibj.geometry.Pose2d;
 import edu.wpi.first.wpilibj.geometry.Translation2d;
 import edu.wpi.first.wpilibj.interfaces.Gyro;
@@ -23,6 +26,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 import com.ctre.phoenix.motorcontrol.ControlMode;
+import com.ctre.phoenix.motorcontrol.can.SlotConfiguration;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonFX;
 import edu.wpi.first.wpilibj.SPI;
 
@@ -39,22 +43,22 @@ public class LauncherSubsystem extends SubsystemBase {
     master.config_kD(0, LauncherConstants.kD, 10);
   }
 
-  public initializeLog() {
+  public void initializeLog() {
       SlotConfiguration PIDConstants = new SlotConfiguration();
       master.getSlotConfigs(PIDConstants, 0, 50);
-      Badlog.createValue("Launcher/kP", PIDConstants.kP);
-      Badlog.createValue("Launcher/kI", PIDConstants.kI);
-      Badlog.createValue("Launcher/kD", PIDConstants.kD);
-      Badlog.createTopic("Launcher/Target Velocity", master::getClosedLoopTarget(0));
-      Badlog.createTopic("Launcher/Error", master::getClosedLoopError(0));
-      Badlog.createTopic("Launcher/Launcher Velocity", master::getSelectedSensorVelocity(0));
+      BadLog.createValue("Launcher/kP", ""+PIDConstants.kP);
+      BadLog.createValue("Launcher/kD", ""+PIDConstants.kD);
+      BadLog.createTopic("Launcher/Target Velocity", "u/100ms", () -> master.getClosedLoopTarget(0));
+      BadLog.createTopic("Launcher/Error", "u/100ms", () -> master.getClosedLoopError(0));
+      BadLog.createTopic("Launcher/Launcher Velocity", "u/100ms", () -> master.getSelectedSensorVelocity(0));
+      BadLog.createValue("Launcher/kI", ""+PIDConstants.kI);
   }
 
   public void spinLauncher(double speed) {
     master.set(ControlMode.Velocity, speed);
     follower.feed();
     SmartDashboard.putNumber("Launcher/Target Velocity", master.getClosedLoopTarget(0));
-    SmartDashboard.putNumber("Launcher/Error"), master.getClosedLoopError(0));
+    SmartDashboard.putNumber("Launcher/Error", master.getClosedLoopError(0));
     SmartDashboard.putNumber("Launcher/Launcher Velocity", master.getSelectedSensorVelocity(0));
   }
 }

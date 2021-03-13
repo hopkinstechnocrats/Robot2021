@@ -71,5 +71,6 @@ import edu.wpi.first.wpilibj.kinematics.DifferentialDriveKinematics;
       public static final double kP = 0.7;
       public static final double kI = 0.001;
       public static final double kD = 60;
+      public static final double speed = 10000;
   }
 }
