@@ -31,8 +31,8 @@ public class AutoCourses {
     public Trajectory bounceCourse;
     private final Pose2d startSlalom = new Pose2d(0, -1.524, new Rotation2d(0));
     private final Pose2d finishSlalom = new Pose2d(-1, 0.3, new Rotation2d(Math.PI));
-    private final Pose2d finishBarrel = new Pose2d(-1.5, 0.3, new Rotation2d(Math.PI));
-    private final Pose2d startBarrel = new Pose2d(0, 0, new Rotation2d(0));
+    private final Pose2d finishBarrel = new Pose2d(-.5, 0.6, new Rotation2d(Math.PI));
+    private final Pose2d startBarrel = new Pose2d(0, 0.05, new Rotation2d(0));
     private final List<String> waypointBarrelStrings;
     private final List<String> waypointSlalomStrings;
     private final List<String> waypointBounce2Strings;
@@ -63,7 +63,7 @@ public class AutoCourses {
                 // Add kinematics to ensure max speed is actually obeyed
                 .setKinematics(DriveConstants.kDriveKinematics)
                 // Apply the voltage constraint
-                .addConstraint(autoVoltageConstraint);   
+                .addConstraint(autoVoltageConstraint);
                 
         final TrajectoryConfig reverseConfig = new TrajectoryConfig(AutoConstants.kMaxSpeedMetersPerSecond,
         AutoConstants.kMaxAccelerationMetersPerSecondSquared)
@@ -76,13 +76,13 @@ public class AutoCourses {
 
 
 
-        final List<Translation2d> waypointsBarrel = List.of(new Translation2d(2.286, 0.3048), new Translation2d(3.3528, -0.762),
-        new Translation2d(2.286, -1.8288), new Translation2d(1.2192, -0.762),
-        new Translation2d(2.286, 0.3048), new Translation2d(4.572, -0.3048),
-        new Translation2d(5.6388, 0.762), new Translation2d(4.572, 1.8288),
-        new Translation2d(3.5052, 0.762), new Translation2d(4.572, -0.3048),
-        new Translation2d(6.096, -1.8288), new Translation2d(7.1628, -0.762),
-        new Translation2d(6.096, 0.3048)); //Used Autonav Waypoint Calculator Sheet
+        final List<Translation2d> waypointsBarrel = List.of(new Translation2d(2.286, 0), new Translation2d(3.3528, -0.762),
+        new Translation2d(2.286, -1.524), new Translation2d(1.524, -0.762),
+        new Translation2d(2.286, 0), new Translation2d(4.572, -0.1524),
+        new Translation2d(5.4864, 0.762), new Translation2d(4.572, 1.6764),
+        new Translation2d(3.853, 0.762), new Translation2d(4.572, -0.07),
+        new Translation2d(6.096, -1.307), new Translation2d(6.858, -0.832),
+        new Translation2d(5.345, -0.3)); //Used Autonav Waypoint Calculator Sheet
 
 
         waypointBarrelStrings = waypointsBarrel.stream().map((o) -> o.toString()).collect(toList());

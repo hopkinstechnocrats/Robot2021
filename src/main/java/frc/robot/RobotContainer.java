@@ -206,7 +206,7 @@ public class RobotContainer {
         ArrayList<Trajectory> exampleTrajectory = new ArrayList<Trajectory>();
         AutoCourses autoCourses = new AutoCourses();
         
-        exampleTrajectory = autoCourses.getBounce();
+        exampleTrajectory = autoCourses.getBarrelRacer();
 
 
         // String trajectoryJSON = "Paths/BarrelRacer.path";
