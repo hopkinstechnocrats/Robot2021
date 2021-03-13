@@ -22,6 +22,7 @@ import frc.robot.Constants.AutoConstants;
 import frc.robot.Constants.DriveConstants;
 import frc.robot.Constants.OIConstants;
 import frc.robot.subsystems.DriveSubsystem;
+import frc.robot.subsystems.PreLaunchSubsystem;
 import lib.AutoCourses;
 import lib.TrajectoryCommandGenerator;
 import edu.wpi.first.wpilibj.geometry.Pose2d;
@@ -70,6 +71,7 @@ import badlog.lib.BadLog;
  */
 public class RobotContainer {
     // The robot's subsystems
+    public final PreLaunchSubsystem m_PreLaunch = new PreLaunchSubsystem();
     public final DriveSubsystem m_robotDrive = new DriveSubsystem();
     public BadLog log;
     public PIDController leftPIDController;
@@ -101,6 +103,7 @@ public class RobotContainer {
         POVButton rightButton = new POVButton(m_driverController, 90);
         POVButton downButton = new POVButton(m_driverController, 180);
         POVButton leftButton = new POVButton(m_driverController, 270);
+
 
         upButton.whenPressed(new InstantCommand((() -> {
             m_robotDrive.setMaxSpeed(1);
@@ -187,6 +190,7 @@ public class RobotContainer {
      * ({@link edu.wpi.first.wpilibj.Joystick} or {@link XboxController}), and then
      * calling passing it to a {@link JoystickButton}.
      */
+    static double speed = 1;
     private void configureButtonBindings() {
         // Drive at half speed when the right bumper is held
         new JoystickButton(m_driverController, Button.kBumperRight.value)
@@ -194,6 +198,11 @@ public class RobotContainer {
 
         new JoystickButton(m_driverController, Button.kBumperLeft.value)
                 .whenPressed(() -> m_robotDrive.setMaxOutput(0.8));
+
+        new JoystickButton(m_driverController, Button.kB.value)
+                .whileHeld(() -> m_PreLaunch.spin(speed));
+
+        m_PreLaunch.setDefaultCommand(new RunCommand(() -> m_PreLaunch.spin(0)));
     }
 
     /**
