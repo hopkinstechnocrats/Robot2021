@@ -6,6 +6,9 @@ package frc.robot;
 
 import static edu.wpi.first.wpilibj.XboxController.Button;
 
+import edu.wpi.first.networktables.NetworkTable;
+import edu.wpi.first.networktables.NetworkTableEntry;
+import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Filesystem;
 import edu.wpi.first.wpilibj.GenericHID;
@@ -44,6 +47,7 @@ import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.nio.file.Path;
+import java.security.Timestamp;
 import java.sql.Driver;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
@@ -71,6 +75,11 @@ public class RobotContainer {
     public double finishAutoTime;
     public File logFile;
     public BufferedWriter logFileWriter;
+
+    NetworkTableInstance metaLogTableBIG = NetworkTableInstance.getDefault();
+    NetworkTable metaLogTable = metaLogTableBIG.getTable("metaLog");
+    NetworkTableEntry ElapsedAutoTime = metaLogTable.getEntry("elapsedAutoTime");
+    NetworkTableEntry TimeStamp = metaLogTable.getEntry("timeStamp");
 
     // The driver's controller
     XboxController m_driverController = new XboxController(OIConstants.kDriverControllerPort);
@@ -118,6 +127,9 @@ public class RobotContainer {
   public void initializeAutoLog() {
       String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(Calendar.getInstance().getTime());
       String filepath = "/home/lvuser/logs"+timeStamp+".bag";
+
+      TimeStamp.setString(timeStamp);
+
       File file = new File(filepath);      
       try {
           file.createNewFile();
@@ -252,6 +264,9 @@ public class RobotContainer {
         Command stopClockCommand = new InstantCommand(() -> {
             this.finishAutoTime = Timer.getFPGATimestamp();
             double elapsedTime = this.finishAutoTime - this.startAutoTime;
+
+            ElapsedAutoTime.setDouble(elapsedTime);
+
             System.out.println("Elapsed Time: " + elapsedTime);
             SmartDashboard.putNumber("Elapsed Auto Time", elapsedTime);
             try {
