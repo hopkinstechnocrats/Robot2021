@@ -8,7 +8,6 @@ import com.ctre.phoenix.motorcontrol.can.WPI_TalonFX;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.PreLaunchConstants;
-import frc.robot.Constants.PreLaunchConstraints;
 
 public class PreLaunchSubsystem extends SubsystemBase{
     WPI_TalonFX Motor1;
@@ -18,6 +17,6 @@ public class PreLaunchSubsystem extends SubsystemBase{
     }
 
     public void spin(double speed) {
-        Motor1.set(ControlMode.Velocity, speed);
+        Motor1.set(speed);
     }
 }
