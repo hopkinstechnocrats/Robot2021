@@ -50,7 +50,7 @@ public class LauncherSubsystem extends SubsystemBase {
     master.config_kD(0, LauncherConstants.kD, 10);
     _Orchestra = new Orchestra(_fxes);
 
-    _Orchestra.loadMusic("Songs/WeAreTheChampions.chrp");
+    _Orchestra.loadMusic("Songs/TTFAF.chrp");
   }
 
   public void initializeLog() {
