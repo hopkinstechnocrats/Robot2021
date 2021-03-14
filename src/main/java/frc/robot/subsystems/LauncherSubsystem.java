@@ -65,8 +65,13 @@ public class LauncherSubsystem extends SubsystemBase {
   }
 
   public void Sing(){
-    _Orchestra.play();
+    if(!_Orchestra.isPlaying()){
+      _Orchestra.play();
+    }else{
+      _Orchestra.stop();
+    }
   }
+
 
   public void spinLauncher(double speed) {
     master.set(ControlMode.Velocity, speed);
