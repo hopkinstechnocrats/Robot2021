@@ -36,7 +36,7 @@ import java.util.ArrayList;
 public class LauncherSubsystem extends SubsystemBase {
   WPI_TalonFX master;
   WPI_TalonFX follower;
-  Orchestra _Orchestra;
+  public Orchestra _Orchestra;
   boolean singing;
 
   public LauncherSubsystem() {
@@ -66,13 +66,6 @@ public class LauncherSubsystem extends SubsystemBase {
       BadLog.createValue("Launcher/kI", ""+PIDConstants.kI);
   }
 
-  public void Sing(){
-    if(!_Orchestra.isPlaying()){
-      _Orchestra.play();
-    }else{
-      _Orchestra.stop();
-    }
-  }
 
 
   public void spinLauncher(double speed) {
