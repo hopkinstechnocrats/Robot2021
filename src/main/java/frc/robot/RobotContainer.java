@@ -214,6 +214,10 @@ public class RobotContainer {
 
         m_PreLaunch.setDefaultCommand(new RunCommand(() -> m_PreLaunch.spin(0)));
 
+
+        new JoystickButton(m_driverController, Button.kX.value)
+                .whenPressed(() -> m_launcherSubsystem.Sing());
+
     }
 
     /**
