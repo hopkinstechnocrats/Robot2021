@@ -16,7 +16,7 @@ public class IntakeSubsystem extends SubsystemBase {
     public void spin() {
         motor.set(lastSpeed);
     } // Potential idea: Call spin() on teleop Periodic, and modify lastSpeed when
-      // stuff is pressed.
+      // certain buttons are pressed.
 
     public void spin(double newSpeed) {
         this.setSpeed(newSpeed);
