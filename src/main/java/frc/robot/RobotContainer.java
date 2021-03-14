@@ -206,7 +206,7 @@ public class RobotContainer {
         new JoystickButton(m_driverController, Button.kA.value)
                 .whileHeld(new RunCommand(() -> m_launcherSubsystem.spinLauncher(LauncherConstants.speed)));
 
-        new JoystickButton(m_driverController, Button.kX.value)
+        new JoystickButton(m_driverController, Button.kY.value)
                 .whenPressed(new RunCommand(() -> m_robotDrive._Orchestra.play(), m_robotDrive));
     
         m_launcherSubsystem.setDefaultCommand(new RunCommand(() -> m_launcherSubsystem.spinLauncher(0)));
