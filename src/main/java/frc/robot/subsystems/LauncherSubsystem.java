@@ -37,6 +37,7 @@ public class LauncherSubsystem extends SubsystemBase {
   WPI_TalonFX master;
   WPI_TalonFX follower;
   Orchestra _Orchestra;
+  boolean singing;
 
   public LauncherSubsystem() {
     master = new WPI_TalonFX(LauncherConstants.Motor1CANID);
@@ -49,6 +50,7 @@ public class LauncherSubsystem extends SubsystemBase {
     master.config_kI(0, LauncherConstants.kI, 10);
     master.config_kD(0, LauncherConstants.kD, 10);
     _Orchestra = new Orchestra(_fxes);
+    singing = false;
 
     _Orchestra.loadMusic("Songs/TTFAF.chrp");
   }
@@ -65,8 +67,13 @@ public class LauncherSubsystem extends SubsystemBase {
   }
 
   public void Sing(){
-    _Orchestra.play();
+    if(!_Orchestra.isPlaying()){
+      _Orchestra.play();
+    }else{
+      _Orchestra.stop();
+    }
   }
+
 
   public void spinLauncher(double speed) {
     master.set(ControlMode.Velocity, speed);

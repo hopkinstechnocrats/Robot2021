@@ -217,7 +217,6 @@ public class RobotContainer {
 
         new JoystickButton(m_driverController, Button.kX.value)
                 .whenPressed(() -> m_launcherSubsystem.Sing());
-
     }
 
     /**
