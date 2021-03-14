@@ -11,6 +11,7 @@ import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
+import edu.wpi.first.wpilibj.DriverStation;
 
 /**
  * The VM is configured to automatically run this class, and to call the functions corresponding to
@@ -23,6 +24,7 @@ public class Robot extends TimedRobot {
 
   NetworkTableEntry maxVelocity;
   NetworkTableEntry maxAcceleration;
+  NetworkTableEntry isEnabled;
 
   private RobotContainer m_robotContainer;
 
@@ -38,10 +40,11 @@ public class Robot extends TimedRobot {
     addPeriodic(m_robotContainer.m_robotDrive::customPeriodic,0.01,0.01);
 
     NetworkTableInstance inst = NetworkTableInstance.getDefault();
-    NetworkTable autoLogTable = inst.getTable("autolog");
+    NetworkTable autoLogTable = inst.getTable("metaLog");
 
     maxAcceleration = autoLogTable.getEntry("maxAcceleration");
     maxVelocity = autoLogTable.getEntry("maxVelocity");
+    isEnabled = autoLogTable.getEntry("enabled");
   }
 
   /**
@@ -60,6 +63,9 @@ public class Robot extends TimedRobot {
     CommandScheduler.getInstance().run();
     SmartDashboard.putNumber("Left Drivetrain Error", m_robotContainer.leftPIDController.getPositionError()); //ACTUALLY VELOCITY ERROR
     SmartDashboard.putNumber("Right Drivetrain Error", m_robotContainer.rightPIDController.getPositionError());
+    isEnabled.setBoolean(DriverStation.isEnabled());
+    AutoConstants.maxVelocityMetersPerSecond = maxVelocity.getNumber(AutoConstants.maxVelocityMetersPerSecond);
+    AutoConstants.maxAccelerationMetersPerSecondSquared = maxAcceleration.getNumber(AutoConstants.maxAccelerationMetersPerSecondSquared);
   }
 
   /** This function is called once each time the robot enters Disabled mode. */
