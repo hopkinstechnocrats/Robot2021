@@ -36,23 +36,14 @@ import java.util.ArrayList;
 public class LauncherSubsystem extends SubsystemBase {
   WPI_TalonFX master;
   WPI_TalonFX follower;
-  public Orchestra _Orchestra;
-  boolean singing;
 
   public LauncherSubsystem() {
     master = new WPI_TalonFX(LauncherConstants.Motor1CANID);
     follower = new WPI_TalonFX(LauncherConstants.Motor2CANID);
     follower.follow(master);
-    ArrayList<TalonFX> _fxes = new ArrayList<>();
-    _fxes.add(master);
-    _fxes.add(follower);
     master.config_kP(0, LauncherConstants.kP, 10);
     master.config_kI(0, LauncherConstants.kI, 10);
     master.config_kD(0, LauncherConstants.kD, 10);
-    _Orchestra = new Orchestra(_fxes);
-    singing = false;
-
-    _Orchestra.loadMusic("Songs/TTFAF.chrp");
   }
 
   public void initializeLog() {
