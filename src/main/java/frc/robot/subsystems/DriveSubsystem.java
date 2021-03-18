@@ -27,88 +27,14 @@ import java.util.Collection;
 import java.util.Collections;
 
 import com.ctre.phoenix.motorcontrol.ControlMode;
+import com.ctre.phoenix.motorcontrol.can.TalonFX;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonFX;
 import com.ctre.phoenix.music.Orchestra;
 
 import edu.wpi.first.wpilibj.SPI;
 
-
 public class DriveSubsystem extends SubsystemBase {
-  private class Temp implements Collection<WPI_TalonFX>{
-    WPI_TalonFX[] items = new WPI_TalonFX[4];
-    private Temp(){
-      items[0] = m_leftMotors;
-      items[1] = m_leftFollower;
-      items[2] = m_rightMotors;
-      items[3] = m_rightFollower;
-    }
-    public int size(){
-      return items.length;
-    }
-    public boolean isEmpty(){
-      return items.length == 0;
-    }
-    
-    public boolean contains(java.lang.Object arg0){
-      for(int i = 0; i < items.length; i++){
-        if(arg0.equals(items[i])){
-          return true;
-        }
-      }
-      return false;
-    }
-    
-    public java.util.Iterator<WPI_TalonFX> iterator(){
-      return null;
-    }
-    
-    public java.lang.Object[] toArray(){
-      return items;
-    }
-    
-    public WPI_TalonFX[] toArray(WPI_TalonFX[] arg0){
-      return items;
-    }
 
-    public boolean add(WPI_TalonFX arg0){
-      return false;
-    }
-    
-    public  boolean remove(java.lang.Object arg0){
-      return false;
-    }
-    
-    public boolean containsAll(java.util.Collection<?> arg0){
-      return false;
-    }
-    public <WPI_TalonFX> WPI_TalonFX[] toArray(WPI_TalonFX[] arg0){
-      return null;
-    }
-    
-    public boolean addAll(Collection<? extends WPI_TalonFX> arg0){
-      return false;
-    }
-  
-    public boolean removeAll(java.util.Collection<?> arg0){
-      return false;
-    }
-    
-    public boolean retainAll(java.util.Collection<?> arg0){
-      return false;
-    };
-    
-    public void clear(){
-
-    }
-    
-    public boolean equals(java.lang.Object arg0){
-      return false;
-    }
-    
-    public  int hashCode(){
-      return 0;
-    }
-  }
   public Orchestra _Orchestra;
   // The motors on the left side of the drive.
   private final WPI_TalonFX m_leftMotors = new WPI_TalonFX(DriveConstants.kLeftMotor1Port);
@@ -126,12 +52,11 @@ public class DriveSubsystem extends SubsystemBase {
   // The right-side drive encoder
   private final WPI_TalonFX m_rightEncoder = new WPI_TalonFX(DriveConstants.kRightMotor1Port);
 
-  Collection<WPI_TalonFX> _fxes = new Temp();
-
   // The gyro sensor
   public AHRS navX = new AHRS(SPI.Port.kMXP);
   public final Gyro m_gyro = navX;
 
+  Collection<TalonFX> _fxes = new ArrayList<TalonFX>();
 
   private Field2d m_field;
   // Odometry class for tracking robot pose
@@ -146,6 +71,11 @@ public class DriveSubsystem extends SubsystemBase {
   /** Creates a new DriveSubsystem. */
   public DriveSubsystem() {
     // Sets the distance per pulse for the encoders
+
+    _fxes.add(m_leftMotors);
+    _fxes.add(m_leftFollower);
+    _fxes.add(m_rightMotors);
+    _fxes.add(m_rightFollower);
     resetEncoders();
     m_odometry = new DifferentialDriveOdometry(m_gyro.getRotation2d());
     m_rightFollower.follow(m_rightMotors);
