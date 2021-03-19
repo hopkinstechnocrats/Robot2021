@@ -73,7 +73,6 @@ public class AutoCourses {
                 .setKinematics(DriveConstants.kDriveKinematics)
                 // Apply the voltage constraint
                 .addConstraint(autoVoltageConstraint)
-                
                 .setReversed(true);  
 
 
