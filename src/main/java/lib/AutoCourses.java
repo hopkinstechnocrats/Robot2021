@@ -78,13 +78,21 @@ public class AutoCourses {
 
 
 
-        final List<Translation2d> waypointsBarrelFeet = List.of(new Translation2d(2.286, 0), new Translation2d(3.3528, -0.762),
-        new Translation2d(2.286, -1.524), new Translation2d(1.524, -0.762),
-        new Translation2d(2.286, 0), new Translation2d(4.572, -0.1524),
-        new Translation2d(5.4864, 0.762), new Translation2d(4.572, 1.6764),
-        new Translation2d(3.853, 0.762), new Translation2d(4.572, -0.07),
-        new Translation2d(6.096, -1.307), new Translation2d(6.858, -0.832),
-        new Translation2d(5.345, -0.3)); //Used Autonav Waypoint Calculator Sheet
+        final List<Translation2d> waypointsBarrelFeet = List.of(
+                new Translation2d(7.5, 0.5), 
+                new Translation2d(10.5, -2.5),
+                new Translation2d(7.5, -5.5), 
+                new Translation2d(4.5, -2.5),
+                new Translation2d(7.5, 0.5),
+                new Translation2d(15, -0.5),
+                new Translation2d(18, 2.5),
+                new Translation2d(15, 5.5),
+                new Translation2d(12, 2.5),
+                new Translation2d(15, -0.5),
+                new Translation2d(20, -5.5),
+                new Translation2d(23, -2.5),
+                new Translation2d(20, 0.5),
+                new Translation2d(17, 0)); //Used Autonav Waypoint Calculator Sheet
 
         final List<Translation2d> waypointsBarrel = waypointsBarrelFeet.stream().map((o) -> new Translation2d(Units.feetToMeters(o.getX()), Units.feetToMeters(o.getY()))).collect(Collectors.toList());
         waypointBarrelStrings = waypointsBarrel.stream().map((o) -> o.toString()).collect(toList());
