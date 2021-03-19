@@ -64,7 +64,7 @@ public class Robot extends TimedRobot {
     CommandScheduler.getInstance().run();
     SmartDashboard.putNumber("Left Drivetrain Error", m_robotContainer.leftPIDController.getPositionError()); //ACTUALLY VELOCITY ERROR
     SmartDashboard.putNumber("Right Drivetrain Error", m_robotContainer.rightPIDController.getPositionError());
-    isEnabled.setBoolean(DriverStation.isEnabled());
+    isEnabled.setBoolean(DriverStation.getInstance().isEnabled());
     AutoConstants.kMaxSpeedMetersPerSecond = maxVelocity.getDouble(AutoConstants.kMaxSpeedMetersPerSecond);
     AutoConstants.kMaxAccelerationMetersPerSecondSquared = maxAcceleration.getDouble(AutoConstants.kMaxAccelerationMetersPerSecondSquared);
   }
