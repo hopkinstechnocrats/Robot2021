@@ -98,6 +98,7 @@ public class RobotContainer {
      * The container for the robot. Contains subsystems, OI devices, and commands.
      */
     public RobotContainer() {
+        this.startAutoTime = 0;
         // Configure the button bindings
         configureButtonBindings();
         feedforward = new SimpleMotorFeedforward(DriveConstants.ksVolts, DriveConstants.kvVoltSecondsPerMeter,
@@ -169,13 +170,13 @@ public class RobotContainer {
       BadLog.createValue("AutoConstants/RamseteZeta", ""+Constants.AutoConstants.kRamseteZeta);
 
       BadLog.createTopic("FPGA Time", "s", () -> Timer.getFPGATimestamp(), "xaxis");
-      BadLog.createTopic("Drivetrain/Robot Pose X", "m", () -> m_robotDrive.getPose().getX());
-      BadLog.createTopic("Drivetrain/Robot Pose Y", "m", () -> m_robotDrive.getPose().getY());
+      BadLog.createTopic("Drivetrain/Robot Pose X", "m", () -> m_robotDrive.getPose().getX(), "join:Drivetrain/Robot Pose X");
+      BadLog.createTopic("Drivetrain/Robot Pose Y", "m", () -> m_robotDrive.getPose().getY(), "join:Drivetrain/Robot Pose Y");
       BadLog.createTopic("Drivetrain/Robot Pose Heading", "degrees", () -> m_robotDrive.getPose().getRotation().getDegrees());
-      BadLog.createTopic("Drivetrain/Left Wheel Speed", "m/s", () -> m_robotDrive.getWheelSpeeds().leftMetersPerSecond);
-      BadLog.createTopic("Drivetrain/Right Wheel Speed", "m/s", () -> m_robotDrive.getWheelSpeeds().rightMetersPerSecond);
-      BadLog.createTopic("Drivetrain/Left Wheel Setpoint", "m/s" ,() -> leftPIDController.getSetpoint());
-      BadLog.createTopic("Drivetrain/Right Wheel Setpoint", "m/s", () -> rightPIDController.getSetpoint());
+      BadLog.createTopic("Drivetrain/Left Wheel Measured Speed", "m/s", () -> m_robotDrive.getWheelSpeeds().leftMetersPerSecond, "join:Drivetrain/LeftWheelSpeed");
+      BadLog.createTopic("Drivetrain/Right Wheel Measured Speed", "m/s", () -> m_robotDrive.getWheelSpeeds().rightMetersPerSecond, "join:Drivetrain/RightWheelSpeed");
+      BadLog.createTopic("Drivetrain/Left Wheel Setpoint", "m/s" ,() -> leftPIDController.getSetpoint(), "join:Drivetrain/LeftWheelSpeed");
+      BadLog.createTopic("Drivetrain/Right Wheel Setpoint", "m/s", () -> rightPIDController.getSetpoint(), "join:Drivetrain/RightWheelSpeed");
       BadLog.createTopic("Battery Voltage", "V", () -> RobotController.getBatteryVoltage());
 
       //Gyro Data
@@ -230,6 +231,8 @@ public class RobotContainer {
         AutoCourses autoCourses = new AutoCourses();
         
         exampleTrajectory = autoCourses.getBarrelRacer();
+        BadLog.createTopic("Drivetrain/Trajectory Pose X", "m", () -> exampleTrajectory.sample(Timer.getFPGATimestamp()-this.startAutoTime), "join:Drivetrain/Robot Pose X");
+        BadLog.createTopic("Drivetrain/Trajectory Pose Y", "m", () -> exampleTrajectory.sample(Timer.getFPGATimestamp()-this.startAutoTime), "join:Drivetrain/Robot Pose Y");
 
 
         // String trajectoryJSON = "Paths/BarrelRacer.path";
