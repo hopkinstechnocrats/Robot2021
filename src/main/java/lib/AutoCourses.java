@@ -1,11 +1,13 @@
 package lib;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 import edu.wpi.first.wpilibj.trajectory.TrajectoryGenerator;
 import edu.wpi.first.wpilibj.trajectory.TrajectoryUtil;
 import edu.wpi.first.wpilibj.trajectory.constraint.DifferentialDriveVoltageConstraint;
 import edu.wpi.first.wpilibj.trajectory.constraint.TrajectoryConstraint;
+import edu.wpi.first.wpilibj.util.Units;
 import frc.robot.Constants.AutoConstants;
 import frc.robot.Constants.DriveConstants;
 import edu.wpi.first.wpilibj.controller.SimpleMotorFeedforward;
@@ -76,7 +78,7 @@ public class AutoCourses {
 
 
 
-        final List<Translation2d> waypointsBarrel = List.of(new Translation2d(2.286, 0), new Translation2d(3.3528, -0.762),
+        final List<Translation2d> waypointsBarrelFeet = List.of(new Translation2d(2.286, 0), new Translation2d(3.3528, -0.762),
         new Translation2d(2.286, -1.524), new Translation2d(1.524, -0.762),
         new Translation2d(2.286, 0), new Translation2d(4.572, -0.1524),
         new Translation2d(5.4864, 0.762), new Translation2d(4.572, 1.6764),
@@ -84,7 +86,7 @@ public class AutoCourses {
         new Translation2d(6.096, -1.307), new Translation2d(6.858, -0.832),
         new Translation2d(5.345, -0.3)); //Used Autonav Waypoint Calculator Sheet
 
-
+        final List<Translation2d> waypointsBarrel = waypointsBarrelFeet.stream().map((o) -> new Translation2d(Units.feetToMeters(o.getX()), Units.feetToMeters(o.getY()))).collect(Collectors.toList());
         waypointBarrelStrings = waypointsBarrel.stream().map((o) -> o.toString()).collect(toList());
         // An example trajectory to follow. All units in meters.
         barrelRacer = TrajectoryGenerator.generateTrajectory(
