@@ -187,6 +187,8 @@ public class RobotContainer {
       BadLog.createTopic("NavX/RawAccelX", "m/s^2", () -> (double) m_robotDrive.navX.getRawAccelX());
       BadLog.createTopic("NavX/RawAccelY", "m/s^2", () -> (double) m_robotDrive.navX.getRawAccelX());
       BadLog.createTopic("NavX/RawAccelZ", "m/s^2", () -> (double) m_robotDrive.navX.getRawAccelX());
+
+      BadLog.createTopicStr("Drivetrain/Motor Faults", BadLog.UNITLESS, m_robotDrive::getMotorFaultsStr, "log");
   }
 
     /**
