@@ -68,6 +68,7 @@ public class DriveSubsystem extends SubsystemBase {
   private double maxSpeed;
 
   // ***********HAHAHAHA I MADE A COMMENT***************
+  // Good Job!
   /** Creates a new DriveSubsystem. */
   public DriveSubsystem() {
     // Sets the distance per pulse for the encoders
@@ -104,6 +105,8 @@ public class DriveSubsystem extends SubsystemBase {
     m_yEntry.setNumber(translation.getY());
     m_thetaEntry.setNumber(translation.getRotation().getDegrees());
     m_field.setRobotPose(m_odometry.getPoseMeters());
+
+    //FAULTS 
   }
 
   /**
