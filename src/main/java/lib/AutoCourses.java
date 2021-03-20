@@ -34,7 +34,7 @@ public class AutoCourses {
     private final Pose2d startSlalom = new Pose2d(0, -1.524, new Rotation2d(0));
     private final Pose2d finishSlalom = new Pose2d(-1, 0.3, new Rotation2d(Math.PI));
     private final Pose2d finishBarrel = new Pose2d(-.5, 0.6, new Rotation2d(Math.PI));
-    private final Pose2d startBarrel = new Pose2d(0, 0.05, new Rotation2d(0));
+    private final Pose2d startBarrel = new Pose2d(Units.feetToMeters(-1.25), 0.05, new Rotation2d(0));
     private final List<String> waypointBarrelStrings;
     private final List<String> waypointSlalomStrings;
     private final List<String> waypointBounce2Strings;
@@ -80,14 +80,13 @@ public class AutoCourses {
         final List<Translation2d> waypointsBarrelFeet = List.of(
                 new Translation2d(7.5, 0.5), 
                 new Translation2d(10.5, -2.5),
-                new Translation2d(7.5, -5.5), 
+                new Translation2d(7.5, -4.5), 
                 new Translation2d(4.5, -2.5),
                 new Translation2d(7.5, 0.5),
                 new Translation2d(15, -0.5),
-                new Translation2d(18, 2.5),
-                new Translation2d(15, 5.5),
+                new Translation2d(17, 2.5),
+                new Translation2d(14.5, 5.5),
                 new Translation2d(12, 2.5),
-                new Translation2d(15, -0.5),
                 new Translation2d(20, -5.5),
                 new Translation2d(23, -2.5),
                 new Translation2d(20, 0.5),
