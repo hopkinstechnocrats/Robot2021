@@ -4,6 +4,7 @@
 
 package frc.robot;
 
+import badlog.lib.BadLog;
 import edu.wpi.first.networktables.NetworkTable;
 import edu.wpi.first.networktables.NetworkTableEntry;
 import edu.wpi.first.networktables.NetworkTableInstance;
@@ -13,6 +14,7 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import frc.robot.Constants.AutoConstants;
 import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.PowerDistributionPanel;
 
 /**
  * The VM is configured to automatically run this class, and to call the functions corresponding to
@@ -26,6 +28,7 @@ public class Robot extends TimedRobot {
   NetworkTableEntry maxVelocity;
   NetworkTableEntry maxAcceleration;
   NetworkTableEntry isEnabled;
+  PowerDistributionPanel PDP;
 
   private RobotContainer m_robotContainer;
 
@@ -42,6 +45,16 @@ public class Robot extends TimedRobot {
 
     NetworkTableInstance inst = NetworkTableInstance.getDefault();
     NetworkTable autoLogTable = inst.getTable("metaLog");
+
+    for(int i = 0; i <=15; i++){
+      final int j = i;
+      BadLog.createTopic("PDP"+j+" Current", "Amperes", () -> PDP.getCurrent(j));
+    }
+    BadLog.createTopic("PDP Temp", "Celsius", () -> PDP.getTemperature());
+    BadLog.createTopic("PDP Total Current", "Amperes", () -> PDP.getTotalCurrent());
+    BadLog.createTopic("PDP Total Energy", "Joules", () -> PDP.getTotalEnergy());
+    BadLog.createTopic("PDP Total Power", "Watts", () -> PDP.getTotalPower());
+    BadLog.createTopic("PDP Input Voltage", "Volts", () -> PDP.getVoltage());
 
     maxAcceleration = autoLogTable.getEntry("maxAcceleration");
     maxVelocity = autoLogTable.getEntry("maxVelocity");
