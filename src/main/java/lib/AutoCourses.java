@@ -33,8 +33,8 @@ public class AutoCourses {
     public Trajectory bounceCourse;
     private final Pose2d startSlalom = new Pose2d(0, -1.524, new Rotation2d(0));
     private final Pose2d finishSlalom = new Pose2d(-1, 0.3, new Rotation2d(Math.PI));
-    private final Pose2d finishBarrel = new Pose2d(-.5, 0.6, new Rotation2d(Math.PI));
-    private final Pose2d startBarrel = new Pose2d(Units.feetToMeters(-1.25), 0.05, new Rotation2d(0));
+    private final Pose2d finishBarrel = new Pose2d(Units.feetToMeters(-1.64), Units.feetToMeters(0), new Rotation2d(Math.PI));
+    private final Pose2d startBarrel = new Pose2d(Units.feetToMeters(-1.25), Units.feetToMeters(0.16), new Rotation2d(0));
     private final List<String> waypointBarrelStrings;
     private final List<String> waypointSlalomStrings;
     private final List<String> waypointBounce2Strings;
@@ -89,7 +89,7 @@ public class AutoCourses {
                 new Translation2d(12, 2.5),
                 new Translation2d(20, -5.5),
                 new Translation2d(23, -2.5),
-                new Translation2d(20, 0.5),
+                //new Translation2d(20, 0.5),
                 new Translation2d(17, 0)); //Used Autonav Waypoint Calculator Sheet
 
         final List<Translation2d> waypointsBarrel = waypointsBarrelFeet.stream().map((o) -> new Translation2d(Units.feetToMeters(o.getX()), Units.feetToMeters(o.getY()))).collect(Collectors.toList());

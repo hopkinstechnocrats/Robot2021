@@ -165,7 +165,7 @@ public class RamseteCommand extends CommandBase {
             m_follower.calculate(m_pose.get(), m_trajectory.sample(curTime)));
         
     BadLog.publish("Drivetrain/Trajectory Pose X", m_trajectory.sample(curTime).poseMeters.getX());
-    BadLog.publish("Drivetrain/Trajectory Pose Y", m_trajectory.sample(curTime).poseMeters.getX());
+    BadLog.publish("Drivetrain/Trajectory Pose Y", m_trajectory.sample(curTime).poseMeters.getY());
     BadLog.publish("Drivetrain/Trajectory Pose Heading", m_trajectory.sample(curTime).poseMeters.getRotation().getDegrees());
 
 

@@ -54,11 +54,11 @@ public class Constants {
   }
 
   public static final class OIConstants {
-    public static final int kDriverControllerPort = 1;
+    public static final int kDriverControllerPort = 0;
   }
 
   public static final class AutoConstants {
-    public static double kMaxSpeedMetersPerSecond = 2;
+    public static double kMaxSpeedMetersPerSecond = 1.5;
     public static double kMaxAccelerationMetersPerSecondSquared = 1;
 
     // Reasonable baseline values for a RAMSETE follower in units of meters and seconds

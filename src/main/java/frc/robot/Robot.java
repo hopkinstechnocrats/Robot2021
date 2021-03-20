@@ -46,16 +46,6 @@ public class Robot extends TimedRobot {
     NetworkTableInstance inst = NetworkTableInstance.getDefault();
     NetworkTable autoLogTable = inst.getTable("metaLog");
 
-    for(int i = 0; i <=15; i++){
-      final int j = i;
-      BadLog.createTopic("PDP"+j+" Current", "Amperes", () -> PDP.getCurrent(j));
-    }
-    BadLog.createTopic("PDP Temp", "Celsius", () -> PDP.getTemperature());
-    BadLog.createTopic("PDP Total Current", "Amperes", () -> PDP.getTotalCurrent());
-    BadLog.createTopic("PDP Total Energy", "Joules", () -> PDP.getTotalEnergy());
-    BadLog.createTopic("PDP Total Power", "Watts", () -> PDP.getTotalPower());
-    BadLog.createTopic("PDP Input Voltage", "Volts", () -> PDP.getVoltage());
-
     maxAcceleration = autoLogTable.getEntry("maxAcceleration");
     maxVelocity = autoLogTable.getEntry("maxVelocity");
     isEnabled = autoLogTable.getEntry("enabled");

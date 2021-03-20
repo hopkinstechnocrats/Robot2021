@@ -95,6 +95,11 @@ public class DriveSubsystem extends SubsystemBase {
     _Orchestra = new Orchestra(_fxes);
 
     _Orchestra.loadMusic("Songs/MARIO.chrp");
+    leftMasterFaults = new Faults();
+    rightMasterFaults = new Faults();
+    leftFollowerFaults = new Faults();
+    rightFollowerFaults = new Faults();
+
   }
   
   public void setMaxSpeed(double maxSpeed) {
