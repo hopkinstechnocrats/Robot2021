@@ -14,8 +14,9 @@ import edu.wpi.first.wpilibj.kinematics.DifferentialDriveKinematics;
  *
  * <p>It is advised to statically import this class (or one of its inner classes) wherever the
  * constants are needed, to reduce verbosity.
- */ public class Constants {
-  public static final class DriveConstants {
+ */ 
+public class Constants {
+  public static class DriveConstants {
     public static final int kLeftMotor1Port = 1;
     public static final int kLeftMotor2Port = 2;
     public static final int kRightMotor1Port = 3;
@@ -43,22 +44,22 @@ import edu.wpi.first.wpilibj.kinematics.DifferentialDriveKinematics;
     // for *your* robot's drive.
     // The Robot Characterization Toolsuite provides a convenient tool for obtaining these
     // values for your robot.
-    public static final double ksVolts = 0.725;
-    public static final double kvVoltSecondsPerMeter = 1.04;
-    public static final double kaVoltSecondsSquaredPerMeter = 0.0361;
+    public static final double ksVolts = 0.696;
+    public static final double kvVoltSecondsPerMeter = 1.13;
+    public static final double kaVoltSecondsSquaredPerMeter = 0.0297;
 
     // Example value only - as above, this must be tuned for your drive!
-    public static final double kPDriveVel = 3;
+    public static final double kPDriveVel = 1.9;
     public static final double kDDriveVel = 0;
   }
 
   public static final class OIConstants {
-    public static final int kDriverControllerPort = 1;
+    public static final int kDriverControllerPort = 0;
   }
 
   public static final class AutoConstants {
-    public static final double kMaxSpeedMetersPerSecond = 3;
-    public static final double kMaxAccelerationMetersPerSecondSquared = 1.75;
+    public static double kMaxSpeedMetersPerSecond = 1.5;
+    public static double kMaxAccelerationMetersPerSecondSquared = 1;
 
     // Reasonable baseline values for a RAMSETE follower in units of meters and seconds
     public static final double kRamseteB = 2;
@@ -71,11 +72,18 @@ import edu.wpi.first.wpilibj.kinematics.DifferentialDriveKinematics;
       public static final double kP = 0.7;
       public static final double kI = 0.001;
       public static final double kD = 60;
+      public static final double speed = 10000;
   }
 
   public static final class LimelightConstants {
       public static final double limelightDistanceToGround = 1;
       public static final double powerPortDistanceToGround = 1;
       public static final double mountingAngle = Math.PI/6;
+      
+  }
+  
+  public static final class PreLaunchConstants{
+    public static final int Motor1CANID = 7;
+    public static final double SpeedMetersPerSecond = 2;
   }
 }

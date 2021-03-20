@@ -1,11 +1,13 @@
 package lib;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 import edu.wpi.first.wpilibj.trajectory.TrajectoryGenerator;
 import edu.wpi.first.wpilibj.trajectory.TrajectoryUtil;
 import edu.wpi.first.wpilibj.trajectory.constraint.DifferentialDriveVoltageConstraint;
 import edu.wpi.first.wpilibj.trajectory.constraint.TrajectoryConstraint;
+import edu.wpi.first.wpilibj.util.Units;
 import frc.robot.Constants.AutoConstants;
 import frc.robot.Constants.DriveConstants;
 import edu.wpi.first.wpilibj.controller.SimpleMotorFeedforward;
@@ -31,8 +33,8 @@ public class AutoCourses {
     public Trajectory bounceCourse;
     private final Pose2d startSlalom = new Pose2d(0, -1.524, new Rotation2d(0));
     private final Pose2d finishSlalom = new Pose2d(-1, 0.3, new Rotation2d(Math.PI));
-    private final Pose2d finishBarrel = new Pose2d(-.5, 0.6, new Rotation2d(Math.PI));
-    private final Pose2d startBarrel = new Pose2d(0, 0.05, new Rotation2d(0));
+    private final Pose2d finishBarrel = new Pose2d(Units.feetToMeters(-1.64), Units.feetToMeters(0), new Rotation2d(Math.PI));
+    private final Pose2d startBarrel = new Pose2d(Units.feetToMeters(-1.25), Units.feetToMeters(0.16), new Rotation2d(0));
     private final List<String> waypointBarrelStrings;
     private final List<String> waypointSlalomStrings;
     private final List<String> waypointBounce2Strings;
@@ -71,20 +73,26 @@ public class AutoCourses {
                 .setKinematics(DriveConstants.kDriveKinematics)
                 // Apply the voltage constraint
                 .addConstraint(autoVoltageConstraint)
-                
                 .setReversed(true);  
 
 
 
-        final List<Translation2d> waypointsBarrel = List.of(new Translation2d(2.286, 0), new Translation2d(3.3528, -0.762),
-        new Translation2d(2.286, -1.524), new Translation2d(1.524, -0.762),
-        new Translation2d(2.286, 0), new Translation2d(4.572, -0.1524),
-        new Translation2d(5.4864, 0.762), new Translation2d(4.572, 1.6764),
-        new Translation2d(3.853, 0.762), new Translation2d(4.572, -0.07),
-        new Translation2d(6.096, -1.307), new Translation2d(6.858, -0.832),
-        new Translation2d(5.345, -0.3)); //Used Autonav Waypoint Calculator Sheet
+        final List<Translation2d> waypointsBarrelFeet = List.of(
+                new Translation2d(7.5, 0.5), 
+                new Translation2d(10.5, -2.5),
+                new Translation2d(7.5, -4.5), 
+                new Translation2d(4.5, -2.5),
+                new Translation2d(7.5, 0.5),
+                new Translation2d(15, -0.5),
+                new Translation2d(17, 2.5),
+                new Translation2d(14.5, 5.5),
+                new Translation2d(12, 2.5),
+                new Translation2d(20, -5.5),
+                new Translation2d(23, -2.5),
+                //new Translation2d(20, 0.5),
+                new Translation2d(17, 0)); //Used Autonav Waypoint Calculator Sheet
 
-
+        final List<Translation2d> waypointsBarrel = waypointsBarrelFeet.stream().map((o) -> new Translation2d(Units.feetToMeters(o.getX()), Units.feetToMeters(o.getY()))).collect(Collectors.toList());
         waypointBarrelStrings = waypointsBarrel.stream().map((o) -> o.toString()).collect(toList());
         // An example trajectory to follow. All units in meters.
         barrelRacer = TrajectoryGenerator.generateTrajectory(
