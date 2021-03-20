@@ -40,7 +40,7 @@ import edu.wpi.first.wpilibj.trajectory.constraint.DifferentialDriveVoltageConst
 import edu.wpi.first.wpilibj.util.Units;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
-import edu.wpi.first.wpilibj2.command.RamseteCommand;
+import lib.RamseteCommand;
 import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
@@ -63,6 +63,7 @@ import javax.swing.TransferHandler;
 import static java.util.stream.Collectors.toList;
 
 import badlog.lib.BadLog;
+import badlog.lib.DataInferMode;
 
 /**
  * This class is where the bulk of the robot should be declared. Since
@@ -231,19 +232,9 @@ public class RobotContainer {
         AutoCourses autoCourses = new AutoCourses();
         
         exampleTrajectory = autoCourses.getBarrelRacer();
-        BadLog.createTopic("Drivetrain/Trajectory Pose X", "m", () -> exampleTrajectory.sample(Timer.getFPGATimestamp()-this.startAutoTime), "join:Drivetrain/Robot Pose X");
-        BadLog.createTopic("Drivetrain/Trajectory Pose Y", "m", () -> exampleTrajectory.sample(Timer.getFPGATimestamp()-this.startAutoTime), "join:Drivetrain/Robot Pose Y");
-
-
-        // String trajectoryJSON = "Paths/BarrelRacer.path";
-        // Path trajectoryPath =
-        // Filesystem.getDeployDirectory().toPath().resolve(trajectoryJSON);
-        // try {
-        // exampleTrajectory = TrajectoryUtil.fromPathweaverJson(trajectoryPath);
-        // } catch (IOException e) {
-        // DriverStation.reportError("Unable to open trajectory: "+ trajectoryJSON,
-        // e.getStackTrace());
-        // }
+        BadLog.createTopicSubscriber("Drivetrain/Trajectory Pose X", "m", DataInferMode.DEFAULT, "join:Drivetrain/Robot Pose X");
+        BadLog.createTopicSubscriber("Drivetrain/Trajectory Pose Y", "m", DataInferMode.DEFAULT, "join:Drivetrain/Robot Pose Y");
+        BadLog.createTopicSubscriber("Drivetrain/Trajectory Pose Heading", "m", DataInferMode.DEFAULT, "join:Drivetrain/Robot Pose Heading");
 
         Command startClockCommand = new InstantCommand(() -> {
             this.startAutoTime = Timer.getFPGATimestamp();
