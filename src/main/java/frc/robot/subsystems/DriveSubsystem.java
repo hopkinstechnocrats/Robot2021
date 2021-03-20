@@ -25,8 +25,12 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.IllegalFormatCodePointException;
+
+import javax.management.openmbean.ArrayType;
 
 import com.ctre.phoenix.motorcontrol.ControlMode;
+import com.ctre.phoenix.motorcontrol.Faults;
 import com.ctre.phoenix.motorcontrol.can.TalonFX;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonFX;
 import com.ctre.phoenix.music.Orchestra;
@@ -34,7 +38,7 @@ import com.ctre.phoenix.music.Orchestra;
 import edu.wpi.first.wpilibj.SPI;
 
 public class DriveSubsystem extends SubsystemBase {
-
+  
   public Orchestra _Orchestra;
   // The motors on the left side of the drive.
   private final WPI_TalonFX m_leftMotors = new WPI_TalonFX(DriveConstants.kLeftMotor1Port);
@@ -57,7 +61,6 @@ public class DriveSubsystem extends SubsystemBase {
   public final Gyro m_gyro = navX;
 
   Collection<TalonFX> _fxes = new ArrayList<TalonFX>();
-
   private Field2d m_field;
   // Odometry class for tracking robot pose
   private final DifferentialDriveOdometry m_odometry;
@@ -67,7 +70,13 @@ public class DriveSubsystem extends SubsystemBase {
   NetworkTableEntry m_thetaEntry = NetworkTableInstance.getDefault().getTable("troubleshooting").getEntry("theta");
 
   private double maxSpeed;
-  //***********HAHAHAHA I MADE A COMMENT***************
+  Faults leftMasterFaults;
+  Faults rightMasterFaults;
+  Faults leftFollowerFaults;
+  Faults rightFollowerFaults;
+
+  // ***********HAHAHAHA I MADE A COMMENT***************
+  // Good Job!
   /** Creates a new DriveSubsystem. */
   public DriveSubsystem() {
     // Sets the distance per pulse for the encoders
@@ -81,11 +90,23 @@ public class DriveSubsystem extends SubsystemBase {
     m_rightFollower.follow(m_rightMotors);
     m_leftFollower.follow(m_leftMotors);
     m_field = new Field2d();
-    SmartDashboard.putData("Field", m_field);  
+    SmartDashboard.putData("Field", m_field);
+
+    ArrayList<TalonFX> _fxes = new ArrayList<>();
+
+    _fxes.add(m_leftMotors);
+    _fxes.add(m_leftFollower);
+    _fxes.add(m_rightMotors);
+    _fxes.add(m_rightFollower);
 
     _Orchestra = new Orchestra(_fxes);
 
     _Orchestra.loadMusic("Songs/MARIO.chrp");
+    leftMasterFaults = new Faults();
+    rightMasterFaults = new Faults();
+    leftFollowerFaults = new Faults();
+    rightFollowerFaults = new Faults();
+
   }
   
   public void setMaxSpeed(double maxSpeed) {
@@ -102,6 +123,84 @@ public class DriveSubsystem extends SubsystemBase {
     m_yEntry.setNumber(translation.getY());
     m_thetaEntry.setNumber(translation.getRotation().getDegrees());
     m_field.setRobotPose(m_odometry.getPoseMeters());
+
+    //FAULTS 
+  }
+
+  public String getMotorFaultsStr() {
+    Faults prevLeftMasterFaults = leftMasterFaults;
+    Faults prevRightMasterFaults = rightMasterFaults;
+    Faults prevLeftFollowerFaults = leftFollowerFaults;
+    Faults prevRightFollowerFaults = rightFollowerFaults;
+    m_leftMotors.getFaults(leftMasterFaults);
+    m_rightMotors.getFaults(rightMasterFaults);
+    m_leftFollower.getFaults(leftFollowerFaults);
+    m_rightFollower.getFaults(rightFollowerFaults);
+    String leftMasterFaultsStr = convertFaultToStr(leftMasterFaults);
+    String rightMasterFaultsStr = convertFaultToStr(rightMasterFaults);
+    String leftFollowerFaultsStr = convertFaultToStr(leftFollowerFaults);
+    String rightFollowerFaultsStr = convertFaultToStr(rightFollowerFaults);
+    String returnStr = "";
+    if (leftMasterFaultsStr != "") {
+      returnStr += "{leftMaster: "+leftMasterFaultsStr+"}";
+    }
+    if (rightMasterFaultsStr != "") {
+      returnStr += "{rightMaster: "+rightMasterFaultsStr+"}";
+    }
+    if (leftFollowerFaultsStr != "") {
+      returnStr += "{leftFollower: "+leftFollowerFaultsStr+"}";
+    }
+    if (rightFollowerFaultsStr != "") {
+      returnStr += "{rightFollower: "+rightFollowerFaultsStr+"}";
+    }
+    return returnStr;
+  }
+
+  String convertFaultToStr(Faults motorFaults) {
+    String returnStr = "";
+    if (motorFaults.APIError) {
+      returnStr += "APIError, ";
+    }
+    if (motorFaults.ForwardLimitSwitch) {
+      returnStr += "ForwardLimitSwitch, ";
+    }
+    if (motorFaults.ForwardSoftLimit) {
+      returnStr += "ForwardSoftLimit, ";
+    }
+    if (motorFaults.HardwareESDReset) {
+      returnStr += "HardwareESDReset, ";
+    }
+    if (motorFaults.HardwareFailure) {
+      returnStr += "HardwareFailure, ";
+    }
+    if (motorFaults.RemoteLossOfSignal) {
+      returnStr += "RemoteLossOfSignal, ";
+    }
+    if (motorFaults.ResetDuringEn) {
+      returnStr += "ResetDuringEn, ";
+    }
+    if (motorFaults.ReverseLimitSwitch) {
+      returnStr += "ReverseLimitSwitch, ";
+    }
+    if (motorFaults.ReverseSoftLimit) {
+      returnStr += "ReverseSoftLimit, ";
+    }
+    if (motorFaults.SensorOutOfPhase) {
+      returnStr += "SensorOutOfPhase, ";
+    }
+    if (motorFaults.SensorOverflow) {
+      returnStr += "SensorOverflow, ";
+    }
+    if (motorFaults.SupplyOverV) {
+      returnStr += "SupplyOverV, ";
+    }
+    if (motorFaults.SupplyUnstable) {
+      returnStr += "SupplyUnstable, ";
+    }
+    if (motorFaults.UnderVoltage) {
+      returnStr += "UnderVoltage, ";
+    }
+    return returnStr;
   }
 
   /**

@@ -4,6 +4,7 @@
 
 package frc.robot;
 
+import badlog.lib.BadLog;
 import edu.wpi.first.networktables.NetworkTable;
 import edu.wpi.first.networktables.NetworkTableEntry;
 import edu.wpi.first.networktables.NetworkTableInstance;
@@ -12,8 +13,8 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import frc.robot.Constants.AutoConstants;
-import jdk.jfr.Enabled;
 import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.PowerDistributionPanel;
 
 /**
  * The VM is configured to automatically run this class, and to call the functions corresponding to
@@ -27,6 +28,7 @@ public class Robot extends TimedRobot {
   NetworkTableEntry maxVelocity;
   NetworkTableEntry maxAcceleration;
   NetworkTableEntry isEnabled;
+  PowerDistributionPanel PDP;
 
   private RobotContainer m_robotContainer;
 
@@ -65,7 +67,7 @@ public class Robot extends TimedRobot {
     CommandScheduler.getInstance().run();
     SmartDashboard.putNumber("Left Drivetrain Error", m_robotContainer.leftPIDController.getPositionError()); //ACTUALLY VELOCITY ERROR
     SmartDashboard.putNumber("Right Drivetrain Error", m_robotContainer.rightPIDController.getPositionError());
-    isEnabled.setBoolean(DriverStation.isEnabled());
+    isEnabled.setBoolean(DriverStation.getInstance().isEnabled());
     AutoConstants.kMaxSpeedMetersPerSecond = maxVelocity.getDouble(AutoConstants.kMaxSpeedMetersPerSecond);
     AutoConstants.kMaxAccelerationMetersPerSecondSquared = maxAcceleration.getDouble(AutoConstants.kMaxAccelerationMetersPerSecondSquared);
   }

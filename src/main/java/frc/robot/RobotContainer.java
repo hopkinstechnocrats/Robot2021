@@ -12,6 +12,7 @@ import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Filesystem;
 import edu.wpi.first.wpilibj.GenericHID;
+import edu.wpi.first.wpilibj.PowerDistributionPanel;
 import edu.wpi.first.wpilibj.RobotController;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.XboxController;
@@ -40,7 +41,7 @@ import edu.wpi.first.wpilibj.trajectory.constraint.DifferentialDriveVoltageConst
 import edu.wpi.first.wpilibj.util.Units;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
-import edu.wpi.first.wpilibj2.command.RamseteCommand;
+import lib.RamseteCommand;
 import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
@@ -63,6 +64,7 @@ import javax.swing.TransferHandler;
 import static java.util.stream.Collectors.toList;
 
 import badlog.lib.BadLog;
+import badlog.lib.DataInferMode;
 
 /**
  * This class is where the bulk of the robot should be declared. Since
@@ -93,11 +95,13 @@ public class RobotContainer {
     // The driver's controller
     XboxController m_driverController = new XboxController(OIConstants.kDriverControllerPort);
     SimpleMotorFeedforward feedforward;
+    private PowerDistributionPanel PDP;
 
     /**
      * The container for the robot. Contains subsystems, OI devices, and commands.
      */
     public RobotContainer() {
+        this.startAutoTime = 0;
         // Configure the button bindings
         configureButtonBindings();
         feedforward = new SimpleMotorFeedforward(DriveConstants.ksVolts, DriveConstants.kvVoltSecondsPerMeter,
@@ -130,8 +134,9 @@ public class RobotContainer {
         m_robotDrive.setDefaultCommand(
                 // A split-stick arcade command, with forward/backward controlled by the left
                 // hand, and turning controlled by the right.
-                new RunCommand(() -> m_robotDrive.tankDrivePercentOutput(m_driverController.getY(GenericHID.Hand.kLeft),
-                        m_driverController.getY(GenericHID.Hand.kRight)), m_robotDrive));
+                new RunCommand(() -> m_robotDrive.tankDrivePercentOutput(0 // m_driverController.getY(GenericHID.Hand.kLeft),
+                        ,0 //m_driverController.getY(GenericHID.Hand.kRight))
+        ), m_robotDrive));
     }
 
   public void initializeAutoLog() {
@@ -169,13 +174,13 @@ public class RobotContainer {
       BadLog.createValue("AutoConstants/RamseteZeta", ""+Constants.AutoConstants.kRamseteZeta);
 
       BadLog.createTopic("FPGA Time", "s", () -> Timer.getFPGATimestamp(), "xaxis");
-      BadLog.createTopic("Drivetrain/Robot Pose X", "m", () -> m_robotDrive.getPose().getX());
-      BadLog.createTopic("Drivetrain/Robot Pose Y", "m", () -> m_robotDrive.getPose().getY());
-      BadLog.createTopic("Drivetrain/Robot Pose Heading", "degrees", () -> m_robotDrive.getPose().getRotation().getDegrees());
-      BadLog.createTopic("Drivetrain/Left Wheel Speed", "m/s", () -> m_robotDrive.getWheelSpeeds().leftMetersPerSecond);
-      BadLog.createTopic("Drivetrain/Right Wheel Speed", "m/s", () -> m_robotDrive.getWheelSpeeds().rightMetersPerSecond);
-      BadLog.createTopic("Drivetrain/Left Wheel Setpoint", "m/s" ,() -> leftPIDController.getSetpoint());
-      BadLog.createTopic("Drivetrain/Right Wheel Setpoint", "m/s", () -> rightPIDController.getSetpoint());
+      BadLog.createTopic("Drivetrain/Odometry Pose X", "m", () -> m_robotDrive.getPose().getX(), "join:Drivetrain/Robot Pose X");
+      BadLog.createTopic("Drivetrain/Odometry Pose Y", "m", () -> m_robotDrive.getPose().getY(), "join:Drivetrain/Robot Pose Y");
+      BadLog.createTopic("Drivetrain/Odometry Pose Heading", "degrees", () -> m_robotDrive.getPose().getRotation().getDegrees(), "join:Drivetrain/Robot Pose Heading");
+      BadLog.createTopic("Drivetrain/Left Wheel Measured Speed", "m/s", () -> m_robotDrive.getWheelSpeeds().leftMetersPerSecond, "join:Drivetrain/LeftWheelSpeed");
+      BadLog.createTopic("Drivetrain/Right Wheel Measured Speed", "m/s", () -> m_robotDrive.getWheelSpeeds().rightMetersPerSecond, "join:Drivetrain/RightWheelSpeed");
+      BadLog.createTopic("Drivetrain/Left Wheel Setpoint", "m/s" ,() -> leftPIDController.getSetpoint(), "join:Drivetrain/LeftWheelSpeed");
+      BadLog.createTopic("Drivetrain/Right Wheel Setpoint", "m/s", () -> rightPIDController.getSetpoint(), "join:Drivetrain/RightWheelSpeed");
       BadLog.createTopic("Battery Voltage", "V", () -> RobotController.getBatteryVoltage());
 
       //Gyro Data
@@ -185,6 +190,19 @@ public class RobotContainer {
       BadLog.createTopic("NavX/RawAccelX", "m/s^2", () -> (double) m_robotDrive.navX.getRawAccelX());
       BadLog.createTopic("NavX/RawAccelY", "m/s^2", () -> (double) m_robotDrive.navX.getRawAccelX());
       BadLog.createTopic("NavX/RawAccelZ", "m/s^2", () -> (double) m_robotDrive.navX.getRawAccelX());
+
+      BadLog.createTopicStr("Drivetrain/Motor Faults", BadLog.UNITLESS, m_robotDrive::getMotorFaultsStr, "log");
+      PDP = new PowerDistributionPanel();
+
+      for(int i = 0; i <=15; i++){
+        final int j = i;
+        BadLog.createTopic("PDP/PDP"+j+" Current", "Amperes", () -> PDP.getCurrent(j));
+      }
+      BadLog.createTopic("PDP/PDP Temp", "Celsius", () -> PDP.getTemperature());
+      BadLog.createTopic("PDP/PDP Total Current", "Amperes", () -> PDP.getTotalCurrent());
+      BadLog.createTopic("PDP/PDP Total Energy", "Joules", () -> PDP.getTotalEnergy());
+      BadLog.createTopic("PDP/PDP Total Power", "Watts", () -> PDP.getTotalPower());
+      BadLog.createTopic("PDP/PDP Input Voltage", "Volts", () -> PDP.getVoltage());
   }
 
     /**
@@ -209,13 +227,12 @@ public class RobotContainer {
         new JoystickButton(m_driverController, Button.kY.value)
                 .whenPressed(new RunCommand(() -> m_robotDrive._Orchestra.play(), m_robotDrive));
     
-        m_launcherSubsystem.setDefaultCommand(new RunCommand(() -> m_launcherSubsystem.spinLauncher(0)));
-
+        m_launcherSubsystem.setDefaultCommand(new RunCommand(() -> m_launcherSubsystem.spinLauncher(0), m_launcherSubsystem));
 
         new JoystickButton(m_driverController, Button.kB.value)
-                .whileHeld(() -> m_PreLaunch.spin(speed));
+                .whileHeld(() -> m_PreLaunch.spin(1), m_PreLaunch);
 
-        m_PreLaunch.setDefaultCommand(new RunCommand(() -> m_PreLaunch.spin(0)));
+        m_PreLaunch.setDefaultCommand(new RunCommand(() -> m_PreLaunch.spin(0), m_PreLaunch));
 
 
     }
@@ -231,17 +248,9 @@ public class RobotContainer {
         AutoCourses autoCourses = new AutoCourses();
         
         exampleTrajectory = autoCourses.getBarrelRacer();
-
-
-        // String trajectoryJSON = "Paths/BarrelRacer.path";
-        // Path trajectoryPath =
-        // Filesystem.getDeployDirectory().toPath().resolve(trajectoryJSON);
-        // try {
-        // exampleTrajectory = TrajectoryUtil.fromPathweaverJson(trajectoryPath);
-        // } catch (IOException e) {
-        // DriverStation.reportError("Unable to open trajectory: "+ trajectoryJSON,
-        // e.getStackTrace());
-        // }
+        BadLog.createTopicSubscriber("Drivetrain/Trajectory Pose X", "m", DataInferMode.DEFAULT, "join:Drivetrain/Robot Pose X");
+        BadLog.createTopicSubscriber("Drivetrain/Trajectory Pose Y", "m", DataInferMode.DEFAULT, "join:Drivetrain/Robot Pose Y");
+        BadLog.createTopicSubscriber("Drivetrain/Trajectory Pose Heading", "m", DataInferMode.DEFAULT, "join:Drivetrain/Robot Pose Heading");
 
         Command startClockCommand = new InstantCommand(() -> {
             this.startAutoTime = Timer.getFPGATimestamp();
