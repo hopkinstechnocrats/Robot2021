@@ -66,7 +66,6 @@ public class Constants {
     public static final double kRamseteZeta = 0.7;
   }
 
-
   public static final class LauncherConstants {
       public static final int Motor1CANID = 5;
       public static final int Motor2CANID = 6;
@@ -75,6 +74,14 @@ public class Constants {
       public static final double kD = 60;
       public static final double speed = 10000;
   }
+
+  public static final class LimelightConstants {
+      public static final double limelightDistanceToGround = 1;
+      public static final double powerPortDistanceToGround = 1;
+      public static final double mountingAngle = Math.PI/6;
+      
+  }
+  
   public static final class PreLaunchConstants{
     public static final int Motor1CANID = 7;
     public static final double SpeedMetersPerSecond = 2;
