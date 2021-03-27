@@ -1,5 +1,4 @@
 package frc.robot.subsystems;
-
 import javax.sound.midi.VoiceStatus;
 
 import com.ctre.phoenix.motorcontrol.ControlMode;
