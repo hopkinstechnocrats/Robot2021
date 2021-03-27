@@ -32,7 +32,9 @@ import edu.wpi.first.wpilibj.geometry.Pose2d;
 import edu.wpi.first.wpilibj.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.geometry.Translation2d;
 import edu.wpi.first.wpilibj.smartdashboard.Field2d;
+import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+
 import edu.wpi.first.wpilibj.trajectory.Trajectory;
 import edu.wpi.first.wpilibj.trajectory.TrajectoryConfig;
 import edu.wpi.first.wpilibj.trajectory.TrajectoryGenerator;
@@ -86,6 +88,7 @@ public class RobotContainer {
     public double finishAutoTime;
     public File logFile;
     public BufferedWriter logFileWriter;
+    public SendableChooser<Command> AutoPoto = new SendableChooser<>();
 
     NetworkTableInstance metaLogTableBIG = NetworkTableInstance.getDefault();
     NetworkTable metaLogTable = metaLogTableBIG.getTable("metaLog");
@@ -242,12 +245,13 @@ public class RobotContainer {
      *
      * @return the command to run in autonomous
      */
-    public Command getAutonomousCommand() {
+    AutoPoto.setDefaultOption("Barrel Racer", getAutonomousCommand(AutoCourses.getBarrelRacer));
+
+    public Command getAutonomousCommand(ArrayList<Trajectory> Course) {
         
         ArrayList<Trajectory> exampleTrajectory = new ArrayList<Trajectory>();
-        AutoCourses autoCourses = new AutoCourses();
         
-        exampleTrajectory = autoCourses.getBarrelRacer();
+        exampleTrajectory = Course;
         BadLog.createTopicSubscriber("Drivetrain/Trajectory Pose X", "m", DataInferMode.DEFAULT, "join:Drivetrain/Robot Pose X");
         BadLog.createTopicSubscriber("Drivetrain/Trajectory Pose Y", "m", DataInferMode.DEFAULT, "join:Drivetrain/Robot Pose Y");
         BadLog.createTopicSubscriber("Drivetrain/Trajectory Pose Heading", "m", DataInferMode.DEFAULT, "join:Drivetrain/Robot Pose Heading");
