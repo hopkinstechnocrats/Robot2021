@@ -26,6 +26,7 @@ import frc.robot.Constants.OIConstants;
 import frc.robot.subsystems.DriveSubsystem;
 import frc.robot.subsystems.LauncherSubsystem;
 import frc.robot.subsystems.PreLaunchSubsystem;
+import frc.robot.commands.SpinLauncherCommand;
 import lib.AutoCourses;
 import lib.TrajectoryCommandGenerator;
 import edu.wpi.first.wpilibj.geometry.Pose2d;
@@ -222,7 +223,10 @@ public class RobotContainer {
 
         
         new JoystickButton(m_driverController, Button.kA.value)
-                .whileHeld(new RunCommand(() -> m_launcherSubsystem.spinLauncher(LauncherConstants.speed)));
+                .whileHeld(new RunCommand(() -> m_launcherSubsystem.spinLauncher(LauncherConstants.speed), m_launcherSubsystem));
+
+        new JoystickButton(m_driverController, Button.kX.value).
+            whileHeld(new SpinLauncherCommand(m_launcherSubsystem));
 
         new JoystickButton(m_driverController, Button.kY.value)
                 .whenPressed(new RunCommand(() -> m_robotDrive._Orchestra.play(), m_robotDrive));
