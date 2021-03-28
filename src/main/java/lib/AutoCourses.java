@@ -10,6 +10,7 @@ import edu.wpi.first.wpilibj.trajectory.constraint.TrajectoryConstraint;
 import edu.wpi.first.wpilibj.util.Units;
 import frc.robot.Constants.AutoConstants;
 import frc.robot.Constants.DriveConstants;
+import frc.robot.Constants.InterstellarAccuracyConstants;
 import edu.wpi.first.wpilibj.controller.SimpleMotorFeedforward;
 import edu.wpi.first.wpilibj.geometry.Pose2d;
 import edu.wpi.first.wpilibj.geometry.Rotation2d;
@@ -49,6 +50,8 @@ public class AutoCourses {
     private final Pose2d startBounce4 = new Pose2d(5.334, 1.676, new Rotation2d(Math.PI/2));
     private final List<String> waypointBounce4Strings;
     private final List<String> waypointBounce3Strings;
+private TrajectoryConfig forwardConfig;
+private TrajectoryConfig reverseConfig;
 
     public AutoCourses() {
         // Create a voltage constraint to ensure we don't accelerate too fast
@@ -59,15 +62,14 @@ public class AutoCourses {
         BadLog.createValue("AutoConstants/MaxVoltage", "10");
 
 
-        // Create config for trajectory
-        final TrajectoryConfig forwardConfig = new TrajectoryConfig(AutoConstants.kMaxSpeedMetersPerSecond,
+        forwardConfig = new TrajectoryConfig(AutoConstants.kMaxSpeedMetersPerSecond,
         AutoConstants.kMaxAccelerationMetersPerSecondSquared)
                 // Add kinematics to ensure max speed is actually obeyed
                 .setKinematics(DriveConstants.kDriveKinematics)
                 // Apply the voltage constraint
                 .addConstraint(autoVoltageConstraint);
                 
-        final TrajectoryConfig reverseConfig = new TrajectoryConfig(AutoConstants.kMaxSpeedMetersPerSecond,
+        reverseConfig = new TrajectoryConfig(AutoConstants.kMaxSpeedMetersPerSecond,
         AutoConstants.kMaxAccelerationMetersPerSecondSquared)
                 // Add kinematics to ensure max speed is actually obeyed
                 .setKinematics(DriveConstants.kDriveKinematics)
@@ -235,5 +237,17 @@ public class AutoCourses {
         // bounceCourseTrajectories.add(bounceCourse3);
         // bounceCourseTrajectories.add(bounceCourse4);
         return bounceCourseTrajectories;
+    }
+
+    public ArrayList<Trajectory> getIAC() {
+        Pose2d[][] endPoints = {
+                {
+                        new Pose2d(Units.feetToMeters(InterstellarAccuracyConstants.GreenZoneFeet.getX()), Units.feetToMeters(InterstellarAccuracyConstants.GreenZoneFeet.getY()), new Rotation2d(0)),
+                        new Pose2d(Units.feetToMeters(InterstellarAccuracyConstants.GreenZoneFeet.getX()), Units.feetToMeters(InterstellarAccuracyConstants.GreenZoneFeet.getY()), new Rotation2d(0)),
+                }
+        };
+        return new ArrayList<Trajectory>(List.of(
+                
+        ));
     }
 }
