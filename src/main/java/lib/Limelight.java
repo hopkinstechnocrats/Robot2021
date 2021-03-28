@@ -1,5 +1,6 @@
 package lib;
 
+import edu.wpi.first.networktables.NetworkTableInstance;
 import frc.robot.Constants.LimelightConstants;
 import edu.wpi.first.networktables.NetworkTableInstance;
 
