@@ -24,6 +24,7 @@ import frc.robot.Constants.DriveConstants;
 import frc.robot.Constants.LauncherConstants;
 import frc.robot.Constants.OIConstants;
 import frc.robot.subsystems.DriveSubsystem;
+import frc.robot.subsystems.IntakeSubsystem;
 import frc.robot.subsystems.LauncherSubsystem;
 import frc.robot.subsystems.PreLaunchSubsystem;
 import frc.robot.commands.SpinLauncherCommand;
@@ -79,6 +80,7 @@ public class RobotContainer {
     public final PreLaunchSubsystem m_PreLaunch = new PreLaunchSubsystem();
     public final DriveSubsystem m_robotDrive = new DriveSubsystem();
     public final LauncherSubsystem m_launcherSubsystem = new LauncherSubsystem();
+    public final IntakeSubsystem m_intakeSubsystem = new IntakeSubsystem();
     public BadLog log;
     public PIDController leftPIDController;
     public PIDController rightPIDController;
@@ -228,17 +230,23 @@ public class RobotContainer {
         new JoystickButton(m_driverController, Button.kX.value).
             whileHeld(new SpinLauncherCommand(m_launcherSubsystem));
 
-        new JoystickButton(m_driverController, Button.kY.value)
-                .whenPressed(new RunCommand(() -> m_robotDrive._Orchestra.play(), m_robotDrive));
+        // new JoystickButton(m_driverController, Button.kY.value)
+        //         .whenPressed(new RunCommand(() -> m_robotDrive._Orchestra.play(), m_robotDrive));
     
         m_launcherSubsystem.setDefaultCommand(new RunCommand(() -> m_launcherSubsystem.spinLauncher(0), m_launcherSubsystem));
 
-        new JoystickButton(m_driverController, Button.kB.value)
-                .whileHeld(() -> m_PreLaunch.spin(1), m_PreLaunch);
+        new JoystickButton(m_driverController, Button.kY.value)
+                .whileHeld(() -> m_PreLaunch.spin(-1), m_PreLaunch);
 
         m_PreLaunch.setDefaultCommand(new RunCommand(() -> m_PreLaunch.spin(0), m_PreLaunch));
 
+        m_intakeSubsystem.setDefaultCommand(new RunCommand(() -> m_intakeSubsystem.spin(0), m_intakeSubsystem));
 
+        new JoystickButton(m_driverController, Button.kB.value)
+            .whileHeld(new RunCommand(() -> {m_intakeSubsystem.spin(-1); System.out.println("RUNNING INTAKE COMMAND");}));
+
+        new JoystickButton(m_driverController, Button.kBumperRight.value)
+            .whenPressed(new InstantCommand(() -> {m_intakeSubsystem.toggle(); System.out.println("RUNNING INTAKE DEPLOY COMMAND");})); 
     }
 
     /**
