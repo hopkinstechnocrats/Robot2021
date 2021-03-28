@@ -107,6 +107,14 @@ public class RobotContainer {
         this.startAutoTime = 0;
         // Configure the button bindings
         configureButtonBindings();
+        
+        AutoPoto.setDefaultOption("Barrel Racer", getAutonomousCommand(AutoCourses.getBarrelRacer()));
+        AutoPoto.addOption("Bounce Course", getAutonomousCommand(AutoCourses.getBounce()));
+        AutoPoto.addOption("Slalom", getAutonomousCommand(AutoCourses.getSlalom()));
+
+        SmartDashboard.putData(AutoPoto);
+
+        
         feedforward = new SimpleMotorFeedforward(DriveConstants.ksVolts, DriveConstants.kvVoltSecondsPerMeter,
                 DriveConstants.kaVoltSecondsSquaredPerMeter);
         POVButton upButton = new POVButton(m_driverController, 0);
@@ -245,7 +253,10 @@ public class RobotContainer {
      *
      * @return the command to run in autonomous
      */
-    AutoPoto.setDefaultOption("Barrel Racer", getAutonomousCommand(AutoCourses.getBarrelRacer));
+
+    public Command WhatAuto() {
+        return AutoPoto.getSelected();
+    }
 
     public Command getAutonomousCommand(ArrayList<Trajectory> Course) {
         

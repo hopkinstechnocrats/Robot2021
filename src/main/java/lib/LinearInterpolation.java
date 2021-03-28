@@ -1,3 +1,5 @@
+package lib;
+
 import java.util.HashMap;
 
 public class LinearInterpolation {
