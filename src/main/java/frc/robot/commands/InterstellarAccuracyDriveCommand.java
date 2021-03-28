@@ -1,11 +1,13 @@
 package frc.robot.commands;
 
-import lib.DelayedSequentialCommandGroup;
+import edu.wpi.first.wpilibj2.command.CommandBase;
+import edu.wpi.first.wpilibj2.command.button.JoystickButton;
+import lib.DelayedSequentialCommandGroupFactory;
 
-public class InterstellarAccuracyDriveCommand extends DelayedSequentialCommandGroup {
-    public InterstellarAccuracyDriveCommand(DriveSubsystem subsystem) {
-        addCommands(
-            
+public class InterstellarAccuracyDriveCommand extends CommandBase {
+    public InterstellarAccuracyDriveCommand getInstance(JoystickButton waitButton) {
+        
+        return DelayedSequentialCommandGroupFactory.get(waitButton, 
         )
     }
 }

@@ -5,6 +5,7 @@
 package frc.robot;
 
 import edu.wpi.first.networktables.NetworkTableEntry;
+import edu.wpi.first.wpilibj.geometry.Translation2d;
 import edu.wpi.first.wpilibj.kinematics.DifferentialDriveKinematics;
 
 /**
@@ -72,7 +73,7 @@ public class Constants {
     public static Translation2d YellowZoneFeet = new Translation2d(15-DriveConstants.robotLengthFeet/2, 7.5);
     public static Translation2d BlueZoneFeet = new Translation2d(20-DriveConstants.robotLengthFeet/2, 7.5);
     public static Translation2d RedZoneFeet = new Translation2d(25-DriveConstants.robotLengthFeet/2, 7.5);
-    public static Translation2d ReintroductoryZone = new Translation2d(25+DriveConstants.robotLengthFeet/2, 7.5);
+    public static Translation2d ReintroductionZone = new Translation2d(25+DriveConstants.robotLengthFeet/2, 7.5);
 
   }
 
