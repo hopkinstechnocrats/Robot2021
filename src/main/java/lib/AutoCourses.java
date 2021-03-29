@@ -52,6 +52,8 @@ public class AutoCourses {
     private final Pose2d startBounce4 = new Pose2d(5.334, 1.676, new Rotation2d(Math.PI / 2));
     private static List<String> waypointBounce4Strings;
     private static List<String> waypointBounce3Strings;
+private TrajectoryConfig forwardConfig;
+private TrajectoryConfig reverseConfig;
 
     public AutoCourses() {
             // Create a voltage constraint to ensure we don't accelerate too fast
@@ -61,15 +63,14 @@ public class AutoCourses {
                             DriveConstants.kDriveKinematics, 10);
             BadLog.createValue("AutoConstants/MaxVoltage", "10");
 
-            // Create config for trajectory
-            final TrajectoryConfig forwardConfig = new TrajectoryConfig(AutoConstants.kMaxSpeedMetersPerSecond,
+            forwardConfig = new TrajectoryConfig(AutoConstants.kMaxSpeedMetersPerSecond,
                             AutoConstants.kMaxAccelerationMetersPerSecondSquared)
                                             // Add kinematics to ensure max speed is actually obeyed
                                             .setKinematics(DriveConstants.kDriveKinematics)
                                             // Apply the voltage constraint
                                             .addConstraint(autoVoltageConstraint);
 
-            final TrajectoryConfig reverseConfig = new TrajectoryConfig(AutoConstants.kMaxSpeedMetersPerSecond,
+            reverseConfig = new TrajectoryConfig(AutoConstants.kMaxSpeedMetersPerSecond,
                             AutoConstants.kMaxAccelerationMetersPerSecondSquared)
                                             // Add kinematics to ensure max speed is actually obeyed
                                             .setKinematics(DriveConstants.kDriveKinematics)
@@ -230,11 +231,46 @@ public class AutoCourses {
         Pose2d[][] endPoints = {
                 {
                         new Pose2d(Units.feetToMeters(InterstellarAccuracyConstants.GreenZoneFeet.getX()), Units.feetToMeters(InterstellarAccuracyConstants.GreenZoneFeet.getY()), new Rotation2d(0)),
-                        new Pose2d(Units.feetToMeters(InterstellarAccuracyConstants.GreenZoneFeet.getX()), Units.feetToMeters(InterstellarAccuracyConstants.GreenZoneFeet.getY()), new Rotation2d(0)),
+                        new Pose2d(Units.feetToMeters(InterstellarAccuracyConstants.ReintroductionZone.getX()), Units.feetToMeters(InterstellarAccuracyConstants.ReintroductionZone.getY()), new Rotation2d(0)),
+                },
+                {
+                        new Pose2d(Units.feetToMeters(InterstellarAccuracyConstants.ReintroductionZone.getX()), Units.feetToMeters(InterstellarAccuracyConstants.ReintroductionZone.getY()), new Rotation2d(0)),
+                        new Pose2d(Units.feetToMeters(InterstellarAccuracyConstants.YellowZoneFeet.getX()), Units.feetToMeters(InterstellarAccuracyConstants.YellowZoneFeet.getY()), new Rotation2d(0)),
+                },
+                {
+                        new Pose2d(Units.feetToMeters(InterstellarAccuracyConstants.YellowZoneFeet.getX()), Units.feetToMeters(InterstellarAccuracyConstants.YellowZoneFeet.getY()), new Rotation2d(0)),
+                        new Pose2d(Units.feetToMeters(InterstellarAccuracyConstants.ReintroductionZone.getX()), Units.feetToMeters(InterstellarAccuracyConstants.ReintroductionZone.getY()), new Rotation2d(0)),
+                },
+                {
+                        new Pose2d(Units.feetToMeters(InterstellarAccuracyConstants.ReintroductionZone.getX()), Units.feetToMeters(InterstellarAccuracyConstants.ReintroductionZone.getY()), new Rotation2d(0)),
+                        new Pose2d(Units.feetToMeters(InterstellarAccuracyConstants.BlueZoneFeet.getX()), Units.feetToMeters(InterstellarAccuracyConstants.BlueZoneFeet.getY()), new Rotation2d(0)),
+                },
+                {
+                        new Pose2d(Units.feetToMeters(InterstellarAccuracyConstants.BlueZoneFeet.getX()), Units.feetToMeters(InterstellarAccuracyConstants.BlueZoneFeet.getY()), new Rotation2d(0)),
+                        new Pose2d(Units.feetToMeters(InterstellarAccuracyConstants.ReintroductionZone.getX()), Units.feetToMeters(InterstellarAccuracyConstants.ReintroductionZone.getY()), new Rotation2d(0)),
+                },
+                {
+                        new Pose2d(Units.feetToMeters(InterstellarAccuracyConstants.ReintroductionZone.getX()), Units.feetToMeters(InterstellarAccuracyConstants.ReintroductionZone.getY()), new Rotation2d(0)),
+                        new Pose2d(Units.feetToMeters(InterstellarAccuracyConstants.RedZoneFeet.getX()), Units.feetToMeters(InterstellarAccuracyConstants.RedZoneFeet.getY()), new Rotation2d(0)),
+                },
+                {
+                        new Pose2d(Units.feetToMeters(InterstellarAccuracyConstants.RedZoneFeet.getX()), Units.feetToMeters(InterstellarAccuracyConstants.RedZoneFeet.getY()), new Rotation2d(0)),
+                        new Pose2d(Units.feetToMeters(InterstellarAccuracyConstants.ReintroductionZone.getX()), Units.feetToMeters(InterstellarAccuracyConstants.ReintroductionZone.getY()), new Rotation2d(0)),
+                },
+                {
+                        new Pose2d(Units.feetToMeters(InterstellarAccuracyConstants.ReintroductionZone.getX()), Units.feetToMeters(InterstellarAccuracyConstants.ReintroductionZone.getY()), new Rotation2d(0)),
+                        new Pose2d(Units.feetToMeters(InterstellarAccuracyConstants.RedZoneFeet.getX()), Units.feetToMeters(InterstellarAccuracyConstants.RedZoneFeet.getY()), new Rotation2d(0)),
                 }
         };
         return new ArrayList<Trajectory>(List.of(
-                
+                TrajectoryGenerator.generateTrajectory(endPoints[0][0], List.of(), endPoints[0][1], forwardConfig),
+                TrajectoryGenerator.generateTrajectory(endPoints[1][0], List.of(), endPoints[1][1], reverseConfig),
+                TrajectoryGenerator.generateTrajectory(endPoints[2][0], List.of(), endPoints[2][1], forwardConfig),
+                TrajectoryGenerator.generateTrajectory(endPoints[3][0], List.of(), endPoints[3][1], reverseConfig),
+                TrajectoryGenerator.generateTrajectory(endPoints[4][0], List.of(), endPoints[4][1], forwardConfig),
+                TrajectoryGenerator.generateTrajectory(endPoints[5][0], List.of(), endPoints[5][1], reverseConfig),
+                TrajectoryGenerator.generateTrajectory(endPoints[6][0], List.of(), endPoints[6][1], forwardConfig),
+                TrajectoryGenerator.generateTrajectory(endPoints[8][0], List.of(), endPoints[7][1], reverseConfig)
         ));
     }
 }
