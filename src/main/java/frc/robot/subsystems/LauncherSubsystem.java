@@ -8,6 +8,8 @@ import edu.wpi.first.networktables.NetworkTableEntry;
 import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.wpilibj.ADXRS450_Gyro;
 import edu.wpi.first.wpilibj.Encoder;
+import edu.wpi.first.wpilibj.controller.PIDController;
+
 import com.kauailabs.navx.frc.AHRS;
 import com.ctre.phoenix.music.Orchestra;
 
@@ -36,35 +38,34 @@ import java.util.ArrayList;
 public class LauncherSubsystem extends SubsystemBase {
   WPI_TalonFX master;
   WPI_TalonFX follower;
+  PIDController pidController;
 
   public LauncherSubsystem() {
     master = new WPI_TalonFX(LauncherConstants.Motor1CANID);
     follower = new WPI_TalonFX(LauncherConstants.Motor2CANID);
     follower.follow(master);
     follower.setInverted(true);
-    master.config_kP(0, LauncherConstants.kP, 10);
-    master.config_kI(0, LauncherConstants.kI, 10);
-    master.config_kD(0, LauncherConstants.kD, 10);
+    pidController = new PIDController(LauncherConstants.kP, LauncherConstants.kI, LauncherConstants.kD);
   }
 
   public void initializeLog() {
-      SlotConfiguration PIDConstants = new SlotConfiguration();
-      master.getSlotConfigs(PIDConstants, 0, 50);
-      BadLog.createValue("Launcher/kP", ""+PIDConstants.kP);
-      BadLog.createValue("Launcher/kD", ""+PIDConstants.kD);
-      BadLog.createTopic("Launcher/Target Velocity", "u/100ms", () -> master.getClosedLoopTarget(0));
-      BadLog.createTopic("Launcher/Error", "u/100ms", () -> master.getClosedLoopError(0));
-      BadLog.createTopic("Launcher/Launcher Velocity", "u/100ms", () -> master.getSelectedSensorVelocity(0));
-      BadLog.createValue("Launcher/kI", ""+PIDConstants.kI);
+      BadLog.createValue("Launcher/kP", ""+LauncherConstants.kP);
+      BadLog.createValue("Launcher/kD", ""+LauncherConstants.kD);
+      BadLog.createTopic("Launcher/Target Velocity", "rpm", () -> pidController.getSetpoint());
+      BadLog.createTopic("Launcher/Error", "rpm", () -> pidController.getPositionError());
+      BadLog.createTopic("Launcher/Launcher Velocity", "rpm", () -> master.getSelectedSensorPosition());
+      BadLog.createValue("Launcher/kI", ""+LauncherConstants.kI);
   }
 
 
-
+  // speed is in flywheel rpm
   public void spinLauncher(double speed) {
-    master.set(ControlMode.PercentOutput, speed);
+    double currentRPM = master.getSelectedSensorVelocity(0)/(600*LauncherConstants.kEncoderUnitsPerRevolution);
+    double motorVoltage = pidController.calculate(currentRPM, speed);
+    master.setVoltage(motorVoltage);
     follower.feed();
-    SmartDashboard.putNumber("Launcher/Target Velocity", master.getClosedLoopTarget(0));
-    SmartDashboard.putNumber("Launcher/Error", master.getClosedLoopError(0));
-    SmartDashboard.putNumber("Launcher/Launcher Velocity", master.getSelectedSensorVelocity(0));
+    SmartDashboard.putNumber("Launcher/Target Velocity", pidController.getSetpoint());
+    SmartDashboard.putNumber("Launcher/Error", pidController.getPositionError()); // Actually velocity error
+    SmartDashboard.putNumber("Launcher/Launcher Velocity", currentRPM);
   }
 }

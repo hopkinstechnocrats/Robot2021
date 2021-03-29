@@ -83,6 +83,7 @@ public class Constants {
       public static final double kI = 0.001;
       public static final double kD = 60;
       public static final double speed = 10000;
+      public static final double kEncoderUnitsPerRevolution = 100;
   }
 
   public static final class LimelightConstants {
