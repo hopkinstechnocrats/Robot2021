@@ -74,7 +74,6 @@ public class Constants {
     public static Translation2d BlueZoneFeet = new Translation2d(20-DriveConstants.robotLengthFeet/2, 7.5);
     public static Translation2d RedZoneFeet = new Translation2d(25-DriveConstants.robotLengthFeet/2, 7.5);
     public static Translation2d ReintroductionZone = new Translation2d(25+DriveConstants.robotLengthFeet/2, 7.5);
-
   }
 
   public static final class LauncherConstants {

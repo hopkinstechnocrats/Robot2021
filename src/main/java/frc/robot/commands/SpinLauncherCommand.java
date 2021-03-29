@@ -3,6 +3,7 @@ package frc.robot.commands;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.subsystems.LauncherSubsystem;
 import edu.wpi.first.networktables.NetworkTableInstance;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import lib.SpeedShot;
 import lib.Limelight;
 
@@ -27,14 +28,17 @@ public class SpinLauncherCommand extends CommandBase {
   }
 
   public void initialize() {
+    SmartDashboard.putNumber("LauncherSpeed", 10000);
       
   }
 
   public void execute() {
       // Get distance to target
-      double distanceToTarget = Limelight.getDistanceFromTarget();
+      // double distanceToTarget = Limelight.getDistanceFromTarget();
       // Calculate desired speed of launcher wheel
-      double desiredLauncherSpeed = m_speedShot.getLauncherDesiredSpeed(distanceToTarget);
+      // double desiredLauncherSpeed = m_speedShot.getLauncherDesiredSpeed(distanceToTarget);
+      double desiredLauncherSpeed = SmartDashboard.getNumber("LauncherSpeed", 10000);
+      System.out.println(desiredLauncherSpeed);
       // Send speed to launcher subsystem
       m_subsystem.spinLauncher(desiredLauncherSpeed);
   }

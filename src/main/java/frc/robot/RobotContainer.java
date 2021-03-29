@@ -137,9 +137,9 @@ public class RobotContainer {
         m_robotDrive.setDefaultCommand(
                 // A split-stick arcade command, with forward/backward controlled by the left
                 // hand, and turning controlled by the right.
-                new RunCommand(() -> m_robotDrive.tankDrivePercentOutput(0 // m_driverController.getY(GenericHID.Hand.kLeft),
-                        ,0 //m_driverController.getY(GenericHID.Hand.kRight))
-        ), m_robotDrive));
+                new RunCommand(() -> m_robotDrive.tankDrivePercentOutput(m_driverController.getY(GenericHID.Hand.kLeft),
+                        m_driverController.getY(GenericHID.Hand.kRight))
+        , m_robotDrive));
     }
 
   public void initializeAutoLog() {
@@ -227,8 +227,8 @@ public class RobotContainer {
         new JoystickButton(m_driverController, Button.kA.value)
                 .whileHeld(new RunCommand(() -> m_launcherSubsystem.spinLauncher(LauncherConstants.speed), m_launcherSubsystem));
 
-        new JoystickButton(m_driverController, Button.kX.value).
-            whileHeld(new SpinLauncherCommand(m_launcherSubsystem));
+        new JoystickButton(m_driverController, Button.kX.value)
+                .whileHeld(new SpinLauncherCommand(m_launcherSubsystem));
 
         // new JoystickButton(m_driverController, Button.kY.value)
         //         .whenPressed(new RunCommand(() -> m_robotDrive._Orchestra.play(), m_robotDrive));
