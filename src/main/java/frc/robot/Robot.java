@@ -83,7 +83,7 @@ public class Robot extends TimedRobot {
   @Override
   public void autonomousInit() {
     m_robotContainer.initializeAutoLog();
-    m_autonomousCommand = m_robotContainer.getAutonomousCommand();
+    m_autonomousCommand = m_robotContainer.WhatAuto();
     m_robotContainer.log.finishInitialization();
 
     maxAcceleration.getDouble(Constants.AutoConstants.kMaxAccelerationMetersPerSecondSquared);
