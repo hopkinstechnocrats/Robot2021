@@ -34,7 +34,9 @@ import edu.wpi.first.wpilibj.geometry.Pose2d;
 import edu.wpi.first.wpilibj.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.geometry.Translation2d;
 import edu.wpi.first.wpilibj.smartdashboard.Field2d;
+import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+
 import edu.wpi.first.wpilibj.trajectory.Trajectory;
 import edu.wpi.first.wpilibj.trajectory.TrajectoryConfig;
 import edu.wpi.first.wpilibj.trajectory.TrajectoryGenerator;
@@ -89,6 +91,7 @@ public class RobotContainer {
     public double finishAutoTime;
     public File logFile;
     public BufferedWriter logFileWriter;
+    public SendableChooser<Command> AutoPoto = new SendableChooser<>();
 
     NetworkTableInstance metaLogTableBIG = NetworkTableInstance.getDefault();
     NetworkTable metaLogTable = metaLogTableBIG.getTable("metaLog");
@@ -107,6 +110,14 @@ public class RobotContainer {
         this.startAutoTime = 0;
         // Configure the button bindings
         configureButtonBindings();
+        
+        AutoPoto.setDefaultOption("Barrel Racer", getAutonomousCommand(AutoCourses.getBarrelRacer()));
+        AutoPoto.addOption("Bounce Course", getAutonomousCommand(AutoCourses.getBounce()));
+        AutoPoto.addOption("Slalom", getAutonomousCommand(AutoCourses.getSlalom()));
+
+        SmartDashboard.putData(AutoPoto);
+
+        
         feedforward = new SimpleMotorFeedforward(DriveConstants.ksVolts, DriveConstants.kvVoltSecondsPerMeter,
                 DriveConstants.kaVoltSecondsSquaredPerMeter);
         POVButton upButton = new POVButton(m_driverController, 0);
@@ -254,12 +265,16 @@ public class RobotContainer {
      *
      * @return the command to run in autonomous
      */
-    public Command getAutonomousCommand() {
+
+    public Command WhatAuto() {
+        return AutoPoto.getSelected();
+    }
+
+    public Command getAutonomousCommand(ArrayList<Trajectory> Course) {
         
         ArrayList<Trajectory> exampleTrajectory = new ArrayList<Trajectory>();
-        AutoCourses autoCourses = new AutoCourses();
         
-        exampleTrajectory = autoCourses.getBarrelRacer();
+        exampleTrajectory = Course;
         BadLog.createTopicSubscriber("Drivetrain/Trajectory Pose X", "m", DataInferMode.DEFAULT, "join:Drivetrain/Robot Pose X");
         BadLog.createTopicSubscriber("Drivetrain/Trajectory Pose Y", "m", DataInferMode.DEFAULT, "join:Drivetrain/Robot Pose Y");
         BadLog.createTopicSubscriber("Drivetrain/Trajectory Pose Heading", "m", DataInferMode.DEFAULT, "join:Drivetrain/Robot Pose Heading");
