@@ -86,4 +86,8 @@ public class Constants {
     public static final int Motor1CANID = 7;
     public static final double SpeedMetersPerSecond = 2;
   }
+
+  public static final class IntakeConstants {
+    public static final int MotorCANID = 8;
+  }
 }
