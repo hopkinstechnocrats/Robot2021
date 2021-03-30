@@ -16,6 +16,7 @@ import edu.wpi.first.wpilibj.geometry.Pose2d;
 import edu.wpi.first.wpilibj.geometry.Translation2d;
 import edu.wpi.first.wpilibj.interfaces.Gyro;
 import lib.CustomDifferentialDriveOdometry;
+import lib.MotorFaultLogger;
 import edu.wpi.first.wpilibj.kinematics.DifferentialDriveOdometry;
 import edu.wpi.first.wpilibj.kinematics.DifferentialDriveWheelSpeeds;
 import edu.wpi.first.wpilibj.smartdashboard.Field2d;
@@ -60,7 +61,7 @@ public class DriveSubsystem extends SubsystemBase {
   public AHRS navX = new AHRS(SPI.Port.kMXP);
   public final Gyro m_gyro = navX;
 
-  Collection<TalonFX> _fxes = new ArrayList<TalonFX>();
+  static ArrayList<WPI_TalonFX> _fxes = new ArrayList<WPI_TalonFX>();
   private Field2d m_field;
   // Odometry class for tracking robot pose
   private final DifferentialDriveOdometry m_odometry;
@@ -70,10 +71,8 @@ public class DriveSubsystem extends SubsystemBase {
   NetworkTableEntry m_thetaEntry = NetworkTableInstance.getDefault().getTable("troubleshooting").getEntry("theta");
 
   private double maxSpeed;
-  Faults leftMasterFaults;
-  Faults rightMasterFaults;
-  Faults leftFollowerFaults;
-  Faults rightFollowerFaults;
+
+  public static ArrayList<String> Names;
 
   // ***********HAHAHAHA I MADE A COMMENT***************
   // Good Job!
@@ -82,9 +81,13 @@ public class DriveSubsystem extends SubsystemBase {
     // Sets the distance per pulse for the encoders
 
     _fxes.add(m_leftMotors);
+    Names.add("LeftMaster ");
     _fxes.add(m_leftFollower);
+    Names.add("LeftFollower ");
     _fxes.add(m_rightMotors);
+    Names.add("RightMaster ");
     _fxes.add(m_rightFollower);
+    Names.add("RightFollower ");
     resetEncoders();
     m_odometry = new DifferentialDriveOdometry(m_gyro.getRotation2d());
     m_rightFollower.follow(m_rightMotors);
@@ -94,18 +97,9 @@ public class DriveSubsystem extends SubsystemBase {
 
     ArrayList<TalonFX> _fxes = new ArrayList<>();
 
-    _fxes.add(m_leftMotors);
-    _fxes.add(m_leftFollower);
-    _fxes.add(m_rightMotors);
-    _fxes.add(m_rightFollower);
-
     _Orchestra = new Orchestra(_fxes);
 
     _Orchestra.loadMusic("Songs/MARIO.chrp");
-    leftMasterFaults = new Faults();
-    rightMasterFaults = new Faults();
-    leftFollowerFaults = new Faults();
-    rightFollowerFaults = new Faults();
 
   }
   
@@ -128,79 +122,7 @@ public class DriveSubsystem extends SubsystemBase {
   }
 
   public String getMotorFaultsStr() {
-    Faults prevLeftMasterFaults = leftMasterFaults;
-    Faults prevRightMasterFaults = rightMasterFaults;
-    Faults prevLeftFollowerFaults = leftFollowerFaults;
-    Faults prevRightFollowerFaults = rightFollowerFaults;
-    m_leftMotors.getFaults(leftMasterFaults);
-    m_rightMotors.getFaults(rightMasterFaults);
-    m_leftFollower.getFaults(leftFollowerFaults);
-    m_rightFollower.getFaults(rightFollowerFaults);
-    String leftMasterFaultsStr = convertFaultToStr(leftMasterFaults);
-    String rightMasterFaultsStr = convertFaultToStr(rightMasterFaults);
-    String leftFollowerFaultsStr = convertFaultToStr(leftFollowerFaults);
-    String rightFollowerFaultsStr = convertFaultToStr(rightFollowerFaults);
-    String returnStr = "";
-    if (leftMasterFaultsStr != "") {
-      returnStr += "{leftMaster: "+leftMasterFaultsStr+"}";
-    }
-    if (rightMasterFaultsStr != "") {
-      returnStr += "{rightMaster: "+rightMasterFaultsStr+"}";
-    }
-    if (leftFollowerFaultsStr != "") {
-      returnStr += "{leftFollower: "+leftFollowerFaultsStr+"}";
-    }
-    if (rightFollowerFaultsStr != "") {
-      returnStr += "{rightFollower: "+rightFollowerFaultsStr+"}";
-    }
-    return returnStr;
-  }
-
-  String convertFaultToStr(Faults motorFaults) {
-    String returnStr = "";
-    if (motorFaults.APIError) {
-      returnStr += "APIError, ";
-    }
-    if (motorFaults.ForwardLimitSwitch) {
-      returnStr += "ForwardLimitSwitch, ";
-    }
-    if (motorFaults.ForwardSoftLimit) {
-      returnStr += "ForwardSoftLimit, ";
-    }
-    if (motorFaults.HardwareESDReset) {
-      returnStr += "HardwareESDReset, ";
-    }
-    if (motorFaults.HardwareFailure) {
-      returnStr += "HardwareFailure, ";
-    }
-    if (motorFaults.RemoteLossOfSignal) {
-      returnStr += "RemoteLossOfSignal, ";
-    }
-    if (motorFaults.ResetDuringEn) {
-      returnStr += "ResetDuringEn, ";
-    }
-    if (motorFaults.ReverseLimitSwitch) {
-      returnStr += "ReverseLimitSwitch, ";
-    }
-    if (motorFaults.ReverseSoftLimit) {
-      returnStr += "ReverseSoftLimit, ";
-    }
-    if (motorFaults.SensorOutOfPhase) {
-      returnStr += "SensorOutOfPhase, ";
-    }
-    if (motorFaults.SensorOverflow) {
-      returnStr += "SensorOverflow, ";
-    }
-    if (motorFaults.SupplyOverV) {
-      returnStr += "SupplyOverV, ";
-    }
-    if (motorFaults.SupplyUnstable) {
-      returnStr += "SupplyUnstable, ";
-    }
-    if (motorFaults.UnderVoltage) {
-      returnStr += "UnderVoltage, ";
-    }
-    return returnStr;
+    return MotorFaultLogger.Logger(_fxes, Names);
   }
 
   /**

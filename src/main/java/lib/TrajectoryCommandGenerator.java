@@ -42,7 +42,7 @@ public class TrajectoryCommandGenerator {
     public static final TrajectoryConfig config = new TrajectoryConfig(AutoConstants.kMaxSpeedMetersPerSecond, AutoConstants.kMaxAccelerationMetersPerSecondSquared).setKinematics(DriveConstants.kDriveKinematics)
     .addConstraint(autoVoltageConstraint);
 
-    public static List<RamseteCommand> getTrajectoryCommand(List<Trajectory> exampleTrajectory,
+    public static ArrayList<RamseteCommand> getTrajectoryCommand(List<Trajectory> exampleTrajectory,
             DriveSubsystem robotDrive, PIDController leftPIDController, PIDController rightPIDController) {
         ArrayList<RamseteCommand> RamseteCommandList = new ArrayList<RamseteCommand>();
         for (Trajectory trajectory : exampleTrajectory) {
