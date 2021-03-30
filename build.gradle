@@ -61,6 +61,8 @@ dependencies {
     compile "com.github.dominikWin:badlog:v0.1.1"
 
     testImplementation 'junit:junit:4.12'
+    implementation 'com.fasterxml.jackson.core:jackson-databind:2.10.0'
+
 
     // Enable simulation gui support. Must check the box in vscode to enable support
     // upon debugging
