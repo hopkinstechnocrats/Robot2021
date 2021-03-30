@@ -27,7 +27,7 @@ import frc.robot.subsystems.DriveSubsystem;
 import frc.robot.subsystems.IntakeSubsystem;
 import frc.robot.subsystems.LauncherSubsystem;
 import frc.robot.subsystems.PreLaunchSubsystem;
-import frc.robot.commands.InterstellarAccuracyDriveCommand;
+// import frc.robot.commands.InterstellarAccuracyDriveCommand;
 import frc.robot.commands.SpinLauncherCommand;
 import lib.AutoCourses;
 import lib.TrajectoryCommandGenerator;
@@ -80,8 +80,8 @@ import badlog.lib.DataInferMode;
  */
 public class RobotContainer {
     // The robot's subsystems
-    public final PreLaunchSubsystem m_PreLaunch = new PreLaunchSubsystem();
-    public final DriveSubsystem m_robotDrive = new DriveSubsystem();
+        public final PreLaunchSubsystem m_PreLaunch = new PreLaunchSubsystem();
+    public final DriveSubsystem m_robotDrive;
     public final LauncherSubsystem m_launcherSubsystem = new LauncherSubsystem();
     public final IntakeSubsystem m_intakeSubsystem = new IntakeSubsystem();
     public BadLog log;
@@ -111,7 +111,11 @@ public class RobotContainer {
         this.startAutoTime = 0;
         // Configure the button bindings
         configureButtonBindings();
-        
+        m_robotDrive = new DriveSubsystem();
+        initializeAutoLog();
+        leftPIDController = new PIDController(DriveConstants.kPDriveVel, 0, 0);
+        rightPIDController = new PIDController(DriveConstants.kPDriveVel, 0, 0);
+        new AutoCourses();
         AutoPoto.setDefaultOption("Barrel Racer", getAutonomousCommand(AutoCourses.getBarrelRacer()));
         AutoPoto.addOption("Bounce Course", getAutonomousCommand(AutoCourses.getBounce()));
         AutoPoto.addOption("Slalom", getAutonomousCommand(AutoCourses.getSlalom()));
@@ -142,8 +146,7 @@ public class RobotContainer {
         m_robotDrive.setMaxSpeed(.6);
 
         feedforward = new SimpleMotorFeedforward(DriveConstants.ksVolts, DriveConstants.kvVoltSecondsPerMeter);
-        leftPIDController = new PIDController(DriveConstants.kPDriveVel, 0, 0);
-        rightPIDController = new PIDController(DriveConstants.kPDriveVel, 0, 0);
+        
         // Configure default commands
         // Set the default drive command to split-stick arcade drive
         m_robotDrive.setDefaultCommand(
@@ -152,6 +155,7 @@ public class RobotContainer {
                 new RunCommand(() -> m_robotDrive.tankDrivePercentOutput(m_driverController.getY(GenericHID.Hand.kLeft),
                         m_driverController.getY(GenericHID.Hand.kRight))
         , m_robotDrive));
+
     }
 
   public void initializeAutoLog() {
@@ -260,8 +264,8 @@ public class RobotContainer {
         new JoystickButton(m_driverController, Button.kBumperRight.value)
             .whenPressed(new InstantCommand(() -> {m_intakeSubsystem.toggle(); System.out.println("RUNNING INTAKE DEPLOY COMMAND");}));
             
-        JoystickButton xButton = new JoystickButton(m_driverController, Button.kBumperLeft.value);
-        xButton.whenPressed(InterstellarAccuracyDriveCommand.getInstance(xButton, m_robotDrive, leftPIDController, rightPIDController));
+        // JoystickButton xButton = new JoystickButton(m_driverController, Button.kBumperLeft.value);
+        // xButton.whenPressed(InterstellarAccuracyDriveCommand.getInstance(xButton, m_robotDrive, leftPIDController, rightPIDController));
     }
 
     /**
