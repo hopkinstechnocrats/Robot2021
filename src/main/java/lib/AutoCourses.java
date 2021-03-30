@@ -32,6 +32,10 @@ public class AutoCourses {
     public Trajectory bounceCourse3;
     public Trajectory bounceCourse4;
     public Trajectory bounceCourse;
+    public static Trajectory GSCARed;
+    public static Trajectory GSCABlue;
+    public static Trajectory GSCBRed;
+    public static Trajectory GSCBBlue;
     private final static Pose2d startSlalom = new Pose2d(0, -1.524, new Rotation2d(0));
     private final static Pose2d finishSlalom = new Pose2d(-1, 0.3, new Rotation2d(Math.PI));
     private final static Pose2d finishBarrel = new Pose2d(Units.feetToMeters(-1.64), Units.feetToMeters(0),
@@ -186,6 +190,29 @@ public class AutoCourses {
                             finishBounce4,
                             // Pass config
                             reverseConfig);
+            // GSC A Red
+            final Pose2d GSCARedStart = new Pose2d(Units.feetToMeters(1.25), Units.feetToMeters(7.5), new Rotation2d(0));
+            final Pose2d GSCARedFinish = new Pose2d(Units.feetToMeters(28.75), Units.feetToMeters(7.5), new Rotation2d(0));
+            final List<Translation2d> waypointsGSCARedFeet = List.of(
+                new Translation2d(7.5, 7.5),
+                new Translation2d(12.5, 5),
+                new Translation2d(15, 12.5)
+            ); // Used Autonav Waypoint Calculator Sheet
+
+            final List<Translation2d> waypointsGSCARed = waypointsBarrelFeet.stream()
+                            .map((o) -> new Translation2d(Units.feetToMeters(o.getX()), Units.feetToMeters(o.getY())))
+                            .collect(Collectors.toList());
+            // An example trajectory to follow. All units in meters.
+            GSCARed = TrajectoryGenerator.generateTrajectory(
+                            // Start at the origin facing the +X direction
+                            GSCARedStart,
+                            // Pass through these two interior waypoints, making an 's' curve path
+                            waypointsGSCARed,
+                            // End 3 meters straight ahead of where we started, facing forward
+                            GSCARedFinish,
+                            // Pass config
+                            forwardConfig);
+
     }
 
     public static ArrayList<Trajectory> getBarrelRacer() {
