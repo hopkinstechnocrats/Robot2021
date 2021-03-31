@@ -67,12 +67,10 @@ public class DriveSubsystem extends SubsystemBase implements Loggable {
      */
     public DriveSubsystem() {
         // Sets the distance per pulse for the encoders
-        HashMap<String, BaseMotorController> motors = new HashMap<String, BaseMotorController>();
-        motors.put("LeftMaster", m_leftMaster);
-        motors.put("LeftFollower", m_leftFollower);
-        motors.put("RightMaster", m_rightMaster);
-        motors.put("RightFollower", m_rightFollower);
-        MotorFaultLogger.getInstance().add(motors);
+        MotorFaultLogger.getInstance().add("LeftMaster", m_leftMaster);
+        MotorFaultLogger.getInstance().add("LeftFollower", m_leftFollower);
+        MotorFaultLogger.getInstance().add("RightMaster", m_rightMaster);
+        MotorFaultLogger.getInstance().add("RightFollower", m_rightFollower);
         resetEncoders();
         m_odometry = new DifferentialDriveOdometry(m_gyro.getRotation2d());
         m_rightFollower.follow(m_rightMaster);
@@ -128,7 +126,7 @@ public class DriveSubsystem extends SubsystemBase implements Loggable {
     }
 
     public void logPeriodic() {
-        return;
+
     }
 
     public void customPeriodic() {

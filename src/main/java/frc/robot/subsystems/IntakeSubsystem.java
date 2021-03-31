@@ -4,6 +4,7 @@ import com.ctre.phoenix.motorcontrol.can.WPI_TalonFX;
 import edu.wpi.first.wpilibj.Solenoid;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.IntakeConstants;
+import lib.MotorFaultLogger;
 
 public class IntakeSubsystem extends SubsystemBase {
     WPI_TalonFX Motor;
@@ -14,6 +15,7 @@ public class IntakeSubsystem extends SubsystemBase {
         Motor = new WPI_TalonFX(IntakeConstants.MotorCANID);
         solenoid = new Solenoid(0);
         isDeployed = false;
+        MotorFaultLogger.getInstance().add("IntakeMotor", Motor);
     }
 
     @Override
