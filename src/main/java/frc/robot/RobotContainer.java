@@ -21,13 +21,12 @@ import edu.wpi.first.wpilibj2.command.button.POVButton;
 import frc.robot.Constants.LauncherConstants;
 import frc.robot.Constants.OIConstants;
 import frc.robot.commands.AutoNavCommand;
+import frc.robot.commands.GalacticSearchCommand;
 import frc.robot.commands.SpinLauncherCommand;
-import frc.robot.subsystems.DriveSubsystem;
-import frc.robot.subsystems.IntakeSubsystem;
-import frc.robot.subsystems.LauncherSubsystem;
-import frc.robot.subsystems.PreLaunchSubsystem;
+import frc.robot.subsystems.*;
 import lib.Loggable;
 import lib.LoggableCommand;
+import lib.MotorFaultLogger;
 
 import java.io.BufferedWriter;
 import java.io.File;
@@ -37,6 +36,7 @@ import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.List;
 
+import static edu.wpi.first.networktables.NetworkTableInstance.*;
 import static edu.wpi.first.wpilibj.XboxController.Button;
 
 // import frc.robot.commands.InterstellarAccuracyDriveCommand;
@@ -57,20 +57,20 @@ public class RobotContainer {
      */
     static double speed = 1;
     // The robot's subsystems
-    public final PreLaunchSubsystem m_PreLaunch = new PreLaunchSubsystem();
+    public final PreLaunchSubsystem m_PreLaunch;
     public final DriveSubsystem m_robotDrive;
-    public final LauncherSubsystem m_launcherSubsystem = new LauncherSubsystem();
-    public final IntakeSubsystem m_intakeSubsystem = new IntakeSubsystem();
+    public final LauncherSubsystem m_launcherSubsystem;
+    public final IntakeSubsystem m_intakeSubsystem;
     private final SendableChooser<LoggableCommand> autoChooser;
+    private final PDPSubsystem m_PDPSubsystem;
     public BadLog log;
     public File logFile;
     public BufferedWriter logFileWriter;
     // The driver's controller
     XboxController m_driverController = new XboxController(OIConstants.kDriverControllerPort);
-    private PowerDistributionPanel PDP;
     private List<Loggable> loggables;
-    private NetworkTable metaLogTable;
-    private NetworkTableEntry TimeStamp;
+    private final NetworkTable metaLogTable = getDefault().getTable("metaLog");
+    private final NetworkTableEntry TimeStamp = metaLogTable.getEntry("timeStamp");
 
     /**
      * The container for the robot. Contains subsystems, OI devices, and commands.
@@ -80,13 +80,24 @@ public class RobotContainer {
         configureButtonBindings();
         autoChooser = new SendableChooser<LoggableCommand>();
         m_robotDrive = new DriveSubsystem();
+        m_launcherSubsystem = new LauncherSubsystem();
+        m_intakeSubsystem = new IntakeSubsystem();
+        m_PreLaunch = new PreLaunchSubsystem();
+        m_PDPSubsystem = new PDPSubsystem();
         autoChooser.setDefaultOption("Barrel Racer", new AutoNavCommand(m_robotDrive, "BarrelRacer"));
         autoChooser.addOption("Bounce Course", new AutoNavCommand(m_robotDrive, "BouncePath"));
         autoChooser.addOption("Slalom", new AutoNavCommand(m_robotDrive, "Slalom"));
+        autoChooser.addOption("GSCARed", new GalacticSearchCommand(m_robotDrive, m_intakeSubsystem, "GSAR"));
+        autoChooser.addOption("GSCABlue", new GalacticSearchCommand(m_robotDrive, m_intakeSubsystem, "GSAB"));
+        autoChooser.addOption("GSCBRed", new GalacticSearchCommand(m_robotDrive, m_intakeSubsystem, "GSBR"));
+        autoChooser.addOption("GSCBBlue", new GalacticSearchCommand(m_robotDrive, m_intakeSubsystem, "GSBB"));
+
 
         SmartDashboard.putData(autoChooser);
-        metaLogTable = NetworkTableInstance.getDefault().getTable("metaLog");
-        TimeStamp = metaLogTable.getEntry("timeStamp");
+        loggables.add(m_launcherSubsystem);
+        loggables.add(m_robotDrive);
+        loggables.add(MotorFaultLogger.getInstance());
+        loggables.add(m_PDPSubsystem);
     }
 
     public void initializeLog() {

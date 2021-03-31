@@ -67,8 +67,8 @@ public class MotorFaultLogger extends LoggableBase {
         return returnStr;
     }
 
-    public void add(Map<String, BaseMotorController> motors) {
-        this.motors.putAll(motors);
+    public void add(String name, BaseMotorController motor) {
+        this.motors.put(name, motor);
     }
 
     @Override
