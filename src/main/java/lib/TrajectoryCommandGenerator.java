@@ -15,6 +15,8 @@ import edu.wpi.first.wpilibj.trajectory.TrajectoryConfig;
 import edu.wpi.first.wpilibj.trajectory.TrajectoryGenerator;
 import edu.wpi.first.wpilibj.trajectory.constraint.DifferentialDriveVoltageConstraint;
 import edu.wpi.first.wpilibj.util.Units;
+import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.InstantCommand;
 import frc.robot.Constants.AutoConstants;
 import frc.robot.Constants.DriveConstants;
 import frc.robot.subsystems.DriveSubsystem;
@@ -37,9 +39,9 @@ public class TrajectoryCommandGenerator {
     public static final TrajectoryConfig config = new TrajectoryConfig(AutoConstants.kMaxSpeedMetersPerSecond, AutoConstants.kMaxAccelerationMetersPerSecondSquared).setKinematics(DriveConstants.kDriveKinematics)
             .addConstraint(autoVoltageConstraint);
 
-    public static List<RamseteCommand> getTrajectoryCommand(List<Trajectory> exampleTrajectory,
-                                                            DriveSubsystem robotDrive, PIDController leftPIDController, PIDController rightPIDController) {
-        ArrayList<RamseteCommand> RamseteCommandList = new ArrayList<RamseteCommand>();
+    public static List<Command> getTrajectoryCommand(List<Trajectory> exampleTrajectory,
+                                                     DriveSubsystem robotDrive, PIDController leftPIDController, PIDController rightPIDController) {
+        ArrayList<Command> RamseteCommandList = new ArrayList<Command>();
         for (Trajectory trajectory : exampleTrajectory) {
             RamseteCommand ramseteCommand = new RamseteCommand(trajectory, robotDrive::getPose,
                     new RamseteController(AutoConstants.kRamseteB, AutoConstants.kRamseteZeta),
@@ -52,11 +54,13 @@ public class TrajectoryCommandGenerator {
 
             RamseteCommandList.add(ramseteCommand);
         }
+        Command resetOdometryCommand = new InstantCommand(() -> robotDrive.resetOdometry(exampleTrajectory.get(0).getInitialPose()));
+        RamseteCommandList.add(resetOdometryCommand);
 
         return RamseteCommandList;
     }
 
-    public static List<RamseteCommand> getTrajectoryCommand(String trajectoryName, DriveSubsystem robotDrive, PIDController leftPIDController, PIDController rightPIDController) {
+    public static List<Command> getTrajectoryCommand(String trajectoryName, DriveSubsystem robotDrive, PIDController leftPIDController, PIDController rightPIDController) {
         Path trajectoryPath = Filesystem.getDeployDirectory().toPath().resolve("Paths/" + trajectoryName + ".json");
         String trajectoryInfo = "";
         try {
