@@ -3,8 +3,7 @@
         "start": {
             "x": 5,
             "y": 2.5,
-            "theta": 0,
-            "Reversed": "False" 
+            "theta": 0 
         },
         "finish": {
             "x": 1,
@@ -26,6 +25,7 @@
             [10, 2.5],
             [7.5, 5],
             [5, 8.5]
-        ]
+        ],
+        "reversed": false
     }
 ]
