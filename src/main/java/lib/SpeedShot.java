@@ -7,11 +7,11 @@ public class SpeedShot {
     public static HashMap<Double, Double> speedMap = new HashMap<Double, Double>();
 
     public SpeedShot() {
-        
-    speedMap.put(10.0,2.0);//Distance, Speed
+
+        speedMap.put(10.0, 2.0);//Distance, Speed
     }
 
-    public double getLauncherDesiredSpeed(double distance){
+    public double getLauncherDesiredSpeed(double distance) {
         speed = LinearInterpolation.getLinearInterpolation(speedMap, distance);
         return speed;
     }

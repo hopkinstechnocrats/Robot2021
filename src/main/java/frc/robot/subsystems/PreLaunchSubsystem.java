@@ -1,15 +1,10 @@
 package frc.robot.subsystems;
 
-import javax.sound.midi.VoiceStatus;
-
-import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonFX;
-
-import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.PreLaunchConstants;
 
-public class PreLaunchSubsystem extends SubsystemBase{
+public class PreLaunchSubsystem extends SubsystemBase {
     WPI_TalonFX Motor1;
 
     public PreLaunchSubsystem() {
