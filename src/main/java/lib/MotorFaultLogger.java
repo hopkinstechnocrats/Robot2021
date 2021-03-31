@@ -4,6 +4,7 @@ import badlog.lib.BadLog;
 import com.ctre.phoenix.motorcontrol.Faults;
 import com.ctre.phoenix.motorcontrol.can.BaseMotorController;
 
+import java.util.HashMap;
 import java.util.Map;
 
 public class MotorFaultLogger extends LoggableBase {
@@ -17,6 +18,10 @@ public class MotorFaultLogger extends LoggableBase {
             instance = new MotorFaultLogger();
         }
         return instance;
+    }
+
+    public MotorFaultLogger() {
+        motors = new HashMap<String, BaseMotorController>();
     }
 
     static String convertFaultToStr(Faults motorFaults) {

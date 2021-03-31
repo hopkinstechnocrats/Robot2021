@@ -77,7 +77,6 @@ public class RobotContainer {
      */
     public RobotContainer() {
         // Configure the button bindings
-        configureButtonBindings();
         autoChooser = new SendableChooser<LoggableCommand>();
         m_robotDrive = new DriveSubsystem();
         m_launcherSubsystem = new LauncherSubsystem();
@@ -98,6 +97,8 @@ public class RobotContainer {
         loggables.add(m_robotDrive);
         loggables.add(MotorFaultLogger.getInstance());
         loggables.add(m_PDPSubsystem);
+        configureButtonBindings();
+
     }
 
     public void initializeLog() {
