@@ -3,8 +3,7 @@
         "start": {
             "x": 5,
             "y": 7.5,
-            "theta": 0,
-            "Reversed": "False" 
+            "theta": 0 
         },
         "finish": {
             "x": 10,
@@ -13,14 +12,14 @@
         },
         "waypoints": [
             [7.5, 10]
-        ]
+        ],
+        "reversed": false
     },
     {
         "start": {
             "x": 10,
             "y": 13,
-            "theta": 90,
-            "Reversed": "True"
+            "theta": 90
         },
         "finish": {
             "x": 15,
@@ -32,14 +31,14 @@
             [10, 5],
             [12.5, 2.75],
             [15, 5]
-        ]
+        ],
+        "reversed": true
     },
     {
         "start": {
             "x": 15,
             "y": 13,
-            "theta": -90,
-            "Reversed": "False" 
+            "theta": -90 
         },
         "finish": {
             "x": 22.5,
@@ -51,14 +50,14 @@
             [17.5, 2.75],
             [20, 2.75],
             [22.5, 5]
-        ]
+        ],
+        "reversed": false
     },
     {
         "start": {
             "x": 22.5,
             "y": 13,
-            "theta": 90,
-            "Reversed": "True" 
+            "theta": 90 
         },
         "finish": {
             "x": 28.25,
@@ -68,6 +67,7 @@
         "waypoints": [
             [22.5, 5],
             [25, 8.5]
-        ]
+        ],
+        "reversed": true
     }
 ]
