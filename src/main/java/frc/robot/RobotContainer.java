@@ -33,6 +33,7 @@ import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
 
@@ -77,6 +78,7 @@ public class RobotContainer {
      */
     public RobotContainer() {
         // Configure the button bindings
+        loggables = new ArrayList<Loggable>();
         autoChooser = new SendableChooser<LoggableCommand>();
         m_robotDrive = new DriveSubsystem();
         m_launcherSubsystem = new LauncherSubsystem();

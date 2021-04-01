@@ -22,6 +22,7 @@ public class MotorFaultLogger extends LoggableBase {
 
     public MotorFaultLogger() {
         motors = new HashMap<String, BaseMotorController>();
+        faults = new Faults();
     }
 
     static String convertFaultToStr(Faults motorFaults) {
