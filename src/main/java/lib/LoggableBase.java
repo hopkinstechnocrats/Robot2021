@@ -5,7 +5,4 @@ public abstract class LoggableBase implements Loggable {
 
     }
 
-    public void logPeriodic() {
-
-    }
 }

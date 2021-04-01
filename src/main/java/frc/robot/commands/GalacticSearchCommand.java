@@ -18,13 +18,13 @@ import java.util.List;
 public class GalacticSearchCommand extends ParallelDeadlineGroup implements LoggableCommand {
     double startAutoTime;
     double finishAutoTime;
+    final String pathName;
 
     public GalacticSearchCommand(DriveSubsystem subsystem, IntakeSubsystem intake, String pathName) {
-        super(new InstantCommand(() -> {
-            return;
+        super(new RunCommand(() -> {
         }), new InstantCommand(() -> {
-            return;
         }));
+        this.pathName = pathName;
         NetworkTable metaLogTable = NetworkTableInstance.getDefault().getTable("metaLog");
         NetworkTableEntry TimeStamp = metaLogTable.getEntry("timeStamp");
         NetworkTableEntry ElapsedAutoTime = metaLogTable.getEntry("elapsedAutoTime");
@@ -40,17 +40,15 @@ public class GalacticSearchCommand extends ParallelDeadlineGroup implements Logg
             SmartDashboard.putNumber("Elapsed Auto Time", elapsedTime);
         }, subsystem);
         Command spinIntake = new RunCommand(() -> intake.spin(1));
-        setDeadline(new SequentialCommandGroup(startClockCommand, new SequentialCommandGroup(driveCommands.toArray(new Command[driveCommands.size()])), stopClockCommand));
+        setDeadline(new SequentialCommandGroup(startClockCommand, new SequentialCommandGroup(driveCommands.toArray(new Command[0])), stopClockCommand));
         addCommands(spinIntake);
     }
 
     public void logInit() {
+        BadLog.createValue("Path Name", pathName);
         BadLog.createTopicSubscriber("Drivetrain/Trajectory Pose X", "m", DataInferMode.DEFAULT, "join:Drivetrain/Robot Pose X");
         BadLog.createTopicSubscriber("Drivetrain/Trajectory Pose Y", "m", DataInferMode.DEFAULT, "join:Drivetrain/Robot Pose Y");
         BadLog.createTopicSubscriber("Drivetrain/Trajectory Pose Heading", "m", DataInferMode.DEFAULT, "join:Drivetrain/Robot Pose Heading");
     }
 
-    public void logPeriodic() {
-
-    }
 }

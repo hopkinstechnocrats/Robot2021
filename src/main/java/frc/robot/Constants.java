@@ -4,7 +4,6 @@
 
 package frc.robot;
 
-import edu.wpi.first.wpilibj.geometry.Translation2d;
 import edu.wpi.first.wpilibj.kinematics.DifferentialDriveKinematics;
 
 /**
@@ -23,11 +22,6 @@ public class Constants {
         public static final int kRightMotor2Port = 4;
 
 
-        public static final int[] kLeftEncoderPorts = new int[]{0, 1};
-        public static final int[] kRightEncoderPorts = new int[]{2, 3};
-        public static final boolean kLeftEncoderReversed = false;
-        public static final boolean kRightEncoderReversed = false;
-
         public static final double kTrackwidthMeters = 0.55;
         public static final DifferentialDriveKinematics kDriveKinematics =
                 new DifferentialDriveKinematics(kTrackwidthMeters);
@@ -37,7 +31,7 @@ public class Constants {
         public static final double kWheelDiameterMeters = 0.15;
         public static final double kEncoderDistancePerPulse =
                 // Assumes the encoders are directly mounted on the wheel shafts
-                (kWheelDiameterMeters * Math.PI) / (double) (kEncoderCPR * kGearRatio);
+                (kWheelDiameterMeters * Math.PI) / (kEncoderCPR * kGearRatio);
 
         // These are example values only - DO NOT USE THESE FOR YOUR OWN ROBOT!
         // These characterization values MUST be determined either experimentally or theoretically
@@ -51,7 +45,7 @@ public class Constants {
         // Example value only - as above, this must be tuned for your drive!
         public static final double kPDriveVel = 1.9;
         public static final double kDDriveVel = 0;
-        public static final double robotLengthFeet = 35 / 12;
+        public static final double robotLengthFeet = 35d / 12d;
     }
 
     public static final class OIConstants {
@@ -62,16 +56,8 @@ public class Constants {
         // Reasonable baseline values for a RAMSETE follower in units of meters and seconds
         public static final double kRamseteB = 2;
         public static final double kRamseteZeta = 0.7;
-        public static double kMaxSpeedMetersPerSecond = 1.5;
-        public static double kMaxAccelerationMetersPerSecondSquared = 1;
-    }
-
-    public static final class InterstellarAccuracyConstants {
-        public static Translation2d GreenZoneFeet = new Translation2d(10 - DriveConstants.robotLengthFeet / 2, 7.5);
-        public static Translation2d YellowZoneFeet = new Translation2d(15 - DriveConstants.robotLengthFeet / 2, 7.5);
-        public static Translation2d BlueZoneFeet = new Translation2d(20 - DriveConstants.robotLengthFeet / 2, 7.5);
-        public static Translation2d RedZoneFeet = new Translation2d(25 - DriveConstants.robotLengthFeet / 2, 7.5);
-        public static Translation2d ReintroductionZone = new Translation2d(25 + DriveConstants.robotLengthFeet / 2, 7.5);
+        public static final double kMaxSpeedMetersPerSecond = 1.5;
+        public static final double kMaxAccelerationMetersPerSecondSquared = 1;
     }
 
     public static final class LauncherConstants {
@@ -93,7 +79,6 @@ public class Constants {
 
     public static final class PreLaunchConstants {
         public static final int Motor1CANID = 7;
-        public static final double SpeedMetersPerSecond = 2;
     }
 
     public static final class IntakeConstants {

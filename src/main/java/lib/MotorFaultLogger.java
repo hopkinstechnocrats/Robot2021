@@ -9,9 +9,8 @@ import java.util.Map;
 
 public class MotorFaultLogger extends LoggableBase {
     private static MotorFaultLogger instance;
-    private String Faultss;
-    private Faults faults;
-    private Map<String, BaseMotorController> motors;
+    private final Faults faults;
+    private final Map<String, BaseMotorController> motors;
 
     public static MotorFaultLogger getInstance() {
         if (instance == null) {
@@ -21,7 +20,7 @@ public class MotorFaultLogger extends LoggableBase {
     }
 
     public MotorFaultLogger() {
-        motors = new HashMap<String, BaseMotorController>();
+        motors = new HashMap<>();
         faults = new Faults();
     }
 
@@ -83,15 +82,16 @@ public class MotorFaultLogger extends LoggableBase {
     }
 
     public String logPeriodicCallBack() {
+        StringBuilder FaultsStringAll = new StringBuilder();
         for (String key : motors.keySet()) {
             BaseMotorController Talon = motors.get(key);
             Talon.getFaults(faults);
             String FaultsString = convertFaultToStr(faults);
-            if (FaultsString != "") {
-                Faultss += "{" + key + ": " + FaultsString + "}";
+            if (!FaultsString.equals("")) {
+                FaultsStringAll.append("{").append(key).append(": ").append(FaultsString).append("}");
             }
         }
-        return Faultss;
+        return FaultsStringAll.toString();
     }
 }
 

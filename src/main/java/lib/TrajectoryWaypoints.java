@@ -1,8 +1,8 @@
 package lib;
 
 public class TrajectoryWaypoints {
-    PoseInfo start;
-    PoseInfo finish;
+    final PoseInfo start;
+    final PoseInfo finish;
     double[][] waypoints;
     boolean reversed;
 

@@ -7,10 +7,8 @@ package frc.robot;
 import badlog.lib.BadLog;
 import edu.wpi.first.networktables.NetworkTable;
 import edu.wpi.first.networktables.NetworkTableEntry;
-import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.GenericHID;
-import edu.wpi.first.wpilibj.PowerDistributionPanel;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -49,6 +47,7 @@ import static edu.wpi.first.wpilibj.XboxController.Button;
  * scheduler calls). Instead, the structure of the robot (including subsystems,
  * commands, and button mappings) should be declared here.
  */
+@SuppressWarnings("SpellCheckingInspection")
 public class RobotContainer {
     /**
      * Use this method to define your button->command mappings. Buttons can be
@@ -63,13 +62,12 @@ public class RobotContainer {
     public final LauncherSubsystem m_launcherSubsystem;
     public final IntakeSubsystem m_intakeSubsystem;
     private final SendableChooser<LoggableCommand> autoChooser;
-    private final PDPSubsystem m_PDPSubsystem;
     public BadLog log;
     public File logFile;
     public BufferedWriter logFileWriter;
     // The driver's controller
-    XboxController m_driverController = new XboxController(OIConstants.kDriverControllerPort);
-    private List<Loggable> loggables;
+    final XboxController m_driverController = new XboxController(OIConstants.kDriverControllerPort);
+    private final List<Loggable> loggables;
     private final NetworkTable metaLogTable = getDefault().getTable("metaLog");
     private final NetworkTableEntry TimeStamp = metaLogTable.getEntry("timeStamp");
 
@@ -78,13 +76,13 @@ public class RobotContainer {
      */
     public RobotContainer() {
         // Configure the button bindings
-        loggables = new ArrayList<Loggable>();
-        autoChooser = new SendableChooser<LoggableCommand>();
+        loggables = new ArrayList<>();
+        autoChooser = new SendableChooser<>();
         m_robotDrive = new DriveSubsystem();
         m_launcherSubsystem = new LauncherSubsystem();
         m_intakeSubsystem = new IntakeSubsystem();
         m_PreLaunch = new PreLaunchSubsystem();
-        m_PDPSubsystem = new PDPSubsystem();
+        PDPSubsystem m_PDPSubsystem = new PDPSubsystem();
         autoChooser.setDefaultOption("Barrel Racer", new AutoNavCommand(m_robotDrive, "BarrelRacer"));
         autoChooser.addOption("Bounce Course", new AutoNavCommand(m_robotDrive, "BouncePath"));
         autoChooser.addOption("Slalom", new AutoNavCommand(m_robotDrive, "Slalom"));
@@ -111,6 +109,7 @@ public class RobotContainer {
 
         File file = new File(filepath);
         try {
+            //noinspection ResultOfMethodCallIgnored
             file.createNewFile();
             logFileWriter = new BufferedWriter(new FileWriter(file));
         } catch (IOException e) {
@@ -120,12 +119,6 @@ public class RobotContainer {
         log = BadLog.init(filepath);
         for (Loggable loggable : loggables) {
             loggable.logInit();
-        }
-    }
-
-    public void logPeriodic() {
-        for (Loggable loggable : loggables) {
-            loggable.logPeriodic();
         }
     }
 
@@ -147,7 +140,7 @@ public class RobotContainer {
         // new JoystickButton(m_driverController, Button.kY.value)
         //         .whenPressed(new RunCommand(() -> m_robotDrive._Orchestra.play(), m_robotDrive));
 
-        m_launcherSubsystem.setDefaultCommand(new RunCommand(() -> m_launcherSubsystem.stopLauncher(), m_launcherSubsystem));
+        m_launcherSubsystem.setDefaultCommand(new RunCommand(m_launcherSubsystem::stopLauncher, m_launcherSubsystem));
 
         new JoystickButton(m_driverController, Button.kY.value)
                 .whileHeld(() -> m_PreLaunch.spin(-1), m_PreLaunch);
@@ -173,18 +166,10 @@ public class RobotContainer {
         POVButton downButton = new POVButton(m_driverController, 180);
         POVButton leftButton = new POVButton(m_driverController, 270);
 
-        upButton.whenPressed(new InstantCommand((() -> {
-            m_robotDrive.setMaxSpeed(1);
-        }), m_robotDrive));
-        rightButton.whenPressed(new InstantCommand((() -> {
-            m_robotDrive.setMaxSpeed(0.75);
-        }), m_robotDrive));
-        downButton.whenPressed(new InstantCommand((() -> {
-            m_robotDrive.setMaxSpeed(0.6);
-        }), m_robotDrive));
-        leftButton.whenPressed(new InstantCommand((() -> {
-            m_robotDrive.setMaxSpeed(0.4);
-        }), m_robotDrive));
+        upButton.whenPressed(new InstantCommand((() -> m_robotDrive.setMaxSpeed(1)), m_robotDrive));
+        rightButton.whenPressed(new InstantCommand((() -> m_robotDrive.setMaxSpeed(0.75)), m_robotDrive));
+        downButton.whenPressed(new InstantCommand((() -> m_robotDrive.setMaxSpeed(0.6)), m_robotDrive));
+        leftButton.whenPressed(new InstantCommand((() -> m_robotDrive.setMaxSpeed(0.4)), m_robotDrive));
         m_robotDrive.setMaxSpeed(.6);
 
         // Configure default commands

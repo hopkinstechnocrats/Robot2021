@@ -5,7 +5,6 @@
 package frc.robot.subsystems;
 
 import badlog.lib.BadLog;
-import com.ctre.phoenix.motorcontrol.can.BaseMotorController;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonFX;
 import com.kauailabs.navx.frc.AHRS;
 import edu.wpi.first.networktables.NetworkTableEntry;
@@ -14,7 +13,6 @@ import edu.wpi.first.wpilibj.RobotController;
 import edu.wpi.first.wpilibj.SPI;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.controller.PIDController;
-import edu.wpi.first.wpilibj.controller.SimpleMotorFeedforward;
 import edu.wpi.first.wpilibj.drive.DifferentialDrive;
 import edu.wpi.first.wpilibj.geometry.Pose2d;
 import edu.wpi.first.wpilibj.interfaces.Gyro;
@@ -28,8 +26,7 @@ import frc.robot.Constants.DriveConstants;
 import lib.Loggable;
 import lib.MotorFaultLogger;
 
-import java.util.HashMap;
-
+@SuppressWarnings("FieldCanBeLocal")
 public class DriveSubsystem extends SubsystemBase implements Loggable {
 
     // The motors on the left side of the drive.
@@ -38,6 +35,7 @@ public class DriveSubsystem extends SubsystemBase implements Loggable {
 
     // The motors on the right side of the drive.
     private final WPI_TalonFX m_rightMaster = new WPI_TalonFX(DriveConstants.kRightMotor1Port);
+    @SuppressWarnings("FieldCanBeLocal")
     private final WPI_TalonFX m_rightFollower = new WPI_TalonFX(DriveConstants.kRightMotor2Port);
 
     // The robot's drive
@@ -50,16 +48,15 @@ public class DriveSubsystem extends SubsystemBase implements Loggable {
     private final WPI_TalonFX m_rightEncoder = new WPI_TalonFX(DriveConstants.kRightMotor1Port);
     // Odometry class for tracking robot pose
     private final DifferentialDriveOdometry m_odometry;
-    public PIDController leftPIDController;
-    public PIDController rightPIDController;
-    SimpleMotorFeedforward feedforward;
-    NetworkTableEntry m_xEntry = NetworkTableInstance.getDefault().getTable("troubleshooting").getEntry("X");
-    NetworkTableEntry m_yEntry = NetworkTableInstance.getDefault().getTable("troubleshooting").getEntry("Y");
-    NetworkTableEntry m_thetaEntry = NetworkTableInstance.getDefault().getTable("troubleshooting").getEntry("theta");
+    public final PIDController leftPIDController;
+    public final PIDController rightPIDController;
+    final NetworkTableEntry m_xEntry = NetworkTableInstance.getDefault().getTable("troubleshooting").getEntry("X");
+    final NetworkTableEntry m_yEntry = NetworkTableInstance.getDefault().getTable("troubleshooting").getEntry("Y");
+    final NetworkTableEntry m_thetaEntry = NetworkTableInstance.getDefault().getTable("troubleshooting").getEntry("theta");
     // The gyro sensor
-    private AHRS navX = new AHRS(SPI.Port.kMXP);
+    private final AHRS navX = new AHRS(SPI.Port.kMXP);
     private final Gyro m_gyro = navX;
-    private Field2d m_field;
+    private final Field2d m_field;
     private double maxSpeed;
 
     /**
@@ -79,8 +76,6 @@ public class DriveSubsystem extends SubsystemBase implements Loggable {
         SmartDashboard.putData("Field", m_field);
         leftPIDController = new PIDController(DriveConstants.kPDriveVel, 0, 0);
         rightPIDController = new PIDController(DriveConstants.kPDriveVel, 0, 0);
-        feedforward = new SimpleMotorFeedforward(DriveConstants.ksVolts, DriveConstants.kvVoltSecondsPerMeter,
-                DriveConstants.kaVoltSecondsSquaredPerMeter);
     }
 
     public void setMaxSpeed(double maxSpeed) {
@@ -112,8 +107,8 @@ public class DriveSubsystem extends SubsystemBase implements Loggable {
         BadLog.createTopic("Drivetrain/Odometry Pose Heading", "degrees", () -> getPose().getRotation().getDegrees(), "join:Drivetrain/Robot Pose Heading");
         BadLog.createTopic("Drivetrain/Left Wheel Measured Speed", "m/s", () -> getWheelSpeeds().leftMetersPerSecond, "join:Drivetrain/LeftWheelSpeed");
         BadLog.createTopic("Drivetrain/Right Wheel Measured Speed", "m/s", () -> getWheelSpeeds().rightMetersPerSecond, "join:Drivetrain/RightWheelSpeed");
-        BadLog.createTopic("Drivetrain/Left Wheel Setpoint", "m/s", () -> leftPIDController.getSetpoint(), "join:Drivetrain/LeftWheelSpeed");
-        BadLog.createTopic("Drivetrain/Right Wheel Setpoint", "m/s", () -> rightPIDController.getSetpoint(), "join:Drivetrain/RightWheelSpeed");
+        BadLog.createTopic("Drivetrain/Left Wheel Setpoint", "m/s", leftPIDController::getSetpoint, "join:Drivetrain/LeftWheelSpeed");
+        BadLog.createTopic("Drivetrain/Right Wheel Setpoint", "m/s", rightPIDController::getSetpoint, "join:Drivetrain/RightWheelSpeed");
         BadLog.createTopic("Battery Voltage", "V", RobotController::getBatteryVoltage);
 
         //Gyro Data
@@ -123,10 +118,6 @@ public class DriveSubsystem extends SubsystemBase implements Loggable {
         BadLog.createTopic("NavX/RawAccelX", "m/s^2", () -> (double) navX.getRawAccelX());
         BadLog.createTopic("NavX/RawAccelY", "m/s^2", () -> (double) navX.getRawAccelX());
         BadLog.createTopic("NavX/RawAccelZ", "m/s^2", () -> (double) navX.getRawAccelX());
-    }
-
-    public void logPeriodic() {
-
     }
 
     public void customPeriodic() {

@@ -6,7 +6,7 @@ import frc.robot.Constants.PreLaunchConstants;
 import lib.MotorFaultLogger;
 
 public class PreLaunchSubsystem extends SubsystemBase {
-    WPI_TalonFX Motor1;
+    final WPI_TalonFX Motor1;
 
     public PreLaunchSubsystem() {
         Motor1 = new WPI_TalonFX(PreLaunchConstants.Motor1CANID);

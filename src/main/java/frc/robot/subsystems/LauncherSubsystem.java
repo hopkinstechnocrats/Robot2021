@@ -14,9 +14,9 @@ import lib.Loggable;
 import lib.MotorFaultLogger;
 
 public class LauncherSubsystem extends SubsystemBase implements Loggable {
-    WPI_TalonFX master;
-    WPI_TalonFX follower;
-    PIDController pidController;
+    final WPI_TalonFX master;
+    final WPI_TalonFX follower;
+    final PIDController pidController;
 
     public LauncherSubsystem() {
         master = new WPI_TalonFX(LauncherConstants.Motor1CANID);
@@ -31,14 +31,10 @@ public class LauncherSubsystem extends SubsystemBase implements Loggable {
     public void logInit() {
         BadLog.createValue("Launcher/kP", "" + LauncherConstants.kP);
         BadLog.createValue("Launcher/kD", "" + LauncherConstants.kD);
-        BadLog.createTopic("Launcher/Target Velocity", "rpm", () -> pidController.getSetpoint());
-        BadLog.createTopic("Launcher/Error", "rpm", () -> pidController.getPositionError());
-        BadLog.createTopic("Launcher/Launcher Velocity", "rpm", () -> master.getSelectedSensorPosition());
+        BadLog.createTopic("Launcher/Target Velocity", "rpm", pidController::getSetpoint);
+        BadLog.createTopic("Launcher/Error", "rpm", pidController::getPositionError);
+        BadLog.createTopic("Launcher/Launcher Velocity", "rpm", master::getSelectedSensorPosition);
         BadLog.createValue("Launcher/kI", "" + LauncherConstants.kI);
-    }
-
-    public void logPeriodic() {
-
     }
 
 

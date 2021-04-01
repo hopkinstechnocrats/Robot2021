@@ -11,7 +11,6 @@ import lib.SpeedShot;
 public class SpinLauncherCommand extends CommandBase {
     @SuppressWarnings({"PMD.UnusedPrivateField", "PMD.SingularField"})
     private final LauncherSubsystem m_subsystem;
-    private SpeedShot m_speedShot;
 
     /**
      * Creates a new ExampleCommand.
@@ -22,7 +21,7 @@ public class SpinLauncherCommand extends CommandBase {
         m_subsystem = subsystem;
         // Use addRequirements() here to declare subsystem dependencies.
         addRequirements(subsystem);
-        m_speedShot = new SpeedShot();
+        SpeedShot m_speedShot = new SpeedShot();
         SmartDashboard.putNumber("LauncherSpeed", 15);
 
     }

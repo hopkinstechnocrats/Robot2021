@@ -43,7 +43,7 @@ public class TrajectoryCommandGenerator {
 
     public static List<Command> getTrajectoryCommand(List<Trajectory> exampleTrajectory,
                                                      DriveSubsystem robotDrive, PIDController leftPIDController, PIDController rightPIDController) {
-        ArrayList<Command> RamseteCommandList = new ArrayList<Command>();
+        ArrayList<Command> RamseteCommandList = new ArrayList<>();
         for (Trajectory trajectory : exampleTrajectory) {
             RamseteCommand ramseteCommand = new RamseteCommand(trajectory, robotDrive::getPose,
                     new RamseteController(AutoConstants.kRamseteB, AutoConstants.kRamseteZeta),
@@ -78,8 +78,9 @@ public class TrajectoryCommandGenerator {
             DriverStation.reportError("Unable to process " + trajectoryName + " path", e.getStackTrace());
         }
 
+        assert headNode != null;
         Iterator<JsonNode> pathsNodeArray = headNode.elements();
-        List<TrajectoryWaypoints> pathsArray = new ArrayList<TrajectoryWaypoints>();
+        List<TrajectoryWaypoints> pathsArray = new ArrayList<>();
         pathsNodeArray.forEachRemaining((JsonNode path) -> {
             TrajectoryWaypoints pathObject = new TrajectoryWaypoints();
             pathObject.start.x = path.get("start").get("x").asDouble();
@@ -89,7 +90,7 @@ public class TrajectoryCommandGenerator {
             pathObject.finish.y = path.get("finish").get("y").asDouble();
             pathObject.finish.theta = path.get("finish").get("theta").asDouble();
             pathObject.reversed = path.get("reversed").asBoolean();
-            List<double[]> waypointsList = new ArrayList<double[]>();
+            List<double[]> waypointsList = new ArrayList<>();
             path.get("waypoints").elements().forEachRemaining((JsonNode waypoint) -> {
                 double[] waypointArray = {waypoint.get(0).asDouble(), waypoint.get(1).asDouble()};
                 waypointsList.add(waypointArray);

@@ -7,9 +7,9 @@ import frc.robot.Constants.IntakeConstants;
 import lib.MotorFaultLogger;
 
 public class IntakeSubsystem extends SubsystemBase {
-    WPI_TalonFX Motor;
+    final WPI_TalonFX Motor;
     Boolean isDeployed;
-    Solenoid solenoid;
+    final Solenoid solenoid;
 
     public IntakeSubsystem() {
         Motor = new WPI_TalonFX(IntakeConstants.MotorCANID);

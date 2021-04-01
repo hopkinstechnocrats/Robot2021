@@ -4,7 +4,7 @@ import java.util.HashMap;
 
 public class SpeedShot {
     public static double speed;
-    public static HashMap<Double, Double> speedMap = new HashMap<Double, Double>();
+    public static final HashMap<Double, Double> speedMap = new HashMap<>();
 
     public SpeedShot() {
 
