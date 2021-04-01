@@ -52,4 +52,8 @@ public class LauncherSubsystem extends SubsystemBase implements Loggable {
         SmartDashboard.putNumber("Launcher/Error", pidController.getPositionError()); // Actually velocity error
         SmartDashboard.putNumber("Launcher/Launcher Velocity", currentRPM);
     }
+
+    public void stopLauncher() {
+        master.setVoltage(0);
+    }
 }
