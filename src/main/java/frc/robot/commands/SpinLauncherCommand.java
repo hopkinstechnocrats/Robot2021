@@ -23,11 +23,12 @@ public class SpinLauncherCommand extends CommandBase {
         // Use addRequirements() here to declare subsystem dependencies.
         addRequirements(subsystem);
         m_speedShot = new SpeedShot();
+        SmartDashboard.putNumber("LauncherSpeed", 15);
+
     }
 
     public void initialize() {
-        SmartDashboard.putNumber("LauncherSpeed", 10000);
-
+        
     }
 
     public void execute() {
@@ -35,7 +36,7 @@ public class SpinLauncherCommand extends CommandBase {
         // double distanceToTarget = Limelight.getDistanceFromTarget();
         // Calculate desired speed of launcher wheel
         // double desiredLauncherSpeed = m_speedShot.getLauncherDesiredSpeed(distanceToTarget);
-        double desiredLauncherSpeed = SmartDashboard.getNumber("LauncherSpeed", 10000);
+        double desiredLauncherSpeed = SmartDashboard.getNumber("LauncherSpeed", 15);
         System.out.println(desiredLauncherSpeed);
         // Send speed to launcher subsystem
         m_subsystem.spinLauncher(desiredLauncherSpeed);
