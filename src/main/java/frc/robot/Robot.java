@@ -70,7 +70,6 @@ public class Robot extends TimedRobot {
     public void autonomousInit() {
         m_robotContainer.initializeLog();
         m_autonomousCommand = m_robotContainer.getAutonomousCommand();
-        m_autonomousCommand.logInit();
         m_robotContainer.log.finishInitialization();
 
         /*
