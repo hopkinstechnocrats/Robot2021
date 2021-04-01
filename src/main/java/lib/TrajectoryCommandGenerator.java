@@ -1,6 +1,7 @@
 package lib;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Filesystem;
@@ -25,6 +26,7 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -69,14 +71,34 @@ public class TrajectoryCommandGenerator {
             DriverStation.reportError("Unable to open " + trajectoryName + " path", e.getStackTrace());
         }
         ObjectMapper mapper = new ObjectMapper();
-        TrajectoryWaypoints[] waypointsArray = new TrajectoryWaypoints[1];
+        JsonNode headNode = null;
         try {
-            waypointsArray = mapper.readValue(trajectoryInfo, TrajectoryWaypoints[].class);
+            headNode = mapper.readTree(trajectoryInfo);
         } catch (JsonProcessingException e) {
             DriverStation.reportError("Unable to process " + trajectoryName + " path", e.getStackTrace());
         }
 
-        List<Trajectory> trajectories = Stream.of(waypointsArray).map(
+        Iterator<JsonNode> pathsNodeArray = headNode.elements();
+        List<TrajectoryWaypoints> pathsArray = new ArrayList<TrajectoryWaypoints>();
+        pathsNodeArray.forEachRemaining((JsonNode path) -> {
+            TrajectoryWaypoints pathObject = new TrajectoryWaypoints();
+            pathObject.start.x = path.get("start").get("x").asDouble();
+            pathObject.start.y = path.get("start").get("y").asDouble();
+            pathObject.start.theta = path.get("start").get("theta").asDouble();
+            pathObject.finish.x = path.get("finish").get("x").asDouble();
+            pathObject.finish.y = path.get("finish").get("y").asDouble();
+            pathObject.finish.theta = path.get("finish").get("theta").asDouble();
+            pathObject.reversed = path.get("reversed").asBoolean();
+            List<double[]> waypointsList = new ArrayList<double[]>();
+            path.get("waypoints").elements().forEachRemaining((JsonNode waypoint) -> {
+                double[] waypointArray = {waypoint.get(0).asDouble(), waypoint.get(1).asDouble()};
+                waypointsList.add(waypointArray);
+            });
+            pathObject.waypoints = waypointsList.toArray(new double[waypointsList.size()][2]);
+            pathsArray.add(pathObject);
+        });
+
+        List<Trajectory> trajectories = pathsArray.stream().map(
                 (TrajectoryWaypoints waypointsInfo) -> {
                     Pose2d start = new Pose2d(waypointsInfo.start.x, waypointsInfo.start.y, Rotation2d.fromDegrees(waypointsInfo.start.theta));
                     Pose2d end = new Pose2d(waypointsInfo.finish.x, waypointsInfo.finish.y, Rotation2d.fromDegrees(waypointsInfo.finish.theta));
