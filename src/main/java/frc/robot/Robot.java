@@ -90,7 +90,6 @@ public class Robot extends TimedRobot {
      */
     @Override
     public void autonomousPeriodic() {
-        m_robotContainer.logPeriodic();
         m_robotContainer.log.updateTopics();
         m_robotContainer.log.log();
     }
@@ -112,7 +111,6 @@ public class Robot extends TimedRobot {
      */
     @Override
     public void teleopPeriodic() {
-        m_robotContainer.logPeriodic();
     }
 
     @Override

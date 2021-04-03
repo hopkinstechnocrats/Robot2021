@@ -40,7 +40,7 @@ public class LauncherSubsystem extends SubsystemBase implements Loggable {
 
     // speed is in flywheel rpm
     public void spinLauncher(double speed) {
-        double currentRPM = master.getSelectedSensorVelocity(0) / (600 * LauncherConstants.kEncoderUnitsPerRevolution);
+        double currentRPM = master.getSelectedSensorVelocity(0) / (10 * LauncherConstants.kEncoderUnitsPerRevolution);
         double motorVoltage = pidController.calculate(currentRPM, speed);
         master.setVoltage(motorVoltage);
         follower.feed();

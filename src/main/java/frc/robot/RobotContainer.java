@@ -61,12 +61,14 @@ public class RobotContainer {
     public final DriveSubsystem m_robotDrive;
     public final LauncherSubsystem m_launcherSubsystem;
     public final IntakeSubsystem m_intakeSubsystem;
+    public final HoodSubsystem m_hoodSubsystem;
     private final SendableChooser<LoggableCommand> autoChooser;
     public BadLog log;
     public File logFile;
     public BufferedWriter logFileWriter;
     // The driver's controller
     final XboxController m_driverController = new XboxController(OIConstants.kDriverControllerPort);
+    final XboxController m_operatorController = new XboxController(OIConstants.kOperatorControllerPort);
     private final List<Loggable> loggables;
     private final NetworkTable metaLogTable = getDefault().getTable("metaLog");
     private final NetworkTableEntry TimeStamp = metaLogTable.getEntry("timeStamp");
@@ -82,6 +84,7 @@ public class RobotContainer {
         m_launcherSubsystem = new LauncherSubsystem();
         m_intakeSubsystem = new IntakeSubsystem();
         m_PreLaunch = new PreLaunchSubsystem();
+        m_hoodSubsystem = new HoodSubsystem();
         PDPSubsystem m_PDPSubsystem = new PDPSubsystem();
         autoChooser.setDefaultOption("Barrel Racer", new AutoNavCommand(m_robotDrive, "BarrelRacer"));
         autoChooser.addOption("Bounce Course", new AutoNavCommand(m_robotDrive, "BouncePath"));
@@ -131,34 +134,39 @@ public class RobotContainer {
                 .whenPressed(() -> m_robotDrive.setMaxOutput(0.8));
 
 
-        new JoystickButton(m_driverController, Button.kA.value)
+        new JoystickButton(m_operatorController, Button.kA.value)
                 .whileHeld(new RunCommand(() -> m_launcherSubsystem.spinLauncher(LauncherConstants.speed), m_launcherSubsystem));
 
-        new JoystickButton(m_driverController, Button.kX.value)
+        new JoystickButton(m_operatorController, Button.kX.value)
                 .whileHeld(new SpinLauncherCommand(m_launcherSubsystem));
 
-        // new JoystickButton(m_driverController, Button.kY.value)
+        // new JoystickButton(m_operatorController, Button.kY.value)
         //         .whenPressed(new RunCommand(() -> m_robotDrive._Orchestra.play(), m_robotDrive));
 
         m_launcherSubsystem.setDefaultCommand(new RunCommand(m_launcherSubsystem::stopLauncher, m_launcherSubsystem));
 
-        new JoystickButton(m_driverController, Button.kY.value)
+        new JoystickButton(m_operatorController, Button.kY.value)
                 .whileHeld(() -> m_PreLaunch.spin(-1), m_PreLaunch);
 
         m_PreLaunch.setDefaultCommand(new RunCommand(() -> m_PreLaunch.spin(0), m_PreLaunch));
 
         m_intakeSubsystem.setDefaultCommand(new RunCommand(() -> m_intakeSubsystem.spin(0), m_intakeSubsystem));
 
-        new JoystickButton(m_driverController, Button.kB.value)
+        new JoystickButton(m_operatorController, Button.kB.value)
                 .whileHeld(new RunCommand(() -> {
                     m_intakeSubsystem.spin(-1);
                     System.out.println("RUNNING INTAKE COMMAND");
                 }));
 
-        new JoystickButton(m_driverController, Button.kBumperRight.value)
+        new JoystickButton(m_operatorController, Button.kBumperRight.value)
                 .whenPressed(new InstantCommand(() -> {
                     m_intakeSubsystem.toggle();
                     System.out.println("RUNNING INTAKE DEPLOY COMMAND");
+                }));
+        new JoystickButton(m_operatorController, Button.kStart.value)
+                .whenPressed(new InstantCommand(() -> {
+                    m_hoodSubsystem.toggle();
+                    System.out.println("RUNNING HOOD DEPLOY COMMAND");
                 }));
 
         POVButton upButton = new POVButton(m_driverController, 0);
