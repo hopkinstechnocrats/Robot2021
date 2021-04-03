@@ -1,97 +1,97 @@
 [
     {
         "start": {
-            "x": 21.5,
+            "x": 21.54,
             "y": 7.5,
             "theta": 0 
         },
         "finish": {
-            "x": 3,
+            "x": 3.54,
             "y": 7.5,
             "theta": 0 
         },
         "waypoints": [
-            [21.5, 7.5]
+            [21.54, 7.5]
         ],
         "reversed": false
     },
     {
         "start": {
-            "x": 3,
+            "x": 3.54,
             "y": 7.5,
             "theta": 0 
         },
         "finish": {
-            "x": 16.5,
+            "x": 16.54,
             "y": 7.5,
             "theta": 0 
         },
         "waypoints": [
-            [3, 7.5]
+            [3.54, 7.5]
         ],
         "reversed": true
     },
     {
         "start": {
-            "x": 16.5,
+            "x": 16.54,
             "y": 7.5,
             "theta": 0 
         },
         "finish": {
-            "x": 3,
+            "x": 3.54,
             "y": 7.5,
             "theta": 0 
         },
         "waypoints": [
-            [16.5, 7.5]
+            [16.54, 7.5]
         ],
         "reversed": false
     },
     {
         "start": {
-            "x": 3,
+            "x": 3.54,
             "y": 7.5,
             "theta": 0 
         },
         "finish": {
-            "x": 11.5,
+            "x": 11.54,
             "y": 7.5,
             "theta": 0 
         },
         "waypoints": [
-            [3, 7.5]
+            [3.54, 7.5]
         ],
         "reversed": true
     },
     {
         "start": {
-            "x": 11.5,
+            "x": 11.54,
             "y": 7.5,
             "theta": 0 
         },
         "finish": {
-            "x": 3,
+            "x": 3.54,
             "y": 7.5,
             "theta": 0 
         },
         "waypoints": [
-            [11.5, 7.5]
+            [11.54, 7.5]
         ],
         "reversed": false
     },
     {
         "start": {
-            "x": 3,
+            "x": 3.54,
             "y": 7.5,
             "theta": 0 
         },
         "finish": {
-            "x": 6.5,
+            "x": 6.54,
             "y": 7.5,
             "theta": 0 
         },
         "waypoints": [
-            [3, 7.5]
+            [3.54, 7.5]
         ],
         "reversed": true
     }
