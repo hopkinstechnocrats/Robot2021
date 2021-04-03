@@ -20,6 +20,7 @@ import frc.robot.Constants.LauncherConstants;
 import frc.robot.Constants.OIConstants;
 import frc.robot.commands.AutoNavCommand;
 import frc.robot.commands.GalacticSearchCommand;
+import frc.robot.commands.InterstellarAccuracyCommand;
 import frc.robot.commands.SpinLauncherCommand;
 import frc.robot.subsystems.*;
 import lib.Loggable;
@@ -94,7 +95,6 @@ public class RobotContainer {
         autoChooser.addOption("GSCBRed", new GalacticSearchCommand(m_robotDrive, m_intakeSubsystem, "GSBR"));
         autoChooser.addOption("GSCBBlue", new GalacticSearchCommand(m_robotDrive, m_intakeSubsystem, "GSBB"));
 
-
         SmartDashboard.putData(autoChooser);
         loggables.add(m_launcherSubsystem);
         loggables.add(m_robotDrive);
@@ -139,6 +139,9 @@ public class RobotContainer {
 
         new JoystickButton(m_operatorController, Button.kX.value)
                 .whileHeld(new SpinLauncherCommand(m_launcherSubsystem));
+
+        new JoystickButton(m_driverController, Button.kX.value)
+                .whileHeld(new InterstellarAccuracyCommand(m_robotDrive, "IAC", new JoystickButton(m_driverController, Button.kX.value)));
 
         // new JoystickButton(m_operatorController, Button.kY.value)
         //         .whenPressed(new RunCommand(() -> m_robotDrive._Orchestra.play(), m_robotDrive));
