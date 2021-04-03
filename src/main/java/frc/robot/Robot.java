@@ -105,6 +105,7 @@ public class Robot extends TimedRobot {
             m_autonomousCommand.cancel();
         }
         m_robotContainer.log.finishInitialization();
+        m_robotContainer.iacCommand.logInit();
     }
 
     /**

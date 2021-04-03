@@ -12,6 +12,7 @@ import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
@@ -73,6 +74,8 @@ public class RobotContainer {
     private final List<Loggable> loggables;
     private final NetworkTable metaLogTable = getDefault().getTable("metaLog");
     private final NetworkTableEntry TimeStamp = metaLogTable.getEntry("timeStamp");
+    private final JoystickButton iacButton = new JoystickButton(m_driverController, Button.kX.value);
+    final InterstellarAccuracyCommand iacCommand;
 
     /**
      * The container for the robot. Contains subsystems, OI devices, and commands.
@@ -94,7 +97,7 @@ public class RobotContainer {
         autoChooser.addOption("GSCABlue", new GalacticSearchCommand(m_robotDrive, m_intakeSubsystem, "GSAB"));
         autoChooser.addOption("GSCBRed", new GalacticSearchCommand(m_robotDrive, m_intakeSubsystem, "GSBR"));
         autoChooser.addOption("GSCBBlue", new GalacticSearchCommand(m_robotDrive, m_intakeSubsystem, "GSBB"));
-
+        iacCommand = new InterstellarAccuracyCommand(m_robotDrive, "IAC", iacButton);
         SmartDashboard.putData(autoChooser);
         loggables.add(m_launcherSubsystem);
         loggables.add(m_robotDrive);
@@ -140,8 +143,7 @@ public class RobotContainer {
         new JoystickButton(m_operatorController, Button.kX.value)
                 .whileHeld(new SpinLauncherCommand(m_launcherSubsystem));
 
-        new JoystickButton(m_driverController, Button.kX.value)
-                .whileHeld(new InterstellarAccuracyCommand(m_robotDrive, "IAC", new JoystickButton(m_driverController, Button.kX.value)));
+        iacButton.whileHeld(iacCommand);
 
         // new JoystickButton(m_operatorController, Button.kY.value)
         //         .whenPressed(new RunCommand(() -> m_robotDrive._Orchestra.play(), m_robotDrive));
