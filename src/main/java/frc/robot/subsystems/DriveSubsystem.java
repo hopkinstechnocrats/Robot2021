@@ -11,6 +11,7 @@ import edu.wpi.first.networktables.NetworkTableEntry;
 import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.wpilibj.RobotController;
 import edu.wpi.first.wpilibj.SPI;
+import edu.wpi.first.wpilibj.SerialPort;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.controller.PIDController;
 import edu.wpi.first.wpilibj.drive.DifferentialDrive;
@@ -54,10 +55,11 @@ public class DriveSubsystem extends SubsystemBase implements Loggable {
     final NetworkTableEntry m_yEntry = NetworkTableInstance.getDefault().getTable("troubleshooting").getEntry("Y");
     final NetworkTableEntry m_thetaEntry = NetworkTableInstance.getDefault().getTable("troubleshooting").getEntry("theta");
     // The gyro sensor
-    private final AHRS navX = new AHRS(SPI.Port.kMXP);
+    private final AHRS navX = new AHRS(SerialPort.Port.kUSB1);
     private final Gyro m_gyro = navX;
     private final Field2d m_field;
     private double maxSpeed;
+    private boolean direction;
 
     /**
      * Creates a new DriveSubsystem.
@@ -76,6 +78,7 @@ public class DriveSubsystem extends SubsystemBase implements Loggable {
         SmartDashboard.putData("Field", m_field);
         leftPIDController = new PIDController(DriveConstants.kPDriveVel, 0, 0);
         rightPIDController = new PIDController(DriveConstants.kPDriveVel, 0, 0);
+        direction = true;
     }
 
     public void setMaxSpeed(double maxSpeed) {
@@ -171,7 +174,12 @@ public class DriveSubsystem extends SubsystemBase implements Loggable {
     }
 
     public void tankDrivePercentOutput(double left, double right) {
-        m_drive.tankDrive(-1 * maxSpeed * left, -1 * maxSpeed * right);
+        if (direction) {
+            m_drive.tankDrive(-1 * maxSpeed * left, -1 * maxSpeed * right);
+
+        } else {
+            m_drive.tankDrive(maxSpeed * right,  maxSpeed * left);
+        }
     }
 
     /**
@@ -226,5 +234,9 @@ public class DriveSubsystem extends SubsystemBase implements Loggable {
      */
     public double getTurnRate() {
         return -m_gyro.getRate();
+    }
+
+    public void toggleDirection() {
+        direction = !direction;
     }
 }

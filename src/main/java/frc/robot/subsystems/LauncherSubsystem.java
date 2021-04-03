@@ -33,7 +33,7 @@ public class LauncherSubsystem extends SubsystemBase implements Loggable {
         BadLog.createValue("Launcher/kD", "" + LauncherConstants.kD);
         BadLog.createTopic("Launcher/Target Velocity", "rpm", pidController::getSetpoint);
         BadLog.createTopic("Launcher/Error", "rpm", pidController::getPositionError);
-        BadLog.createTopic("Launcher/Launcher Velocity", "rpm", master::getSelectedSensorPosition);
+        BadLog.createTopic("Launcher/Launcher Velocity", "rpm", master::getSelectedSensorVelocity);
         BadLog.createValue("Launcher/kI", "" + LauncherConstants.kI);
     }
 

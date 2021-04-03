@@ -19,10 +19,7 @@ import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import edu.wpi.first.wpilibj2.command.button.POVButton;
 import frc.robot.Constants.LauncherConstants;
 import frc.robot.Constants.OIConstants;
-import frc.robot.commands.AutoNavCommand;
-import frc.robot.commands.GalacticSearchCommand;
-import frc.robot.commands.InterstellarAccuracyCommand;
-import frc.robot.commands.SpinLauncherCommand;
+import frc.robot.commands.*;
 import frc.robot.subsystems.*;
 import lib.Loggable;
 import lib.LoggableCommand;
@@ -74,8 +71,8 @@ public class RobotContainer {
     private final List<Loggable> loggables;
     private final NetworkTable metaLogTable = getDefault().getTable("metaLog");
     private final NetworkTableEntry TimeStamp = metaLogTable.getEntry("timeStamp");
-    private final JoystickButton iacButton = new JoystickButton(m_driverController, Button.kX.value);
-    final InterstellarAccuracyCommand iacCommand;
+    final JoystickButton iacButton = new JoystickButton(m_driverController, Button.kX.value);
+    InterstellarAccuracyCommand iacCommand;
 
     /**
      * The container for the robot. Contains subsystems, OI devices, and commands.
@@ -97,7 +94,6 @@ public class RobotContainer {
         autoChooser.addOption("GSCABlue", new GalacticSearchCommand(m_robotDrive, m_intakeSubsystem, "GSAB"));
         autoChooser.addOption("GSCBRed", new GalacticSearchCommand(m_robotDrive, m_intakeSubsystem, "GSBR"));
         autoChooser.addOption("GSCBBlue", new GalacticSearchCommand(m_robotDrive, m_intakeSubsystem, "GSBB"));
-        iacCommand = new InterstellarAccuracyCommand(m_robotDrive, "IAC", iacButton);
         SmartDashboard.putData(autoChooser);
         loggables.add(m_launcherSubsystem);
         loggables.add(m_robotDrive);
@@ -143,27 +139,30 @@ public class RobotContainer {
         new JoystickButton(m_operatorController, Button.kX.value)
                 .whileHeld(new SpinLauncherCommand(m_launcherSubsystem));
 
-        iacButton.whileHeld(iacCommand);
+
 
         // new JoystickButton(m_operatorController, Button.kY.value)
         //         .whenPressed(new RunCommand(() -> m_robotDrive._Orchestra.play(), m_robotDrive));
 
         m_launcherSubsystem.setDefaultCommand(new RunCommand(m_launcherSubsystem::stopLauncher, m_launcherSubsystem));
 
-        new JoystickButton(m_operatorController, Button.kY.value)
+        new JoystickButton(m_operatorController, Button.kBack.value)
                 .whileHeld(() -> m_PreLaunch.spin(-1), m_PreLaunch);
+
+        new JoystickButton(m_driverController, Button.kStart.value)
+                .whenPressed(() -> m_robotDrive.toggleDirection());
 
         m_PreLaunch.setDefaultCommand(new RunCommand(() -> m_PreLaunch.spin(0), m_PreLaunch));
 
         m_intakeSubsystem.setDefaultCommand(new RunCommand(() -> m_intakeSubsystem.spin(0), m_intakeSubsystem));
 
-        new JoystickButton(m_operatorController, Button.kB.value)
+        new JoystickButton(m_operatorController, Button.kStickRight.value)
                 .whileHeld(new RunCommand(() -> {
                     m_intakeSubsystem.spin(-1);
                     System.out.println("RUNNING INTAKE COMMAND");
                 }));
 
-        new JoystickButton(m_operatorController, Button.kBumperRight.value)
+        new JoystickButton(m_operatorController, Button.kStickLeft.value)
                 .whenPressed(new InstantCommand(() -> {
                     m_intakeSubsystem.toggle();
                     System.out.println("RUNNING INTAKE DEPLOY COMMAND");
@@ -173,6 +172,15 @@ public class RobotContainer {
                     m_hoodSubsystem.toggle();
                     System.out.println("RUNNING HOOD DEPLOY COMMAND");
                 }));
+
+        new JoystickButton(m_operatorController, Button.kA.value)
+                .whileHeld(new ConstantSpinLauncherCommand(m_launcherSubsystem, LauncherConstants.greenZoneSpeed));
+        new JoystickButton(m_operatorController, Button.kY.value)
+                .whileHeld(new ConstantSpinLauncherCommand(m_launcherSubsystem, LauncherConstants.yellowZoneSpeed));
+        new JoystickButton(m_operatorController, Button.kX.value)
+                .whileHeld(new ConstantSpinLauncherCommand(m_launcherSubsystem, LauncherConstants.blueZoneSpeed));
+        new JoystickButton(m_operatorController, Button.kB.value)
+                .whileHeld(new ConstantSpinLauncherCommand(m_launcherSubsystem, LauncherConstants.redZoneSpeed));
 
         POVButton upButton = new POVButton(m_driverController, 0);
         POVButton rightButton = new POVButton(m_driverController, 90);

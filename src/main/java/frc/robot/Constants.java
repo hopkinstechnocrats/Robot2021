@@ -68,7 +68,11 @@ public class Constants {
         public static final double kI = 0.001;
         public static final double kD = 0;
         public static final double speed = 10000;
-        public static final double kEncoderUnitsPerRevolution = 100;
+        public static final double kEncoderUnitsPerRevolution = 4096;
+        public static final double greenZoneSpeed = 20;
+        public static final double yellowZoneSpeed = 1.47;
+        public static final double blueZoneSpeed = 1.28;
+        public static final double redZoneSpeed = 1.3;
     }
 
     public static final class LimelightConstants {

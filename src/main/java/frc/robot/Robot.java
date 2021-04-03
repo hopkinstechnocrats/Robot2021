@@ -5,9 +5,11 @@
 package frc.robot;
 
 import edu.wpi.first.networktables.NetworkTableEntry;
+import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.wpilibj.PowerDistributionPanel;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
+import frc.robot.commands.InterstellarAccuracyCommand;
 import lib.LoggableCommand;
 
 /**
@@ -50,6 +52,7 @@ public class Robot extends TimedRobot {
         // and running subsystem periodic() methods.  This must be called from the robot's periodic
         // block in order for anything in the Command-based framework to work.
         CommandScheduler.getInstance().run();
+        System.out.println(m_robotContainer.m_robotDrive.getHeading());
     }
 
     /**
@@ -61,6 +64,7 @@ public class Robot extends TimedRobot {
 
     @Override
     public void disabledPeriodic() {
+        NetworkTableInstance.getDefault().getTable("limelight").getEntry("ledMode").setNumber(1);
     }
 
     /**
@@ -104,8 +108,11 @@ public class Robot extends TimedRobot {
         if (m_autonomousCommand != null) {
             m_autonomousCommand.cancel();
         }
-        m_robotContainer.log.finishInitialization();
+        m_robotContainer.iacCommand = new InterstellarAccuracyCommand(m_robotContainer.m_robotDrive, "IAC", m_robotContainer.iacButton);
         m_robotContainer.iacCommand.logInit();
+        m_robotContainer.iacButton.whenPressed(m_robotContainer.iacCommand);
+        m_robotContainer.log.finishInitialization();
+
     }
 
     /**
@@ -113,6 +120,9 @@ public class Robot extends TimedRobot {
      */
     @Override
     public void teleopPeriodic() {
+        m_robotContainer.log.updateTopics();
+        m_robotContainer.log.log();
+        NetworkTableInstance.getDefault().getTable("limelight").getEntry("ledMode").setNumber(3);
     }
 
     @Override
@@ -126,5 +136,6 @@ public class Robot extends TimedRobot {
      */
     @Override
     public void testPeriodic() {
+
     }
 }

@@ -26,6 +26,7 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -57,9 +58,11 @@ public class TrajectoryCommandGenerator {
             RamseteCommandList.add(ramseteCommand);
         }
         Command resetOdometryCommand = new InstantCommand(() -> robotDrive.resetOdometry(exampleTrajectory.get(0).getInitialPose()));
-        RamseteCommandList.add(resetOdometryCommand);
+        List<Command> NewRamseteCommandList = new ArrayList<Command>();
+        NewRamseteCommandList.add(resetOdometryCommand);
+        NewRamseteCommandList.addAll(RamseteCommandList);
 
-        return RamseteCommandList;
+        return NewRamseteCommandList;
     }
 
     public static List<Command> getTrajectoryCommand(String trajectoryName, DriveSubsystem robotDrive, PIDController leftPIDController, PIDController rightPIDController) {
