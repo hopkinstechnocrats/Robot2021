@@ -35,7 +35,7 @@ public class Robot extends TimedRobot {
         // Instantiate our RobotContainer.  This will perform all our button bindings, and put our
         // autonomous chooser on the dashboard.
         m_robotContainer = new RobotContainer();
-        addPeriodic(m_robotContainer.m_robotDrive::customPeriodic, 0.01, 0.01);
+//        addPeriodic(m_robotContainer.m_robotDrive::customPeriodic, 0.01, 0.01);
     }
 
     /**
@@ -71,21 +71,21 @@ public class Robot extends TimedRobot {
      */
     @Override
     public void autonomousInit() {
-        m_robotContainer.initializeLog();
-        m_autonomousCommand = m_robotContainer.getAutonomousCommand();
-        m_robotContainer.log.finishInitialization();
-
-        /*
-         * String autoSelected = SmartDashboard.getString("Auto Selector",
-         * "Default"); switch(autoSelected) { case "My Auto": autonomousCommand
-         * = new MyAutoCommand(); break; case "Default Auto": default:
-         * autonomousCommand = new ExampleCommand(); break; }
-         */
-
-        // schedule the autonomous command (example)
-        if (m_autonomousCommand != null) {
-            m_autonomousCommand.schedule();
-        }
+//        m_robotContainer.initializeLog();
+//        m_autonomousCommand = m_robotContainer.getAutonomousCommand();
+//        m_robotContainer.log.finishInitialization();
+//
+//        /*
+//         * String autoSelected = SmartDashboard.getString("Auto Selector",
+//         * "Default"); switch(autoSelected) { case "My Auto": autonomousCommand
+//         * = new MyAutoCommand(); break; case "Default Auto": default:
+//         * autonomousCommand = new ExampleCommand(); break; }
+//         */
+//
+//        // schedule the autonomous command (example)
+//        if (m_autonomousCommand != null) {
+//            m_autonomousCommand.schedule();
+//        }
     }
 
     /**
@@ -93,8 +93,8 @@ public class Robot extends TimedRobot {
      */
     @Override
     public void autonomousPeriodic() {
-        m_robotContainer.log.updateTopics();
-        m_robotContainer.log.log();
+//        m_robotContainer.log.updateTopics();
+//        m_robotContainer.log.log();
     }
 
     @Override
@@ -103,14 +103,14 @@ public class Robot extends TimedRobot {
         // teleop starts running. If you want the autonomous to
         // continue until interrupted by another command, remove
         // this line or comment it out.
-        m_robotContainer.initializeLog();
-        if (m_autonomousCommand != null) {
-            m_autonomousCommand.cancel();
-        }
-//        m_robotContainer.iacCommand = new InterstellarAccuracyCommand(m_robotContainer.m_robotDrive, "IAC", m_robotContainer.iacButton);
-//        m_robotContainer.iacCommand.logInit();
-//        m_robotContainer.iacButton.whenPressed(m_robotContainer.iacCommand);
-        m_robotContainer.log.finishInitialization();
+//        m_robotContainer.initializeLog();
+//        if (m_autonomousCommand != null) {
+//            m_autonomousCommand.cancel();
+//        }
+////        m_robotContainer.iacCommand = new InterstellarAccuracyCommand(m_robotContainer.m_robotDrive, "IAC", m_robotContainer.iacButton);
+////        m_robotContainer.iacCommand.logInit();
+////        m_robotContainer.iacButton.whenPressed(m_robotContainer.iacCommand);
+//        m_robotContainer.log.finishInitialization();
 
     }
 
@@ -119,8 +119,8 @@ public class Robot extends TimedRobot {
      */
     @Override
     public void teleopPeriodic() {
-        m_robotContainer.log.updateTopics();
-        m_robotContainer.log.log();
+//        m_robotContainer.log.updateTopics();
+//        m_robotContainer.log.log();
         NetworkTableInstance.getDefault().getTable("limelight").getEntry("ledMode").setNumber(3);
     }
 
