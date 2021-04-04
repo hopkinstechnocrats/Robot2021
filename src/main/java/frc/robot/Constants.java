@@ -39,10 +39,10 @@ public class Constants {
         // values for your robot.
         public static final double ksVolts = 0.696;
         public static final double kvVoltSecondsPerMeter = 1.13;
-        public static final double kaVoltSecondsSquaredPerMeter = 0.0297;
+        public static final double kaVoltSecondsSquaredPerMeter = 0.0956;
 
         // Example value only - as above, this must be tuned for your drive!
-        public static final double kPDriveVel = 1.9;
+        public static final double kPDriveVel = 2.2;
         public static final double kDDriveVel = 0;
         public static final double robotLengthFeet = 35d / 12d;
     }
@@ -63,10 +63,12 @@ public class Constants {
     public static final class LauncherConstants {
         public static final int Motor1CANID = 5;
         public static final int Motor2CANID = 6;
-        public static final double kP = 3.27;
+        public static final double kP = 3.25;
         public static final double kI = 0.001;
         public static final double kD = 0;
         public static final double speed = 10000;
+        public static final double kV = 0.427;
+        public static final double kA = 0.174;
         public static final double kEncoderUnitsPerRevolution = 4096;
         public static final double greenZoneSpeed = 20;
         public static final double yellowZoneSpeed = 1.47;

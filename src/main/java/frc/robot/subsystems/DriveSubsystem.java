@@ -121,6 +121,7 @@ public class DriveSubsystem extends SubsystemBase implements Loggable {
         BadLog.createTopic("NavX/RawAccelX", "m/s^2", () -> (double) navX.getRawAccelX());
         BadLog.createTopic("NavX/RawAccelY", "m/s^2", () -> (double) navX.getRawAccelX());
         BadLog.createTopic("NavX/RawAccelZ", "m/s^2", () -> (double) navX.getRawAccelX());
+        BadLog.createTopic("NavX/Yaw", "degrees", navX::getAngle, "join:Drivetrain/Robot Pose Heading");
     }
 
     public void customPeriodic() {

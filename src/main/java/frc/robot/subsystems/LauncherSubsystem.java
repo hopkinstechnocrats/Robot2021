@@ -7,6 +7,7 @@ package frc.robot.subsystems;
 import badlog.lib.BadLog;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonFX;
 import edu.wpi.first.wpilibj.controller.PIDController;
+import edu.wpi.first.wpilibj.controller.SimpleMotorFeedforward;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.LauncherConstants;
@@ -17,6 +18,7 @@ public class LauncherSubsystem extends SubsystemBase implements Loggable {
     final WPI_TalonFX master;
     final WPI_TalonFX follower;
     final PIDController pidController;
+    final SimpleMotorFeedforward feedforward;
 
     public LauncherSubsystem() {
         master = new WPI_TalonFX(LauncherConstants.Motor1CANID);
@@ -24,6 +26,7 @@ public class LauncherSubsystem extends SubsystemBase implements Loggable {
         follower.follow(master);
         follower.setInverted(true);
         pidController = new PIDController(LauncherConstants.kP, LauncherConstants.kI, LauncherConstants.kD);
+        feedforward = new SimpleMotorFeedforward(0.498, LauncherConstants.kV, LauncherConstants.kA);
         MotorFaultLogger.getInstance().add("LauncherMasterMotor", master);
         MotorFaultLogger.getInstance().add("LauncherFollowerMotor", follower);
     }
@@ -40,8 +43,8 @@ public class LauncherSubsystem extends SubsystemBase implements Loggable {
 
     // speed is in flywheel rpm
     public void spinLauncher(double speed) {
-        double currentRPM = master.getSelectedSensorVelocity(0) / (10 * LauncherConstants.kEncoderUnitsPerRevolution);
-        double motorVoltage = pidController.calculate(currentRPM, speed);
+        double currentRPM = 10 * master.getSelectedSensorVelocity(0) / LauncherConstants.kEncoderUnitsPerRevolution;
+        double motorVoltage = pidController.calculate(currentRPM, speed)+feedforward.calculate(speed);
         master.setVoltage(motorVoltage);
         follower.feed();
         SmartDashboard.putNumber("Launcher/Target Velocity", pidController.getSetpoint());
