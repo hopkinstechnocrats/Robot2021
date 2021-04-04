@@ -21,6 +21,7 @@ import frc.robot.Constants.LauncherConstants;
 import frc.robot.Constants.OIConstants;
 import frc.robot.commands.*;
 import frc.robot.subsystems.*;
+import io.github.pseudoresonance.pixy2api.Pixy2CCC;
 import lib.Loggable;
 import lib.LoggableCommand;
 import lib.MotorFaultLogger;
@@ -61,6 +62,7 @@ public class RobotContainer {
     public final LauncherSubsystem m_launcherSubsystem;
     public final IntakeSubsystem m_intakeSubsystem;
     public final HoodSubsystem m_hoodSubsystem;
+    public final PixySubsystem m_pixySubsystem;
     private final SendableChooser<LoggableCommand> autoChooser;
     public BadLog log;
     public File logFile;
@@ -86,9 +88,11 @@ public class RobotContainer {
         m_intakeSubsystem = new IntakeSubsystem();
         m_PreLaunch = new PreLaunchSubsystem();
         m_hoodSubsystem = new HoodSubsystem();
+        m_pixySubsystem = new PixySubsystem();
         PDPSubsystem m_PDPSubsystem = new PDPSubsystem();
         autoChooser.setDefaultOption("Barrel Racer", new AutoNavCommand(m_robotDrive, "BarrelRacer"));
         autoChooser.addOption("Bounce Course", new AutoNavCommand(m_robotDrive, "BouncePath"));
+        autoChooser.addOption("Test", new AutoNavCommand(m_robotDrive, "Test"));
         autoChooser.addOption("Slalom", new AutoNavCommand(m_robotDrive, "Slalom"));
         autoChooser.addOption("GSCARed", new GalacticSearchCommand(m_robotDrive, m_intakeSubsystem, "GSAR"));
         autoChooser.addOption("GSCABlue", new GalacticSearchCommand(m_robotDrive, m_intakeSubsystem, "GSAB"));
@@ -192,6 +196,17 @@ public class RobotContainer {
         downButton.whenPressed(new InstantCommand((() -> m_robotDrive.setMaxSpeed(0.6)), m_robotDrive));
         leftButton.whenPressed(new InstantCommand((() -> m_robotDrive.setMaxSpeed(0.4)), m_robotDrive));
         m_robotDrive.setMaxSpeed(.6);
+
+        m_pixySubsystem.setDefaultCommand(new RunCommand(() -> {
+
+            Pixy2CCC.Block largestblock = m_pixySubsystem.getBiggestBlock();
+            if (largestblock == null) {
+                System.out.println("Found no blocks");
+            } else {
+                System.out.println("Block X: "+largestblock.getX()+", Block Y: "+largestblock.getY());
+
+            }
+        },m_pixySubsystem));
 
         // Configure default commands
         // Set the default drive command to split-stick arcade drive

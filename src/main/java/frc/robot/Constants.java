@@ -30,7 +30,6 @@ public class Constants {
         public static final double kGearRatio = 10.75;
         public static final double kWheelDiameterMeters = 0.15;
         public static final double kEncoderDistancePerPulse =
-                // Assumes the encoders are directly mounted on the wheel shafts
                 (kWheelDiameterMeters * Math.PI) / (kEncoderCPR * kGearRatio);
 
         // These are example values only - DO NOT USE THESE FOR YOUR OWN ROBOT!
@@ -57,7 +56,7 @@ public class Constants {
         // Reasonable baseline values for a RAMSETE follower in units of meters and seconds
         public static final double kRamseteB = 2;
         public static final double kRamseteZeta = 0.7;
-        public static final double kMaxSpeedMetersPerSecond = 1;
+        public static final double kMaxSpeedMetersPerSecond = 1.5;
         public static final double kMaxAccelerationMetersPerSecondSquared = 1;
     }
 

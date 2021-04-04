@@ -104,8 +104,8 @@ public class TrajectoryCommandGenerator {
 
         List<Trajectory> trajectories = pathsArray.stream().map(
                 (TrajectoryWaypoints waypointsInfo) -> {
-                    Pose2d start = new Pose2d(waypointsInfo.start.x, waypointsInfo.start.y, Rotation2d.fromDegrees(waypointsInfo.start.theta));
-                    Pose2d end = new Pose2d(waypointsInfo.finish.x, waypointsInfo.finish.y, Rotation2d.fromDegrees(waypointsInfo.finish.theta));
+                    Pose2d start = new Pose2d(Units.feetToMeters(waypointsInfo.start.x), Units.feetToMeters(waypointsInfo.start.y), Rotation2d.fromDegrees(waypointsInfo.start.theta));
+                    Pose2d end = new Pose2d(Units.feetToMeters(waypointsInfo.finish.x), Units.feetToMeters(waypointsInfo.finish.y), Rotation2d.fromDegrees(waypointsInfo.finish.theta));
                     List<Translation2d> interiorWaypoints = Stream.of(waypointsInfo.waypoints).map((double[] waypoint) -> new Translation2d(Units.feetToMeters(waypoint[0]), Units.feetToMeters(waypoint[1]))).collect(Collectors.toList());
                     return TrajectoryGenerator.generateTrajectory(start, interiorWaypoints, end, config.setReversed(waypointsInfo.reversed));
                 }

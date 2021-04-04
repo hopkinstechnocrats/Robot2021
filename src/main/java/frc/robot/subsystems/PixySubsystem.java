@@ -18,6 +18,10 @@ public class PixySubsystem extends SubsystemBase {
         pixy.setLED(200, 30, 255);
     }
 
+    public void periodic() {
+        pixy.setLamp((byte) 1, (byte) 1);
+    }
+
     public Pixy2CCC.Block getBiggestBlock() {
         // Gets the number of "blocks", identified targets, that match signature 1 on the Pixy2,
         // does not wait for new data if none is available,

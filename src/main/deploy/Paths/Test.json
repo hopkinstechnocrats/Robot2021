@@ -1,0 +1,18 @@
+[
+  {
+    "start": {
+      "x": 0,
+      "y": 0,
+      "theta": 0
+    },
+    "finish": {
+      "x": 8.5,
+      "y": 0,
+      "theta": 0
+    },
+    "waypoints": [
+        [5, 0]
+    ],
+    "reversed": false
+  }
+]

@@ -52,7 +52,6 @@ public class Robot extends TimedRobot {
         // and running subsystem periodic() methods.  This must be called from the robot's periodic
         // block in order for anything in the Command-based framework to work.
         CommandScheduler.getInstance().run();
-        System.out.println(m_robotContainer.m_robotDrive.getHeading());
     }
 
     /**
@@ -108,9 +107,9 @@ public class Robot extends TimedRobot {
         if (m_autonomousCommand != null) {
             m_autonomousCommand.cancel();
         }
-        m_robotContainer.iacCommand = new InterstellarAccuracyCommand(m_robotContainer.m_robotDrive, "IAC", m_robotContainer.iacButton);
-        m_robotContainer.iacCommand.logInit();
-        m_robotContainer.iacButton.whenPressed(m_robotContainer.iacCommand);
+//        m_robotContainer.iacCommand = new InterstellarAccuracyCommand(m_robotContainer.m_robotDrive, "IAC", m_robotContainer.iacButton);
+//        m_robotContainer.iacCommand.logInit();
+//        m_robotContainer.iacButton.whenPressed(m_robotContainer.iacCommand);
         m_robotContainer.log.finishInitialization();
 
     }
