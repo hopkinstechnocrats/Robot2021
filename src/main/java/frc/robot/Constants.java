@@ -4,7 +4,10 @@
 
 package frc.robot;
 
+import edu.wpi.first.wpilibj.geometry.Translation2d;
 import edu.wpi.first.wpilibj.kinematics.DifferentialDriveKinematics;
+
+import java.util.HashMap;
 
 /**
  * The Constants class provides a convenient place for teams to hold robot-wide numerical or boolean
@@ -63,17 +66,18 @@ public class Constants {
     public static final class LauncherConstants {
         public static final int Motor1CANID = 5;
         public static final int Motor2CANID = 6;
-        public static final double kP = 3.25;
-        public static final double kI = 0.001;
-        public static final double kD = 0;
+        public static final double kP = 0.75;
+        public static final double kI = 0.28;
+        public static final double kD = 0.07;
         public static final double speed = 10000;
         public static final double kV = 0.427;
         public static final double kA = 0.174;
         public static final double kEncoderUnitsPerRevolution = 4096;
-        public static final double greenZoneSpeed = 20;
-        public static final double yellowZoneSpeed = 1.47;
-        public static final double blueZoneSpeed = 1.28;
-        public static final double redZoneSpeed = 1.3;
+        public static final double greenZoneSpeed = 28;
+        public static final double yellowZoneSpeed = 14.78;
+        public static final double blueZoneSpeed = 13.31;
+        public static final double redZoneSpeed = 14.70;
+
     }
 
     public static final class LimelightConstants {
@@ -89,5 +93,16 @@ public class Constants {
 
     public static final class IntakeConstants {
         public static final int MotorCANID = 8;
+    }
+
+    public static final class PixyConstants {
+        public static final HashMap<String, Translation2d> PathCoordinates;
+        static {
+            PathCoordinates = new HashMap<String, Translation2d>();
+            PathCoordinates.put("ARed", new Translation2d(0,0));
+            PathCoordinates.put("ABlue", new Translation2d(0,0));
+            PathCoordinates.put("BRed", new Translation2d(0,0));
+            PathCoordinates.put("BBlue", new Translation2d(0,0));
+        }
     }
 }

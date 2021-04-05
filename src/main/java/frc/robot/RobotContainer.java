@@ -176,6 +176,8 @@ public class RobotContainer {
                     m_hoodSubsystem.toggle();
                     System.out.println("RUNNING HOOD DEPLOY COMMAND");
                 }));
+        new JoystickButton(m_driverController, Button.kB.value)
+                .whileHeld(new SpinLauncherCommand(m_launcherSubsystem));
 
         new JoystickButton(m_operatorController, Button.kA.value)
                 .whileHeld(new ConstantSpinLauncherCommand(m_launcherSubsystem, LauncherConstants.greenZoneSpeed));
