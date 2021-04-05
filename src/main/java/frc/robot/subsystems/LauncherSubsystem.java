@@ -48,17 +48,15 @@ public class LauncherSubsystem extends SubsystemBase {
   }
 
   public void initializeLog() {
-      SlotConfiguration PIDConstants = new SlotConfiguration();
-      master.getSlotConfigs(PIDConstants, 0, 50);
-      BadLog.createValue("Launcher/kP", ""+PIDConstants.kP);
-      BadLog.createValue("Launcher/kD", ""+PIDConstants.kD);
-      BadLog.createTopic("Launcher/Target Velocity", "u/100ms", () -> master.getClosedLoopTarget(0));
-      BadLog.createTopic("Launcher/Error", "u/100ms", () -> master.getClosedLoopError(0));
-      BadLog.createTopic("Launcher/Launcher Velocity", "u/100ms", () -> master.getSelectedSensorVelocity(0));
-      BadLog.createValue("Launcher/kI", ""+PIDConstants.kI);
+    SlotConfiguration PIDConstants = new SlotConfiguration();
+    master.getSlotConfigs(PIDConstants, 0, 50);
+    BadLog.createValue("Launcher/kP", "" + PIDConstants.kP);
+    BadLog.createValue("Launcher/kD", "" + PIDConstants.kD);
+    BadLog.createTopic("Launcher/Target Velocity", "u/100ms", () -> master.getClosedLoopTarget(0));
+    BadLog.createTopic("Launcher/Error", "u/100ms", () -> master.getClosedLoopError(0));
+    BadLog.createTopic("Launcher/Launcher Velocity", "u/100ms", () -> master.getSelectedSensorVelocity(0));
+    BadLog.createValue("Launcher/kI", "" + PIDConstants.kI);
   }
-
-
 
   public void spinLauncher(double speed) {
     master.set(ControlMode.PercentOutput, speed);

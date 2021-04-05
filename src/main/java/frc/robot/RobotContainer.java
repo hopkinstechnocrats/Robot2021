@@ -111,7 +111,6 @@ public class RobotContainer {
         POVButton downButton = new POVButton(m_driverController, 180);
         POVButton leftButton = new POVButton(m_driverController, 270);
 
-
         upButton.whenPressed(new InstantCommand((() -> {
             m_robotDrive.setMaxSpeed(1);
         }), m_robotDrive));
@@ -135,75 +134,86 @@ public class RobotContainer {
                 // A split-stick arcade command, with forward/backward controlled by the left
                 // hand, and turning controlled by the right.
                 new RunCommand(() -> m_robotDrive.tankDrivePercentOutput(0 // m_driverController.getY(GenericHID.Hand.kLeft),
-                        ,0 //m_driverController.getY(GenericHID.Hand.kRight))
-        ), m_robotDrive));
+                        , 0 // m_driverController.getY(GenericHID.Hand.kRight))
+                ), m_robotDrive));
     }
 
-  public void initializeAutoLog() {
-      String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(Calendar.getInstance().getTime());
-      String filepath = "/home/lvuser/logs"+timeStamp+".bag";
+    public void initializeAutoLog() {
+        String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(Calendar.getInstance().getTime());
+        String filepath = "/home/lvuser/logs" + timeStamp + ".bag";
 
-      TimeStamp.setString(timeStamp);
+        TimeStamp.setString(timeStamp);
 
-      File file = new File(filepath);      
-      try {
-          file.createNewFile();
-          logFileWriter = new BufferedWriter(new FileWriter(file));
-      } catch (IOException e) {
-          DriverStation.reportError("File Creation error", e.getStackTrace());
-      }
-      
-      log = BadLog.init(filepath);
+        File file = new File(filepath);
+        try {
+            file.createNewFile();
+            logFileWriter = new BufferedWriter(new FileWriter(file));
+        } catch (IOException e) {
+            DriverStation.reportError("File Creation error", e.getStackTrace());
+        }
 
-      //DriveConstants
-      BadLog.createValue("DriveConstants/TrackWidthMeters", ""+Constants.DriveConstants.kTrackwidthMeters);
-      BadLog.createValue("DriveConstants/EncoderCPR", ""+Constants.DriveConstants.kEncoderCPR);
-      BadLog.createValue("DriveConstants/GearRatio", ""+Constants.DriveConstants.kGearRatio);
-      BadLog.createValue("DriveConstants/WheelDiameterMeters", ""+Constants.DriveConstants.kWheelDiameterMeters);
-      BadLog.createValue("DriveConstants/EncoderDistancePerPulse", ""+Constants.DriveConstants.kEncoderDistancePerPulse);
-      BadLog.createValue("DriveConstants/ksVolts", ""+Constants.DriveConstants.ksVolts);
-      BadLog.createValue("DriveConstants/kvVoltSecondsPerMeter", ""+Constants.DriveConstants.kvVoltSecondsPerMeter);
-      BadLog.createValue("DriveConstants/kaVoltSecondsSquaredPerMeter", ""+Constants.DriveConstants.kaVoltSecondsSquaredPerMeter);
-      BadLog.createValue("DriveConstants/kPDriveVel", ""+Constants.DriveConstants.kPDriveVel);
-      BadLog.createValue("DriveConstants/kDDriveVel", ""+Constants.DriveConstants.kDDriveVel);
+        log = BadLog.init(filepath);
 
-      //AutoConstants
-      BadLog.createValue("AutoConstants/MaxSpeedMetersPerSecond", ""+Constants.AutoConstants.kMaxSpeedMetersPerSecond);
-      BadLog.createValue("AutoConstants/MaxAccelerationMetersPerSecondSquared", ""+Constants.AutoConstants.kMaxAccelerationMetersPerSecondSquared);
-      BadLog.createValue("AutoConstants/RamseteB", ""+Constants.AutoConstants.kRamseteB);
-      BadLog.createValue("AutoConstants/RamseteZeta", ""+Constants.AutoConstants.kRamseteZeta);
+        // DriveConstants
+        BadLog.createValue("DriveConstants/TrackWidthMeters", "" + Constants.DriveConstants.kTrackwidthMeters);
+        BadLog.createValue("DriveConstants/EncoderCPR", "" + Constants.DriveConstants.kEncoderCPR);
+        BadLog.createValue("DriveConstants/GearRatio", "" + Constants.DriveConstants.kGearRatio);
+        BadLog.createValue("DriveConstants/WheelDiameterMeters", "" + Constants.DriveConstants.kWheelDiameterMeters);
+        BadLog.createValue("DriveConstants/EncoderDistancePerPulse",
+                "" + Constants.DriveConstants.kEncoderDistancePerPulse);
+        BadLog.createValue("DriveConstants/ksVolts", "" + Constants.DriveConstants.ksVolts);
+        BadLog.createValue("DriveConstants/kvVoltSecondsPerMeter", "" + Constants.DriveConstants.kvVoltSecondsPerMeter);
+        BadLog.createValue("DriveConstants/kaVoltSecondsSquaredPerMeter",
+                "" + Constants.DriveConstants.kaVoltSecondsSquaredPerMeter);
+        BadLog.createValue("DriveConstants/kPDriveVel", "" + Constants.DriveConstants.kPDriveVel);
+        BadLog.createValue("DriveConstants/kDDriveVel", "" + Constants.DriveConstants.kDDriveVel);
 
-      BadLog.createTopic("FPGA Time", "s", () -> Timer.getFPGATimestamp(), "xaxis");
-      BadLog.createTopic("Drivetrain/Odometry Pose X", "m", () -> m_robotDrive.getPose().getX(), "join:Drivetrain/Robot Pose X");
-      BadLog.createTopic("Drivetrain/Odometry Pose Y", "m", () -> m_robotDrive.getPose().getY(), "join:Drivetrain/Robot Pose Y");
-      BadLog.createTopic("Drivetrain/Odometry Pose Heading", "degrees", () -> m_robotDrive.getPose().getRotation().getDegrees(), "join:Drivetrain/Robot Pose Heading");
-      BadLog.createTopic("Drivetrain/Left Wheel Measured Speed", "m/s", () -> m_robotDrive.getWheelSpeeds().leftMetersPerSecond, "join:Drivetrain/LeftWheelSpeed");
-      BadLog.createTopic("Drivetrain/Right Wheel Measured Speed", "m/s", () -> m_robotDrive.getWheelSpeeds().rightMetersPerSecond, "join:Drivetrain/RightWheelSpeed");
-      BadLog.createTopic("Drivetrain/Left Wheel Setpoint", "m/s" ,() -> leftPIDController.getSetpoint(), "join:Drivetrain/LeftWheelSpeed");
-      BadLog.createTopic("Drivetrain/Right Wheel Setpoint", "m/s", () -> rightPIDController.getSetpoint(), "join:Drivetrain/RightWheelSpeed");
-      BadLog.createTopic("Battery Voltage", "V", () -> RobotController.getBatteryVoltage());
+        // AutoConstants
+        BadLog.createValue("AutoConstants/MaxSpeedMetersPerSecond",
+                "" + Constants.AutoConstants.kMaxSpeedMetersPerSecond);
+        BadLog.createValue("AutoConstants/MaxAccelerationMetersPerSecondSquared",
+                "" + Constants.AutoConstants.kMaxAccelerationMetersPerSecondSquared);
+        BadLog.createValue("AutoConstants/RamseteB", "" + Constants.AutoConstants.kRamseteB);
+        BadLog.createValue("AutoConstants/RamseteZeta", "" + Constants.AutoConstants.kRamseteZeta);
 
-      //Gyro Data
-      BadLog.createTopic("NavX/WorldLinearAccelX", "m/s^2", () -> (double) m_robotDrive.navX.getWorldLinearAccelX());
-      BadLog.createTopic("NavX/WorldLinearAccelY", "m/s^2", () -> (double) m_robotDrive.navX.getWorldLinearAccelX());
-      BadLog.createTopic("NavX/WorldLinearAccelZ", "m/s^2", () -> (double) m_robotDrive.navX.getWorldLinearAccelX());
-      BadLog.createTopic("NavX/RawAccelX", "m/s^2", () -> (double) m_robotDrive.navX.getRawAccelX());
-      BadLog.createTopic("NavX/RawAccelY", "m/s^2", () -> (double) m_robotDrive.navX.getRawAccelX());
-      BadLog.createTopic("NavX/RawAccelZ", "m/s^2", () -> (double) m_robotDrive.navX.getRawAccelX());
+        BadLog.createTopic("FPGA Time", "s", () -> Timer.getFPGATimestamp(), "xaxis");
+        BadLog.createTopic("Drivetrain/Odometry Pose X", "m", () -> m_robotDrive.getPose().getX(),
+                "join:Drivetrain/Robot Pose X");
+        BadLog.createTopic("Drivetrain/Odometry Pose Y", "m", () -> m_robotDrive.getPose().getY(),
+                "join:Drivetrain/Robot Pose Y");
+        BadLog.createTopic("Drivetrain/Odometry Pose Heading", "degrees",
+                () -> m_robotDrive.getPose().getRotation().getDegrees(), "join:Drivetrain/Robot Pose Heading");
+        BadLog.createTopic("Drivetrain/Left Wheel Measured Speed", "m/s",
+                () -> m_robotDrive.getWheelSpeeds().leftMetersPerSecond, "join:Drivetrain/LeftWheelSpeed");
+        BadLog.createTopic("Drivetrain/Right Wheel Measured Speed", "m/s",
+                () -> m_robotDrive.getWheelSpeeds().rightMetersPerSecond, "join:Drivetrain/RightWheelSpeed");
+        BadLog.createTopic("Drivetrain/Left Wheel Setpoint", "m/s", () -> leftPIDController.getSetpoint(),
+                "join:Drivetrain/LeftWheelSpeed");
+        BadLog.createTopic("Drivetrain/Right Wheel Setpoint", "m/s", () -> rightPIDController.getSetpoint(),
+                "join:Drivetrain/RightWheelSpeed");
+        BadLog.createTopic("Battery Voltage", "V", () -> RobotController.getBatteryVoltage());
 
-      BadLog.createTopicStr("Drivetrain/Motor Faults", BadLog.UNITLESS, m_robotDrive::getMotorFaultsStr, "log");
-      PDP = new PowerDistributionPanel();
+        // Gyro Data
+        BadLog.createTopic("NavX/WorldLinearAccelX", "m/s^2", () -> (double) m_robotDrive.navX.getWorldLinearAccelX());
+        BadLog.createTopic("NavX/WorldLinearAccelY", "m/s^2", () -> (double) m_robotDrive.navX.getWorldLinearAccelX());
+        BadLog.createTopic("NavX/WorldLinearAccelZ", "m/s^2", () -> (double) m_robotDrive.navX.getWorldLinearAccelX());
+        BadLog.createTopic("NavX/RawAccelX", "m/s^2", () -> (double) m_robotDrive.navX.getRawAccelX());
+        BadLog.createTopic("NavX/RawAccelY", "m/s^2", () -> (double) m_robotDrive.navX.getRawAccelX());
+        BadLog.createTopic("NavX/RawAccelZ", "m/s^2", () -> (double) m_robotDrive.navX.getRawAccelX());
 
-      for(int i = 0; i <=15; i++){
-        final int j = i;
-        BadLog.createTopic("PDP/PDP"+j+" Current", "Amperes", () -> PDP.getCurrent(j));
-      }
-      BadLog.createTopic("PDP/PDP Temp", "Celsius", () -> PDP.getTemperature());
-      BadLog.createTopic("PDP/PDP Total Current", "Amperes", () -> PDP.getTotalCurrent());
-      BadLog.createTopic("PDP/PDP Total Energy", "Joules", () -> PDP.getTotalEnergy());
-      BadLog.createTopic("PDP/PDP Total Power", "Watts", () -> PDP.getTotalPower());
-      BadLog.createTopic("PDP/PDP Input Voltage", "Volts", () -> PDP.getVoltage());
-  }
+        BadLog.createTopicStr("Drivetrain/Motor Faults", BadLog.UNITLESS, m_robotDrive::getMotorFaultsStr, "log");
+        PDP = new PowerDistributionPanel();
+
+        for (int i = 0; i <= 15; i++) {
+            final int j = i;
+            BadLog.createTopic("PDP/PDP" + j + " Current", "Amperes", () -> PDP.getCurrent(j));
+        }
+        BadLog.createTopic("PDP/PDP Temp", "Celsius", () -> PDP.getTemperature());
+        BadLog.createTopic("PDP/PDP Total Current", "Amperes", () -> PDP.getTotalCurrent());
+        BadLog.createTopic("PDP/PDP Total Energy", "Joules", () -> PDP.getTotalEnergy());
+        BadLog.createTopic("PDP/PDP Total Power", "Watts", () -> PDP.getTotalPower());
+        BadLog.createTopic("PDP/PDP Input Voltage", "Volts", () -> PDP.getVoltage());
+    }
 
     /**
      * Use this method to define your button->command mappings. Buttons can be
@@ -212,6 +222,7 @@ public class RobotContainer {
      * calling passing it to a {@link JoystickButton}.
      */
     static double speed = 1;
+
     private void configureButtonBindings() {
         // Drive at half speed when the right bumper is held
         new JoystickButton(m_driverController, Button.kBumperRight.value)
@@ -220,20 +231,18 @@ public class RobotContainer {
         new JoystickButton(m_driverController, Button.kBumperLeft.value)
                 .whenPressed(() -> m_robotDrive.setMaxOutput(0.8));
 
-        
         new JoystickButton(m_driverController, Button.kA.value)
                 .whileHeld(new RunCommand(() -> m_launcherSubsystem.spinLauncher(LauncherConstants.speed)));
 
         new JoystickButton(m_driverController, Button.kY.value)
                 .whenPressed(new RunCommand(() -> m_robotDrive._Orchestra.play(), m_robotDrive));
-    
-        m_launcherSubsystem.setDefaultCommand(new RunCommand(() -> m_launcherSubsystem.spinLauncher(0), m_launcherSubsystem));
 
-        new JoystickButton(m_driverController, Button.kB.value)
-                .whileHeld(() -> m_PreLaunch.spin(1), m_PreLaunch);
+        m_launcherSubsystem
+                .setDefaultCommand(new RunCommand(() -> m_launcherSubsystem.spinLauncher(0), m_launcherSubsystem));
+
+        new JoystickButton(m_driverController, Button.kB.value).whileHeld(() -> m_PreLaunch.spin(1), m_PreLaunch);
 
         m_PreLaunch.setDefaultCommand(new RunCommand(() -> m_PreLaunch.spin(0), m_PreLaunch));
-
 
     }
 
@@ -243,14 +252,17 @@ public class RobotContainer {
      * @return the command to run in autonomous
      */
     public Command getAutonomousCommand() {
-        
+
         ArrayList<Trajectory> exampleTrajectory = new ArrayList<Trajectory>();
         AutoCourses autoCourses = new AutoCourses();
-        
+
         exampleTrajectory = autoCourses.getBarrelRacer();
-        BadLog.createTopicSubscriber("Drivetrain/Trajectory Pose X", "m", DataInferMode.DEFAULT, "join:Drivetrain/Robot Pose X");
-        BadLog.createTopicSubscriber("Drivetrain/Trajectory Pose Y", "m", DataInferMode.DEFAULT, "join:Drivetrain/Robot Pose Y");
-        BadLog.createTopicSubscriber("Drivetrain/Trajectory Pose Heading", "m", DataInferMode.DEFAULT, "join:Drivetrain/Robot Pose Heading");
+        BadLog.createTopicSubscriber("Drivetrain/Trajectory Pose X", "m", DataInferMode.DEFAULT,
+                "join:Drivetrain/Robot Pose X");
+        BadLog.createTopicSubscriber("Drivetrain/Trajectory Pose Y", "m", DataInferMode.DEFAULT,
+                "join:Drivetrain/Robot Pose Y");
+        BadLog.createTopicSubscriber("Drivetrain/Trajectory Pose Heading", "m", DataInferMode.DEFAULT,
+                "join:Drivetrain/Robot Pose Heading");
 
         Command startClockCommand = new InstantCommand(() -> {
             this.startAutoTime = Timer.getFPGATimestamp();
@@ -264,24 +276,27 @@ public class RobotContainer {
             System.out.println("Elapsed Time: " + elapsedTime);
             SmartDashboard.putNumber("Elapsed Auto Time", elapsedTime);
             try {
-                logFileWriter.append("{\"elapsed_auto_time\":"+elapsedTime+"}");
+                logFileWriter.append("{\"elapsed_auto_time\":" + elapsedTime + "}");
             } catch (IOException e) {
                 DriverStation.reportError("Cannot write auto time", e.getStackTrace());
             }
         }, m_robotDrive);
 
-
         ArrayList<RamseteCommand> RamseteCommandList;
-        
-        RamseteCommandList = TrajectoryCommandGenerator.getTrajectoryCommand(exampleTrajectory, m_robotDrive, leftPIDController, rightPIDController);
-/*
-        RamseteCommand ramseteCommand = new RamseteCommand(exampleTrajectory, m_robotDrive::getPose,
-                new RamseteController(AutoConstants.kRamseteB, AutoConstants.kRamseteZeta),
-                new SimpleMotorFeedforward(DriveConstants.ksVolts, DriveConstants.kvVoltSecondsPerMeter,
-                        DriveConstants.kaVoltSecondsSquaredPerMeter),
-                DriveConstants.kDriveKinematics, m_robotDrive::getWheelSpeeds, leftPIDController, rightPIDController,
-                // RamseteCommand passes volts to the callback
-                m_robotDrive::tankDriveVolts, m_robotDrive);*/
+
+        RamseteCommandList = TrajectoryCommandGenerator.getTrajectoryCommand(exampleTrajectory, m_robotDrive,
+                leftPIDController, rightPIDController);
+        /*
+         * RamseteCommand ramseteCommand = new RamseteCommand(exampleTrajectory,
+         * m_robotDrive::getPose, new RamseteController(AutoConstants.kRamseteB,
+         * AutoConstants.kRamseteZeta), new
+         * SimpleMotorFeedforward(DriveConstants.ksVolts,
+         * DriveConstants.kvVoltSecondsPerMeter,
+         * DriveConstants.kaVoltSecondsSquaredPerMeter),
+         * DriveConstants.kDriveKinematics, m_robotDrive::getWheelSpeeds,
+         * leftPIDController, rightPIDController, // RamseteCommand passes volts to the
+         * callback m_robotDrive::tankDriveVolts, m_robotDrive);
+         */
 
         // Reset odometry to the starting pose of the trajectory.
         m_robotDrive.resetOdometry(exampleTrajectory.get(0).getInitialPose());
@@ -309,7 +324,7 @@ public class RobotContainer {
         // }, m_robotDrive);
 
         SequentialCommandGroup ramseteCommandGroup = new SequentialCommandGroup();
-        for(RamseteCommand b:RamseteCommandList){
+        for (RamseteCommand b : RamseteCommandList) {
             ramseteCommandGroup.addCommands(b);
         }
 

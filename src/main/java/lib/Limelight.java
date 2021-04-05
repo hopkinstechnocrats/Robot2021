@@ -1,5 +1,6 @@
 package lib;
 
+import edu.wpi.first.networktables.NetworkTableInstance;
 import frc.robot.Constants.LimelightConstants;
 
 public class Limelight {
@@ -8,12 +9,13 @@ public class Limelight {
         return tv == 1;
     }
 
-    static double getDistanceFromTarget() {
+    public static double getDistanceFromTarget() {
         double ty = NetworkTableInstance.getDefault().getTable("limelight").getEntry("ty").getDouble(0);
-        return (limelightConstants.powerPortDistanceToGround-limelightConstants.limelightDistanceToGround) / tan(ty+LimelightConstants.mountingAngle);
+        return (LimelightConstants.powerPortDistanceToGround - LimelightConstants.limelightDistanceToGround)
+                / Math.tan(ty + LimelightConstants.mountingAngle);
     }
 
-    static double getAngleFromTarget() {
-      return NetworkTableInstance.getDefault().getTable("limelight").getEntry("tx").getDouble(0);
+    public static double getAngleFromTarget() {
+        return NetworkTableInstance.getDefault().getTable("limelight").getEntry("tx").getDouble(0);
     }
 }
