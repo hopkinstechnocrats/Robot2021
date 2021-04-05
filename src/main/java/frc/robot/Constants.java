@@ -5,6 +5,7 @@
 package frc.robot;
 
 import edu.wpi.first.networktables.NetworkTableEntry;
+import edu.wpi.first.wpilibj.geometry.Translation2d;
 import edu.wpi.first.wpilibj.kinematics.DifferentialDriveKinematics;
 
 /**
@@ -51,6 +52,7 @@ public class Constants {
     // Example value only - as above, this must be tuned for your drive!
     public static final double kPDriveVel = 1.9;
     public static final double kDDriveVel = 0;
+    public static final double robotLengthFeet = 35/12;
   }
 
   public static final class OIConstants {
@@ -66,6 +68,14 @@ public class Constants {
     public static final double kRamseteZeta = 0.7;
   }
 
+  public static final class InterstellarAccuracyConstants {
+    public static Translation2d GreenZoneFeet = new Translation2d(10-DriveConstants.robotLengthFeet/2, 7.5);
+    public static Translation2d YellowZoneFeet = new Translation2d(15-DriveConstants.robotLengthFeet/2, 7.5);
+    public static Translation2d BlueZoneFeet = new Translation2d(20-DriveConstants.robotLengthFeet/2, 7.5);
+    public static Translation2d RedZoneFeet = new Translation2d(25-DriveConstants.robotLengthFeet/2, 7.5);
+    public static Translation2d ReintroductionZone = new Translation2d(25+DriveConstants.robotLengthFeet/2, 7.5);
+  }
+
   public static final class LauncherConstants {
       public static final int Motor1CANID = 5;
       public static final int Motor2CANID = 6;
@@ -73,6 +83,7 @@ public class Constants {
       public static final double kI = 0.001;
       public static final double kD = 60;
       public static final double speed = 10000;
+      public static final double kEncoderUnitsPerRevolution = 100;
   }
 
   public static final class LimelightConstants {
@@ -85,5 +96,9 @@ public class Constants {
   public static final class PreLaunchConstants{
     public static final int Motor1CANID = 7;
     public static final double SpeedMetersPerSecond = 2;
+  }
+
+  public static final class IntakeConstants {
+    public static final int MotorCANID = 8;
   }
 }

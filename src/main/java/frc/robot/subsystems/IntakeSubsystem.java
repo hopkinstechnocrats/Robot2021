@@ -1,17 +1,38 @@
 package frc.robot.subsystems;
 
+import javax.sound.midi.VoiceStatus;
+
+import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonFX;
 
+import edu.wpi.first.wpilibj.Solenoid;
+import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.Constants.IntakeConstants;
 
 public class IntakeSubsystem extends SubsystemBase {
-    private final WPI_TalonFX motor;
+    WPI_TalonFX Motor;
+    Boolean isDeployed;
+    Solenoid solenoid;
 
-    public IntakeSubsystem(int motorID) {
-        this.motor = new WPI_TalonFX(motorID);
+    public IntakeSubsystem() {
+        Motor = new WPI_TalonFX(IntakeConstants.MotorCANID);
+        solenoid = new Solenoid(0);
+        isDeployed = false;
     }
 
-    public void spin(double newSpeed) {
-        motor.set(newSpeed);
+    @Override
+    public void periodic() {
+        solenoid.set(isDeployed);
+    }
+
+    public void spin(double speed) {
+        Motor.set(speed);
+    }
+
+    public void toggle() {
+        isDeployed = !isDeployed;
+        System.out.println("SETTING TRUE");
+        solenoid.set(isDeployed);
     }
 }

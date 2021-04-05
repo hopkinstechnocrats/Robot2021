@@ -2,8 +2,10 @@ package lib;
 
 import edu.wpi.first.networktables.NetworkTableInstance;
 import frc.robot.Constants.LimelightConstants;
+import edu.wpi.first.networktables.NetworkTableInstance;
 
 public class Limelight {
+
     static boolean isTargetVisible() {
         double tv = NetworkTableInstance.getDefault().getTable("limelight").getEntry("tv").getDouble(0);
         return tv == 1;

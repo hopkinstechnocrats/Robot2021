@@ -38,6 +38,7 @@ import com.ctre.phoenix.music.Orchestra;
 import edu.wpi.first.wpilibj.SPI;
 
 public class DriveSubsystem extends SubsystemBase {
+  
   public Orchestra _Orchestra;
   // The motors on the left side of the drive.
   private final WPI_TalonFX m_leftMotors = new WPI_TalonFX(DriveConstants.kLeftMotor1Port);
@@ -59,6 +60,7 @@ public class DriveSubsystem extends SubsystemBase {
   public AHRS navX = new AHRS(SPI.Port.kMXP);
   public final Gyro m_gyro = navX;
 
+  Collection<TalonFX> _fxes = new ArrayList<TalonFX>();
   private Field2d m_field;
   // Odometry class for tracking robot pose
   private final DifferentialDriveOdometry m_odometry;
@@ -78,6 +80,11 @@ public class DriveSubsystem extends SubsystemBase {
   /** Creates a new DriveSubsystem. */
   public DriveSubsystem() {
     // Sets the distance per pulse for the encoders
+
+    _fxes.add(m_leftMotors);
+    _fxes.add(m_leftFollower);
+    _fxes.add(m_rightMotors);
+    _fxes.add(m_rightFollower);
     resetEncoders();
     m_odometry = new DifferentialDriveOdometry(m_gyro.getRotation2d());
     m_rightFollower.follow(m_rightMotors);
