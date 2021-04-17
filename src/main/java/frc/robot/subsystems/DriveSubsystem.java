@@ -14,6 +14,7 @@ import edu.wpi.first.wpilibj.SPI;
 import edu.wpi.first.wpilibj.SerialPort;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.controller.PIDController;
+import edu.wpi.first.wpilibj.controller.SimpleMotorFeedforward;
 import edu.wpi.first.wpilibj.drive.DifferentialDrive;
 import edu.wpi.first.wpilibj.geometry.Pose2d;
 import edu.wpi.first.wpilibj.interfaces.Gyro;
@@ -33,6 +34,8 @@ public class DriveSubsystem extends SubsystemBase implements Loggable {
     // The motors on the left side of the drive.
     private final WPI_TalonFX m_leftMaster = new WPI_TalonFX(DriveConstants.kLeftMotor1Port);
     private final WPI_TalonFX m_leftFollower = new WPI_TalonFX(DriveConstants.kLeftMotor2Port);
+    public SimpleMotorFeedforward feedForward =  new SimpleMotorFeedforward(DriveConstants.ksVolts, DriveConstants.kvVoltSecondsPerMeter,
+    DriveConstants.kaVoltSecondsSquaredPerMeter);
 
     // The motors on the right side of the drive.
     private final WPI_TalonFX m_rightMaster = new WPI_TalonFX(DriveConstants.kRightMotor1Port);
@@ -193,6 +196,24 @@ public class DriveSubsystem extends SubsystemBase implements Loggable {
         m_leftMaster.setVoltage(leftVolts);
         m_rightMaster.setVoltage(-rightVolts);
         m_drive.feed();
+    }
+
+    public void GoForwards(double speed) {
+        double currentLeftRPM = 10 * m_leftMaster.getSelectedSensorVelocity(0) / DriveConstants.kEncoderCPR;
+        double LeftmotorVoltage = leftPIDController.calculate(currentLeftRPM, speed) + feedForward.calculate(speed);
+        m_leftMaster.setVoltage(LeftmotorVoltage);
+
+        double currentRightRPM = 10 * m_rightMaster.getSelectedSensorVelocity(0) / DriveConstants.kEncoderCPR;
+        double RightmotorVoltage = rightPIDController.calculate(currentRightRPM, speed) + feedForward.calculate(speed);
+        m_rightMaster.setVoltage(RightmotorVoltage);
+        
+        SmartDashboard.putNumber("Drivetrain/Right Target Velocity", rightPIDController.getSetpoint());
+        SmartDashboard.putNumber("Drivetrain/Right Error", rightPIDController.getPositionError()); // Actually velocity error
+        SmartDashboard.putNumber("Drivetrain/Right Velocity", currentRightRPM);
+
+        SmartDashboard.putNumber("Drivetrain/Left Target Velocity", leftPIDController.getSetpoint());
+        SmartDashboard.putNumber("Drivetrain/Left Error", leftPIDController.getPositionError()); // Actually velocity error
+        SmartDashboard.putNumber("Drivetrain/Left Velocity", currentLeftRPM);
     }
 
     /**

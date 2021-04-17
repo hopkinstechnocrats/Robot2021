@@ -188,6 +188,9 @@ public class RobotContainer {
         new JoystickButton(m_operatorController, Button.kB.value)
                 .whileHeld(new ConstantSpinLauncherCommand(m_launcherSubsystem, LauncherConstants.redZoneSpeed));
 
+        new JoystickButton(m_operatorController, Button.kBumperRight.value)
+                .whileHeld(new GoForwardSlowly(m_robotDrive));
+
         POVButton upButton = new POVButton(m_driverController, 0);
         POVButton rightButton = new POVButton(m_driverController, 90);
         POVButton downButton = new POVButton(m_driverController, 180);

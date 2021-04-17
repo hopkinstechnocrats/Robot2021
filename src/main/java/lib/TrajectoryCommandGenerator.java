@@ -34,14 +34,6 @@ import java.util.stream.Stream;
 
 public class TrajectoryCommandGenerator {
 
-    public static final DifferentialDriveVoltageConstraint autoVoltageConstraint = new DifferentialDriveVoltageConstraint(
-            new SimpleMotorFeedforward(DriveConstants.ksVolts, DriveConstants.kvVoltSecondsPerMeter,
-                    DriveConstants.kaVoltSecondsSquaredPerMeter),
-            DriveConstants.kDriveKinematics, 10);
-
-    public static final TrajectoryConfig config = new TrajectoryConfig(AutoConstants.kMaxSpeedMetersPerSecond, AutoConstants.kMaxAccelerationMetersPerSecondSquared).setKinematics(DriveConstants.kDriveKinematics)
-            .addConstraint(autoVoltageConstraint);
-
     public static List<Command> getTrajectoryCommand(List<Trajectory> exampleTrajectory,
                                                      DriveSubsystem robotDrive, PIDController leftPIDController, PIDController rightPIDController) {
         ArrayList<Command> RamseteCommandList = new ArrayList<>();
@@ -68,6 +60,11 @@ public class TrajectoryCommandGenerator {
     public static List<Command> getTrajectoryCommand(String trajectoryName, DriveSubsystem robotDrive, PIDController leftPIDController, PIDController rightPIDController) {
         Path trajectoryPath = Filesystem.getDeployDirectory().toPath().resolve("Paths/" + trajectoryName + ".json");
         String trajectoryInfo = "";
+        DifferentialDriveVoltageConstraint autoVoltageConstraint = new DifferentialDriveVoltageConstraint(
+            robotDrive.feedForward,
+            DriveConstants.kDriveKinematics, 10);
+        TrajectoryConfig config = new TrajectoryConfig(AutoConstants.kMaxSpeedMetersPerSecond, AutoConstants.kMaxAccelerationMetersPerSecondSquared).setKinematics(DriveConstants.kDriveKinematics)
+            .addConstraint(autoVoltageConstraint);
         try {
             trajectoryInfo = Files.readString(trajectoryPath);
         } catch (IOException e) {

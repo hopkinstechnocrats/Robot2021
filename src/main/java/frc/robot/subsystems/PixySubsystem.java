@@ -27,8 +27,8 @@ public class PixySubsystem extends SubsystemBase {
 
     public void periodic() {
         pixy.setLamp((byte) 1, (byte) 1);
-        updatePath();
-        SmartDashboard.putString("GSCPathDetermination", getCurrentPath());
+        // updatePath();
+        // SmartDashboard.putString("GSCPathDetermination", getCurrentPath());
     }
 
     public void updatePath() {
