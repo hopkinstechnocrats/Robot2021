@@ -5,7 +5,7 @@ import java.util.HashMap;
 public class LinearInterpolation {
     public static double speed;
 
-    public static void LinearInterpolation(){
+    public static void LinearInterpolation() {
         /*
             get percent difference of distance, and figure that out with speed
             Numbers will be meters
@@ -24,7 +24,7 @@ public class LinearInterpolation {
         */
     }
 
-    public static double getLinearInterpolation(HashMap hashMap, double distance){
+    public static double getLinearInterpolation(HashMap hashMap, double distance) {
         return speed;
     }
 }

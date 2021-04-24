@@ -15,12 +15,13 @@
 // import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 
 // public class InterstellarAccuracyDriveCommand extends CommandBase {
-//     public static Command getInstance(JoystickButton waitButton, DriveSubsystem driveSubsystem, PIDController left, PIDController right) {
+//     public static Command getInstance(JoystickButton waitButton, DriveSubsystem driveSubsystem, PIDController left,
+//             PIDController right) {
 //         ArrayList<Trajectory> trajectories = AutoCourses.getIAC();
-//         Command[] trajectoryCommands = TrajectoryCommandGenerator.getTrajectoryCommand(trajectories, driveSubsystem, left, right).toArray(new Command[14]);
+//         Command[] trajectoryCommands = TrajectoryCommandGenerator
+//                 .getTrajectoryCommand(trajectories, driveSubsystem, left, right).toArray(new Command[14]);
 //         return new SequentialCommandGroup(
-//             new InstantCommand(() -> driveSubsystem.resetOdometry(trajectories.get(0).getInitialPose())),
-//             DelayedSequentialCommandGroupFactory.get(
-//             waitButton, trajectoryCommands));
+//                 new InstantCommand(() -> driveSubsystem.resetOdometry(trajectories.get(0).getInitialPose())),
+//                 DelayedSequentialCommandGroupFactory.get(waitButton, trajectoryCommands));
 //     }
 // }
