@@ -39,7 +39,7 @@ public class GalacticSearchCommand extends ParallelDeadlineGroup implements Logg
             System.out.println("Elapsed Time: " + elapsedTime);
             SmartDashboard.putNumber("Elapsed Auto Time", elapsedTime);
         }, subsystem);
-        Command spinIntake = new RunCommand(() -> intake.spin(-.8));
+        Command spinIntake = new RunCommand(() -> intake.spin(-1));
         setDeadline(new SequentialCommandGroup(startClockCommand, new SequentialCommandGroup(driveCommands.toArray(new Command[0])), stopClockCommand));
         addCommands(new SequentialCommandGroup(new InstantCommand(intake::toggle, intake), spinIntake));
     }
