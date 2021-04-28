@@ -6,11 +6,13 @@ package frc.robot;
 
 import edu.wpi.first.networktables.NetworkTableEntry;
 import edu.wpi.first.networktables.NetworkTableInstance;
+import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.PowerDistributionPanel;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.commands.InterstellarAccuracyCommand;
+import jdk.jfr.StackTrace;
 import lib.LoggableCommand;
 
 /**
@@ -60,6 +62,7 @@ public class Robot extends TimedRobot {
      */
     @Override
     public void disabledInit() {
+        // DriverStation.reportError("exception to restart robot code", null);
     }
 
     @Override

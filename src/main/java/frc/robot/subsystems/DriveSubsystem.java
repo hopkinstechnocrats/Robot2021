@@ -154,6 +154,8 @@ public class DriveSubsystem extends SubsystemBase implements Loggable {
      * @return The current wheel speeds.
      */
     public DifferentialDriveWheelSpeeds getWheelSpeeds() {
+        SmartDashboard.putNumber("left encoder speed", m_leftEncoder.getSelectedSensorVelocity());
+        SmartDashboard.putNumber("right encoder speed", m_rightEncoder.getSelectedSensorVelocity());
         return new DifferentialDriveWheelSpeeds(m_leftEncoder.getSelectedSensorVelocity() * DriveConstants.kEncoderDistancePerPulse * 10, m_rightEncoder.getSelectedSensorVelocity() * DriveConstants.kEncoderDistancePerPulse * -10);
     }
 
@@ -199,11 +201,11 @@ public class DriveSubsystem extends SubsystemBase implements Loggable {
     }
 
     public void GoForwards(double speed) {
-        double currentLeftRPM = 10 * m_leftMaster.getSelectedSensorVelocity(0) / DriveConstants.kEncoderCPR;
+        double currentLeftRPM = getWheelSpeeds().leftMetersPerSecond;
         double LeftmotorVoltage = leftPIDController.calculate(currentLeftRPM, speed) + feedForward.calculate(speed);
-        m_leftMaster.setVoltage(LeftmotorVoltage);
+        m_leftMaster.setVoltage(-1*LeftmotorVoltage);
 
-        double currentRightRPM = 10 * m_rightMaster.getSelectedSensorVelocity(0) / DriveConstants.kEncoderCPR;
+        double currentRightRPM = getWheelSpeeds().rightMetersPerSecond;
         double RightmotorVoltage = rightPIDController.calculate(currentRightRPM, speed) + feedForward.calculate(speed);
         m_rightMaster.setVoltage(RightmotorVoltage);
         

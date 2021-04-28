@@ -45,7 +45,7 @@ public class Constants {
         public static final double kaVoltSecondsSquaredPerMeter = 0.0956;
 
         // Example value only - as above, this must be tuned for your drive!
-        public static final double kPDriveVel = 2.2;
+        public static final double kPDriveVel = .56;
         public static final double kDDriveVel = 0;
         public static final double robotLengthFeet = 35d / 12d;
     }
@@ -59,8 +59,8 @@ public class Constants {
         // Reasonable baseline values for a RAMSETE follower in units of meters and seconds
         public static final double kRamseteB = 2;
         public static final double kRamseteZeta = 0.7;
-        public static final double kMaxSpeedMetersPerSecond = 1.5;
-        public static final double kMaxAccelerationMetersPerSecondSquared = 1;
+        public static final double kMaxSpeedMetersPerSecond = 1.75;
+        public static final double kMaxAccelerationMetersPerSecondSquared = 1.5;
     }
 
     public static final class LauncherConstants {
