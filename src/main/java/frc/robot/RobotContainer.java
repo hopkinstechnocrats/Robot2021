@@ -63,7 +63,7 @@ public class RobotContainer {
     public final LauncherSubsystem m_launcherSubsystem;
     public final IntakeSubsystem m_intakeSubsystem;
     public final HoodSubsystem m_hoodSubsystem;
-    public final PixySubsystem m_pixySubsystem;
+//     public final PixySubsystem m_pixySubsystem;
     private final SendableChooser<Command> autoChooser;
     public BadLog log;
     public File logFile;
@@ -89,7 +89,7 @@ public class RobotContainer {
         m_intakeSubsystem = new IntakeSubsystem();
         m_PreLaunch = new PreLaunchSubsystem();
         m_hoodSubsystem = new HoodSubsystem();
-        m_pixySubsystem = new PixySubsystem();
+        // m_pixySubsystem = new PixySubsystem();
         PDPSubsystem m_PDPSubsystem = new PDPSubsystem();
         // autoChooser.setDefaultOption("Barrel Racer", new AutoNavCommand(m_robotDrive, "BarrelRacer"));
         // autoChooser.addOption("Bounce Course", new AutoNavCommand(m_robotDrive, "BouncePath"));
@@ -206,16 +206,16 @@ public class RobotContainer {
         leftButton.whenPressed(new InstantCommand((() -> m_robotDrive.setMaxSpeed(0.4)), m_robotDrive));
         m_robotDrive.setMaxSpeed(.6);
 
-        m_pixySubsystem.setDefaultCommand(new RunCommand(() -> {
+        // m_pixySubsystem.setDefaultCommand(new RunCommand(() -> {
 
-            Pixy2CCC.Block largestblock = m_pixySubsystem.getBiggestBlock();
-            if (largestblock == null) {
-                System.out.println("Found no blocks");
-            } else {
-                System.out.println("Block X: "+largestblock.getX()+", Block Y: "+largestblock.getY());
+        //     Pixy2CCC.Block largestblock = m_pixySubsystem.getBiggestBlock();
+        //     if (largestblock == null) {
+        //         System.out.println("Found no blocks");
+        //     } else {
+        //         System.out.println("Block X: "+largestblock.getX()+", Block Y: "+largestblock.getY());
 
-            }
-        },m_pixySubsystem));
+        //     }
+        // },m_pixySubsystem));
 
         // Configure default commands
         // Set the default drive command to split-stick arcade drive
