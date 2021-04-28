@@ -14,6 +14,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
+import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import edu.wpi.first.wpilibj2.command.button.POVButton;
@@ -63,7 +64,7 @@ public class RobotContainer {
     public final IntakeSubsystem m_intakeSubsystem;
     public final HoodSubsystem m_hoodSubsystem;
     public final PixySubsystem m_pixySubsystem;
-    private final SendableChooser<LoggableCommand> autoChooser;
+    private final SendableChooser<Command> autoChooser;
     public BadLog log;
     public File logFile;
     public BufferedWriter logFileWriter;
@@ -95,7 +96,9 @@ public class RobotContainer {
         // autoChooser.addOption("Test", new AutoNavCommand(m_robotDrive, "Test"));
         // autoChooser.addOption("Slalom", new AutoNavCommand(m_robotDrive, "Slalom"));
         // autoChooser.addOption("GSCARed", new GalacticSearchCommand(m_robotDrive, m_intakeSubsystem, "GSAR"));
-         autoChooser.addOption("SnowThrower", new GalacticSearchCommand(m_robotDrive, m_intakeSubsystem, "SnowThrower"));
+         autoChooser.addOption("SnowThrower", new ParallelCommandGroup(
+                 new GalacticSearchCommand(m_robotDrive, m_intakeSubsystem, "SnowThrower"),
+                 new ShootShootCommand(m_launcherSubsystem, m_PreLaunch)));
         // autoChooser.addOption("GSCABlue", new GalacticSearchCommand(m_robotDrive, m_intakeSubsystem, "GSAB"));
         // autoChooser.addOption("GSCBRed", new GalacticSearchCommand(m_robotDrive, m_intakeSubsystem, "GSBR"));
         // autoChooser.addOption("GSCBBlue", new GalacticSearchCommand(m_robotDrive, m_intakeSubsystem, "GSBB"));
@@ -233,9 +236,9 @@ public class RobotContainer {
      * @return the command to run in autonomous
      */
 
-    public LoggableCommand getAutonomousCommand() {
-        LoggableCommand command = autoChooser.getSelected();
-        command.logInit();
+    public Command getAutonomousCommand() {
+        Command command = autoChooser.getSelected();
+//        command.logInit();
         return autoChooser.getSelected();
     }
 }
