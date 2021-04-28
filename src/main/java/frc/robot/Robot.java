@@ -9,6 +9,7 @@ import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.PowerDistributionPanel;
 import edu.wpi.first.wpilibj.TimedRobot;
+import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.commands.InterstellarAccuracyCommand;
@@ -78,8 +79,8 @@ public class Robot extends TimedRobot {
         m_robotContainer.initializeLog();
         m_autonomousCommand = m_robotContainer.getAutonomousCommand();
         m_robotContainer.log.finishInitialization();
-        m_robotContainer.m_pixySubsystem.updatePath();
-        SmartDashboard.putString("GSCPathDetermination", m_robotContainer.m_pixySubsystem.getCurrentPath());
+        // m_robotContainer.m_pixySubsystem.updatePath();
+        // SmartDashboard.putString("GSCPathDetermination", m_robotContainer.m_pixySubsystem.getCurrentPath());
 
 
         /*

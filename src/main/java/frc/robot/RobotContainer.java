@@ -64,7 +64,7 @@ public class RobotContainer {
     public final IntakeSubsystem m_intakeSubsystem;
     public final HoodSubsystem m_hoodSubsystem;
 //     public final PixySubsystem m_pixySubsystem;
-    private final SendableChooser<Command> autoChooser;
+    private final SendableChooser<LoggableCommand> autoChooser;
     public BadLog log;
     public File logFile;
     public BufferedWriter logFileWriter;
@@ -96,9 +96,7 @@ public class RobotContainer {
         // autoChooser.addOption("Test", new AutoNavCommand(m_robotDrive, "Test"));
         // autoChooser.addOption("Slalom", new AutoNavCommand(m_robotDrive, "Slalom"));
         // autoChooser.addOption("GSCARed", new GalacticSearchCommand(m_robotDrive, m_intakeSubsystem, "GSAR"));
-         autoChooser.addOption("SnowThrower", new ParallelCommandGroup(
-                 new GalacticSearchCommand(m_robotDrive, m_intakeSubsystem, "SnowThrower"),
-                 new ShootShootCommand(m_launcherSubsystem, m_PreLaunch)));
+         autoChooser.addOption("SnowThrower", new SnowThrowerCommand(m_launcherSubsystem, m_intakeSubsystem, m_PreLaunch, m_robotDrive));
         // autoChooser.addOption("GSCABlue", new GalacticSearchCommand(m_robotDrive, m_intakeSubsystem, "GSAB"));
         // autoChooser.addOption("GSCBRed", new GalacticSearchCommand(m_robotDrive, m_intakeSubsystem, "GSBR"));
         // autoChooser.addOption("GSCBBlue", new GalacticSearchCommand(m_robotDrive, m_intakeSubsystem, "GSBB"));
@@ -236,9 +234,9 @@ public class RobotContainer {
      * @return the command to run in autonomous
      */
 
-    public Command getAutonomousCommand() {
-        Command command = autoChooser.getSelected();
-//        command.logInit();
+    public LoggableCommand getAutonomousCommand() {
+        LoggableCommand command = autoChooser.getSelected();
+        command.logInit();
         return autoChooser.getSelected();
     }
 }
