@@ -9,8 +9,10 @@ import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.PowerDistributionPanel;
 import edu.wpi.first.wpilibj.TimedRobot;
+import edu.wpi.first.wpilibj.XboxController.Button;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
+import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.commands.InterstellarAccuracyCommand;
 import jdk.jfr.StackTrace;
@@ -115,6 +117,9 @@ public class Robot extends TimedRobot {
         if (m_autonomousCommand != null) {
             m_autonomousCommand.cancel();
         }
+        
+        new JoystickButton(m_robotContainer.m_driverController, Button.kX.value)
+                .whenPressed(m_robotContainer.getAutonomousCommand());
 //        m_robotContainer.iacCommand = new InterstellarAccuracyCommand(m_robotContainer.m_robotDrive, "IAC", m_robotContainer.iacButton);
 //        m_robotContainer.iacCommand.logInit();
 //        m_robotContainer.iacButton.whenPressed(m_robotContainer.iacCommand);

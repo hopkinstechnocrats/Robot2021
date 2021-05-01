@@ -12,12 +12,8 @@ import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-import edu.wpi.first.wpilibj2.command.Command;
-import edu.wpi.first.wpilibj2.command.InstantCommand;
-import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
-import edu.wpi.first.wpilibj2.command.RunCommand;
-import edu.wpi.first.wpilibj2.command.button.JoystickButton;
-import edu.wpi.first.wpilibj2.command.button.POVButton;
+import edu.wpi.first.wpilibj2.command.*;
+import edu.wpi.first.wpilibj2.command.button.*;
 import frc.robot.Constants.LauncherConstants;
 import frc.robot.Constants.OIConstants;
 import frc.robot.commands.*;
@@ -96,7 +92,7 @@ public class RobotContainer {
         // autoChooser.addOption("Test", new AutoNavCommand(m_robotDrive, "Test"));
         // autoChooser.addOption("Slalom", new AutoNavCommand(m_robotDrive, "Slalom"));
         // autoChooser.addOption("GSCARed", new GalacticSearchCommand(m_robotDrive, m_intakeSubsystem, "GSAR"));
-         autoChooser.addOption("SnowThrower", new SnowThrowerCommand(m_launcherSubsystem, m_intakeSubsystem, m_PreLaunch, m_robotDrive));
+        //  autoChooser.addOption("SnowThrower", new SnowThrowerCommand(m_launcherSubsystem, m_intakeSubsystem, m_PreLaunch, m_robotDrive));
         // autoChooser.addOption("GSCABlue", new GalacticSearchCommand(m_robotDrive, m_intakeSubsystem, "GSAB"));
         // autoChooser.addOption("GSCBRed", new GalacticSearchCommand(m_robotDrive, m_intakeSubsystem, "GSBR"));
         // autoChooser.addOption("GSCBBlue", new GalacticSearchCommand(m_robotDrive, m_intakeSubsystem, "GSBB"));
@@ -146,7 +142,6 @@ public class RobotContainer {
                 .whileHeld(new SpinLauncherCommand(m_launcherSubsystem));
 
 
-
         // new JoystickButton(m_operatorController, Button.kY.value)
         //         .whenPressed(new RunCommand(() -> m_robotDrive._Orchestra.play(), m_robotDrive));
 
@@ -190,8 +185,11 @@ public class RobotContainer {
         new JoystickButton(m_operatorController, Button.kB.value)
                 .whileHeld(new ConstantSpinLauncherCommand(m_launcherSubsystem, LauncherConstants.redZoneSpeed));
 
+        //new JoystickButton(m_operatorController, Button.kBumperRight.value)
+        //        .whileHeld(new GoForwardSlowly(m_robotDrive));
+
         new JoystickButton(m_operatorController, Button.kBumperRight.value)
-                .whileHeld(new GoForwardSlowly(m_robotDrive));
+                .whileHeld(new ConstantSpinLauncherCommand(m_launcherSubsystem, LauncherConstants.snowThrowerSpeed));
 
         POVButton upButton = new POVButton(m_driverController, 0);
         POVButton rightButton = new POVButton(m_driverController, 90);
@@ -204,6 +202,21 @@ public class RobotContainer {
         leftButton.whenPressed(new InstantCommand((() -> m_robotDrive.setMaxSpeed(0.4)), m_robotDrive));
         m_robotDrive.setMaxSpeed(.6);
 
+        POVButton operatorUpButton = new POVButton(m_operatorController, 0);
+        POVButton operatorRightButton = new POVButton(m_operatorController, 90);
+        POVButton operatorLeftButton = new POVButton(m_operatorController, 270);
+
+        operatorUpButton.whenPressed(new SequentialCommandGroup(new InstantCommand((() -> m_robotDrive.zeroHeading()), m_robotDrive), 
+                                     new SnowThrowerCommand(m_intakeSubsystem, m_robotDrive)));
+        
+        operatorLeftButton.whenPressed(new InstantCommand((() -> m_robotDrive.setDefaultCommand(
+                new RunCommand(() -> m_robotDrive.tankDrivePercentOutput(.2*m_operatorController.getX(GenericHID.Hand.kLeft),
+                -.2*m_operatorController.getX(GenericHID.Hand.kLeft)), m_robotDrive)))));
+        
+        operatorRightButton.whenPressed(new InstantCommand((() -> m_robotDrive.setDefaultCommand(
+                new RunCommand(() -> m_robotDrive.tankDrivePercentOutput(m_driverController.getY(GenericHID.Hand.kLeft),
+                m_driverController.getY(GenericHID.Hand.kRight)), m_robotDrive)))));
+        
         // m_pixySubsystem.setDefaultCommand(new RunCommand(() -> {
 
         //     Pixy2CCC.Block largestblock = m_pixySubsystem.getBiggestBlock();
@@ -235,8 +248,8 @@ public class RobotContainer {
      */
 
     public LoggableCommand getAutonomousCommand() {
-        LoggableCommand command = autoChooser.getSelected();
+        LoggableCommand command = new SnowThrowerCommand(m_intakeSubsystem, m_robotDrive);
         command.logInit();
-        return autoChooser.getSelected();
+        return command;
     }
 }

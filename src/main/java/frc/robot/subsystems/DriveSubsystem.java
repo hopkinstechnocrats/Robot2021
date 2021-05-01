@@ -79,8 +79,8 @@ public class DriveSubsystem extends SubsystemBase implements Loggable {
         m_leftFollower.follow(m_leftMaster);
         m_field = new Field2d();
         SmartDashboard.putData("Field", m_field);
-        leftPIDController = new PIDController(DriveConstants.kPDriveVel, 0, 0);
-        rightPIDController = new PIDController(DriveConstants.kPDriveVel, 0, 0);
+        leftPIDController = new PIDController(DriveConstants.kPDriveVel, DriveConstants.kIDriveVel, DriveConstants.kDDriveVel);
+        rightPIDController = new PIDController(DriveConstants.kPDriveVel, DriveConstants.kIDriveVel, DriveConstants.kDDriveVel);
         direction = true;
     }
 

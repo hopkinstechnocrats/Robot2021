@@ -10,10 +10,10 @@ import lib.LoggableCommand;
 public class SnowThrowerCommand extends ParallelCommandGroup implements LoggableCommand {
     private final LoggableCommand gscc;
 
-    public SnowThrowerCommand(LauncherSubsystem m_launcherSubsystem, IntakeSubsystem m_intakeSubsystem, PreLaunchSubsystem m_PreLaunch, DriveSubsystem m_robotDrive) {
-        gscc = new GalacticSearchCommand(m_robotDrive, m_intakeSubsystem, "SnowThrower");
-        addCommands(gscc,
-        new ShootShootCommand(m_launcherSubsystem, m_PreLaunch));
+    public SnowThrowerCommand(IntakeSubsystem m_intakeSubsystem, DriveSubsystem m_robotDrive) {
+        gscc = new GalacticSearchCommand(m_robotDrive, m_intakeSubsystem, "SnowPickerUpper");
+        addCommands(gscc);
+        //parallel(gscc, new )
     }
 
     public void logInit() {
