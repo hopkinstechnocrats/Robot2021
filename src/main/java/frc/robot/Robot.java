@@ -31,6 +31,7 @@ public class Robot extends TimedRobot {
     PowerDistributionPanel PDP;
     private LoggableCommand m_autonomousCommand;
     private RobotContainer m_robotContainer;
+    private boolean hasBeenEnabled;
 
     /**
      * This function is run when the robot is first started up and should be used for any
@@ -40,6 +41,7 @@ public class Robot extends TimedRobot {
     public void robotInit() {
         // Instantiate our RobotContainer.  This will perform all our button bindings, and put our
         // autonomous chooser on the dashboard.
+        hasBeenEnabled = false;
         m_robotContainer = new RobotContainer();
         addPeriodic(m_robotContainer.m_robotDrive::customPeriodic, 0.01, 0.01);
     }
@@ -65,7 +67,9 @@ public class Robot extends TimedRobot {
      */
     @Override
     public void disabledInit() {
-        // DriverStation.reportError("exception to restart robot code", null);
+        if (hasBeenEnabled) {
+            DriverStation.reportError("exception to restart robot code", null);
+        }
     }
 
     @Override
@@ -78,6 +82,7 @@ public class Robot extends TimedRobot {
      */
     @Override
     public void autonomousInit() {
+        hasBeenEnabled = true;
         m_robotContainer.initializeLog();
         m_autonomousCommand = m_robotContainer.getAutonomousCommand();
         m_robotContainer.log.finishInitialization();
@@ -113,6 +118,7 @@ public class Robot extends TimedRobot {
         // teleop starts running. If you want the autonomous to
         // continue until interrupted by another command, remove
         // this line or comment it out.
+        hasBeenEnabled = true;
         m_robotContainer.initializeLog();
         if (m_autonomousCommand != null) {
             m_autonomousCommand.cancel();

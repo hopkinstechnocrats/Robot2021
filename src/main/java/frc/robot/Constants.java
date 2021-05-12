@@ -45,9 +45,9 @@ public class Constants {
         public static final double kaVoltSecondsSquaredPerMeter = 0.0956;
 
         // Example value only - as above, this must be tuned for your drive!
-        public static final double kPDriveVel = 4;
-        public static final double kDDriveVel = 0;
-        public static final double kIDriveVel = 0.8; 
+        public static final double kPDriveVel = 5.56; //5.98
+        public static final double kDDriveVel = 0.0010;
+        public static final double kIDriveVel = 3.5; 
         public static final double robotLengthFeet = 35d / 12d;
     }
 
