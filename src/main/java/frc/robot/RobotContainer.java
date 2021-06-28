@@ -70,7 +70,6 @@ public class RobotContainer {
     private final List<Loggable> loggables;
     private final NetworkTable metaLogTable = getDefault().getTable("metaLog");
     private final NetworkTableEntry TimeStamp = metaLogTable.getEntry("timeStamp");
-    final JoystickButton iacButton = new JoystickButton(m_driverController, Button.kX.value);
     InterstellarAccuracyCommand iacCommand;
 
     /**
@@ -135,11 +134,11 @@ public class RobotContainer {
                 .whenPressed(() -> m_robotDrive.setMaxOutput(0.8));
 
 
-        new JoystickButton(m_operatorController, Button.kA.value)
-                .whileHeld(new RunCommand(() -> m_launcherSubsystem.spinLauncher(LauncherConstants.speed), m_launcherSubsystem));
+        // new JoystickButton(m_operatorController, Button.kA.value)
+        //         .whileHeld(new RunCommand(() -> m_launcherSubsystem.spinLauncher(LauncherConstants.speed), m_launcherSubsystem));
 
-        new JoystickButton(m_operatorController, Button.kX.value)
-                .whileHeld(new SpinLauncherCommand(m_launcherSubsystem));
+        // new JoystickButton(m_operatorController, Button.kX.value)
+        //         .whileHeld(new SpinLauncherCommand(m_launcherSubsystem));
 
 
         // new JoystickButton(m_operatorController, Button.kY.value)
@@ -173,8 +172,6 @@ public class RobotContainer {
                     m_hoodSubsystem.toggle();
                     System.out.println("RUNNING HOOD DEPLOY COMMAND");
                 }));
-        new JoystickButton(m_driverController, Button.kB.value)
-                .whileHeld(new SpinLauncherCommand(m_launcherSubsystem));
 
         new JoystickButton(m_operatorController, Button.kA.value)
                 .whileHeld(new ConstantSpinLauncherCommand(m_launcherSubsystem, LauncherConstants.greenZoneSpeed));
@@ -184,6 +181,10 @@ public class RobotContainer {
                 .whileHeld(new ConstantSpinLauncherCommand(m_launcherSubsystem, LauncherConstants.blueZoneSpeed));
         new JoystickButton(m_operatorController, Button.kB.value)
                 .whileHeld(new ConstantSpinLauncherCommand(m_launcherSubsystem, LauncherConstants.redZoneSpeed));
+        new JoystickButton(m_driverController, Button.kY.value)
+                .whileHeld(new ConstantSpinLauncherCommand(m_launcherSubsystem, LauncherConstants.blueSpecialZoneSpeed));
+        new JoystickButton(m_driverController, Button.kB.value)
+                .whileHeld(new ConstantSpinLauncherCommand(m_launcherSubsystem, LauncherConstants.blueExtraSpecialZoneSpeed));
 
         //new JoystickButton(m_operatorController, Button.kBumperRight.value)
         //        .whileHeld(new GoForwardSlowly(m_robotDrive));

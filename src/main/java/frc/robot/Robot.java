@@ -5,6 +5,7 @@
 package frc.robot;
 
 import edu.wpi.first.networktables.NetworkTableEntry;
+import com.ctre.phoenix.motorcontrol.can.WPI_TalonFX;
 import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.PowerDistributionPanel;
@@ -68,7 +69,7 @@ public class Robot extends TimedRobot {
     @Override
     public void disabledInit() {
         if (hasBeenEnabled) {
-            DriverStation.reportError("exception to restart robot code", null);
+        //     DriverStation.reportError("exception to restart robot code", null);
         }
     }
 

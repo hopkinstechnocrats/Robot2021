@@ -45,7 +45,7 @@ public class Constants {
         public static final double kaVoltSecondsSquaredPerMeter = 0.0956;
 
         // Example value only - as above, this must be tuned for your drive!
-        public static final double kPDriveVel = 5.56; //5.98
+        public static final double kPDriveVel = 4; //5.98
         public static final double kDDriveVel = 0.0010;
         public static final double kIDriveVel = 3.5; 
         public static final double robotLengthFeet = 35d / 12d;
@@ -62,6 +62,7 @@ public class Constants {
         public static final double kRamseteZeta = 0.7;
         public static final double kMaxSpeedMetersPerSecond = 1.5;
         public static final double kMaxAccelerationMetersPerSecondSquared = 2;
+        public static final double kSnowRemovalIntakeSpeed = .56;
     }
 
     public static final class LauncherConstants {
@@ -74,11 +75,14 @@ public class Constants {
         public static final double kV = 0.427;
         public static final double kA = 0.174;
         public static final double kEncoderUnitsPerRevolution = 4096;
-        public static final double greenZoneSpeed = 28;
-        public static final double yellowZoneSpeed = 14.78;
-        public static final double blueZoneSpeed = 13.31;
-        public static final double redZoneSpeed = 14.70;
-        public static final double snowThrowerSpeed = 14.74;
+        public static final double greenZoneSpeed = 18;
+        public static final double yellowZoneSpeed = 15.25;
+        public static final double blueZoneSpeed = 14.20;
+        public static final double blueExtraSpecialZoneSpeed = 14.1;
+        public static final double blueSpecialZoneSpeed = 14.95;
+        public static final double redZoneSpeed = 14.55;
+        public static final double snowThrowerSpeed = 14.76;
+
 
     }
 
