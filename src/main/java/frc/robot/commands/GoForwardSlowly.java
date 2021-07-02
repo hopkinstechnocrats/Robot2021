@@ -16,7 +16,7 @@ public class GoForwardSlowly extends CommandBase {
      */
     public GoForwardSlowly(DriveSubsystem subsystem) {
         m_subsystem = subsystem;
-        speed = 1;
+        speed = 0.5;
         // Use addRequirements() here to declare subsystem dependencies.
         addRequirements(subsystem);
 

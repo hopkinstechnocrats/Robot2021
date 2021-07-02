@@ -12,6 +12,7 @@ import frc.robot.subsystems.DriveSubsystem;
 import frc.robot.subsystems.IntakeSubsystem;
 import lib.LoggableCommand;
 import lib.TrajectoryCommandGenerator;
+import lib.WaitCommand;
 
 import java.util.List;
 
@@ -39,9 +40,10 @@ public class GalacticSearchCommand extends ParallelDeadlineGroup implements Logg
             System.out.println("Elapsed Time: " + elapsedTime);
             SmartDashboard.putNumber("Elapsed Auto Time", elapsedTime);
         }, subsystem);
-        Command spinIntake = new RunCommand(() -> intake.spin(1));
+        Command spinIntake = new RunCommand(() -> intake.spin(-frc.robot.Constants.AutoConstants.kSnowRemovalIntakeSpeed));
         setDeadline(new SequentialCommandGroup(startClockCommand, new SequentialCommandGroup(driveCommands.toArray(new Command[0])), stopClockCommand));
-        addCommands(spinIntake);
+        //addCommands(new SequentialCommandGroup(new InstantCommand(intake::toggle, intake), new edu.wpi.first.wpilibj2.command.WaitCommand(1.5
+        //), spinIntake));
     }
 
     public void logInit() {

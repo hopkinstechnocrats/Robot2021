@@ -5,12 +5,18 @@
 package frc.robot;
 
 import edu.wpi.first.networktables.NetworkTableEntry;
+import com.ctre.phoenix.motorcontrol.can.WPI_TalonFX;
 import edu.wpi.first.networktables.NetworkTableInstance;
+import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.PowerDistributionPanel;
 import edu.wpi.first.wpilibj.TimedRobot;
+import edu.wpi.first.wpilibj.XboxController.Button;
+import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
+import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.commands.InterstellarAccuracyCommand;
+import jdk.jfr.StackTrace;
 import lib.LoggableCommand;
 
 /**
@@ -26,6 +32,7 @@ public class Robot extends TimedRobot {
     PowerDistributionPanel PDP;
     private LoggableCommand m_autonomousCommand;
     private RobotContainer m_robotContainer;
+    private boolean hasBeenEnabled;
 
     /**
      * This function is run when the robot is first started up and should be used for any
@@ -35,6 +42,7 @@ public class Robot extends TimedRobot {
     public void robotInit() {
         // Instantiate our RobotContainer.  This will perform all our button bindings, and put our
         // autonomous chooser on the dashboard.
+        hasBeenEnabled = false;
         m_robotContainer = new RobotContainer();
         addPeriodic(m_robotContainer.m_robotDrive::customPeriodic, 0.01, 0.01);
     }
@@ -60,6 +68,9 @@ public class Robot extends TimedRobot {
      */
     @Override
     public void disabledInit() {
+        if (hasBeenEnabled) {
+        //     DriverStation.reportError("exception to restart robot code", null);
+        }
     }
 
     @Override
@@ -72,11 +83,12 @@ public class Robot extends TimedRobot {
      */
     @Override
     public void autonomousInit() {
+        hasBeenEnabled = true;
         m_robotContainer.initializeLog();
         m_autonomousCommand = m_robotContainer.getAutonomousCommand();
         m_robotContainer.log.finishInitialization();
-        m_robotContainer.m_pixySubsystem.updatePath();
-        SmartDashboard.putString("GSCPathDetermination", m_robotContainer.m_pixySubsystem.getCurrentPath());
+        // m_robotContainer.m_pixySubsystem.updatePath();
+        // SmartDashboard.putString("GSCPathDetermination", m_robotContainer.m_pixySubsystem.getCurrentPath());
 
 
         /*
@@ -107,10 +119,14 @@ public class Robot extends TimedRobot {
         // teleop starts running. If you want the autonomous to
         // continue until interrupted by another command, remove
         // this line or comment it out.
+        hasBeenEnabled = true;
         m_robotContainer.initializeLog();
         if (m_autonomousCommand != null) {
             m_autonomousCommand.cancel();
         }
+        
+        new JoystickButton(m_robotContainer.m_driverController, Button.kX.value)
+                .whenPressed(m_robotContainer.getAutonomousCommand());
 //        m_robotContainer.iacCommand = new InterstellarAccuracyCommand(m_robotContainer.m_robotDrive, "IAC", m_robotContainer.iacButton);
 //        m_robotContainer.iacCommand.logInit();
 //        m_robotContainer.iacButton.whenPressed(m_robotContainer.iacCommand);

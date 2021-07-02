@@ -14,6 +14,6 @@ public class PreLaunchSubsystem extends SubsystemBase {
     }
 
     public void spin(double speed) {
-        Motor1.set(speed);
+        Motor1.set(-speed);
     }
 }
