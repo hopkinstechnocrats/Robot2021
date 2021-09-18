@@ -75,13 +75,13 @@ public class Constants {
         public static final double kV = 0.427;
         public static final double kA = 0.174;
         public static final double kEncoderUnitsPerRevolution = 4096;
-        public static final double greenZoneSpeed = 18;
-        public static final double yellowZoneSpeed = 15.25;
-        public static final double blueZoneSpeed = 14.20;
-        public static final double blueExtraSpecialZoneSpeed = 14.1;
-        public static final double blueSpecialZoneSpeed = 14.95;
-        public static final double redZoneSpeed = 14.55;
-        public static final double snowThrowerSpeed = 14.76;
+        public static final double greenZoneSpeed = 8.5;//18
+        public static final double yellowZoneSpeed = 8.5;//15.25
+        public static final double blueZoneSpeed = 8.5;//14.20
+        public static final double blueExtraSpecialZoneSpeed = 8.5;//14.1
+        public static final double blueSpecialZoneSpeed = 8.5;//14.95
+        public static final double redZoneSpeed = 8.5;//14.55
+        public static final double snowThrowerSpeed = 8.5;//14.76
 
 
     }
