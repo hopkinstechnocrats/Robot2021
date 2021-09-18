@@ -189,24 +189,28 @@ public class RobotContainer {
         //new JoystickButton(m_operatorController, Button.kBumperRight.value)
         //        .whileHeld(new GoForwardSlowly(m_robotDrive));
 
+        /*
         new JoystickButton(m_operatorController, Button.kBumperRight.value)
                 .whileHeld(new ConstantSpinLauncherCommand(m_launcherSubsystem, LauncherConstants.snowThrowerSpeed));
+                */
 
         POVButton upButton = new POVButton(m_driverController, 0);
         POVButton rightButton = new POVButton(m_driverController, 90);
         POVButton downButton = new POVButton(m_driverController, 180);
         POVButton leftButton = new POVButton(m_driverController, 270);
 
+        /*
         upButton.whenPressed(new InstantCommand((() -> m_robotDrive.setMaxSpeed(1)), m_robotDrive));
         rightButton.whenPressed(new InstantCommand((() -> m_robotDrive.setMaxSpeed(0.75)), m_robotDrive));
         downButton.whenPressed(new InstantCommand((() -> m_robotDrive.setMaxSpeed(0.6)), m_robotDrive));
         leftButton.whenPressed(new InstantCommand((() -> m_robotDrive.setMaxSpeed(0.4)), m_robotDrive));
-        m_robotDrive.setMaxSpeed(.6);
+        m_robotDrive.setMaxSpeed(.6);*/
 
         POVButton operatorUpButton = new POVButton(m_operatorController, 0);
         POVButton operatorRightButton = new POVButton(m_operatorController, 90);
         POVButton operatorLeftButton = new POVButton(m_operatorController, 270);
 
+        /*
         operatorUpButton.whenPressed(new SequentialCommandGroup(new InstantCommand((() -> m_robotDrive.zeroHeading()), m_robotDrive), 
                                      new SnowThrowerCommand(m_intakeSubsystem, m_robotDrive)));
         
@@ -217,7 +221,7 @@ public class RobotContainer {
         operatorRightButton.whenPressed(new InstantCommand((() -> m_robotDrive.setDefaultCommand(
                 new RunCommand(() -> m_robotDrive.tankDrivePercentOutput(m_driverController.getY(GenericHID.Hand.kLeft),
                 m_driverController.getY(GenericHID.Hand.kRight)), m_robotDrive)))));
-        
+        */
         // m_pixySubsystem.setDefaultCommand(new RunCommand(() -> {
 
         //     Pixy2CCC.Block largestblock = m_pixySubsystem.getBiggestBlock();
