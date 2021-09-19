@@ -199,12 +199,12 @@ public class RobotContainer {
         POVButton downButton = new POVButton(m_driverController, 180);
         POVButton leftButton = new POVButton(m_driverController, 270);
 
-        /*
+        
         upButton.whenPressed(new InstantCommand((() -> m_robotDrive.setMaxSpeed(1)), m_robotDrive));
         rightButton.whenPressed(new InstantCommand((() -> m_robotDrive.setMaxSpeed(0.75)), m_robotDrive));
         downButton.whenPressed(new InstantCommand((() -> m_robotDrive.setMaxSpeed(0.6)), m_robotDrive));
         leftButton.whenPressed(new InstantCommand((() -> m_robotDrive.setMaxSpeed(0.4)), m_robotDrive));
-        m_robotDrive.setMaxSpeed(.6);*/
+        m_robotDrive.setMaxSpeed(.6);
 
         POVButton operatorUpButton = new POVButton(m_operatorController, 0);
         POVButton operatorRightButton = new POVButton(m_operatorController, 90);
@@ -253,7 +253,7 @@ public class RobotContainer {
      */
 
     public LoggableCommand getAutonomousCommand() {
-        LoggableCommand command = new SnowThrowerCommand(m_intakeSubsystem, m_robotDrive);
+        LoggableCommand command = new AutoNavCommand(m_robotDrive, "BarrelWeaver");
         command.logInit();
         return command;
     }

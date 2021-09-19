@@ -68,6 +68,7 @@ public class Robot extends TimedRobot {
      */
     @Override
     public void disabledInit() {
+        m_robotContainer.m_robotDrive.setCoastMode();
         if (hasBeenEnabled) {
         //     DriverStation.reportError("exception to restart robot code", null);
         }
@@ -83,6 +84,7 @@ public class Robot extends TimedRobot {
      */
     @Override
     public void autonomousInit() {
+        m_robotContainer.m_robotDrive.setBrakeMode();
         hasBeenEnabled = true;
         m_robotContainer.initializeLog();
         m_autonomousCommand = m_robotContainer.getAutonomousCommand();

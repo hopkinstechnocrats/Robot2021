@@ -5,6 +5,8 @@
 package frc.robot.subsystems;
 
 import badlog.lib.BadLog;
+
+import com.ctre.phoenix.motorcontrol.NeutralMode;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonFX;
 import com.kauailabs.navx.frc.AHRS;
 import edu.wpi.first.networktables.NetworkTableEntry;
@@ -146,6 +148,20 @@ public class DriveSubsystem extends SubsystemBase implements Loggable {
      */
     public Pose2d getPose() {
         return m_odometry.getPoseMeters();
+    }
+
+    public void setBrakeMode() {
+        m_leftMaster.setNeutralMode(NeutralMode.Brake);
+        m_leftFollower.setNeutralMode(NeutralMode.Brake);
+        m_rightMaster.setNeutralMode(NeutralMode.Brake);
+        m_rightFollower.setNeutralMode(NeutralMode.Brake);
+    }
+
+    public void setCoastMode() {
+        m_leftMaster.setNeutralMode(NeutralMode.Coast);
+        m_leftFollower.setNeutralMode(NeutralMode.Coast);
+        m_rightMaster.setNeutralMode(NeutralMode.Coast);
+        m_rightFollower.setNeutralMode(NeutralMode.Coast);
     }
 
     /**
