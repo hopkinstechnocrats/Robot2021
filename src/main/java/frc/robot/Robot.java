@@ -69,7 +69,7 @@ public class Robot extends TimedRobot {
     @Override
     public void disabledInit() {
         if (hasBeenEnabled) {
-        //     DriverStation.reportError("exception to restart robot code", null);
+             throw new RuntimeException("Restart Robot Code to Prepare for New Log");
         }
     }
 
@@ -125,8 +125,8 @@ public class Robot extends TimedRobot {
             m_autonomousCommand.cancel();
         }
         
-        new JoystickButton(m_robotContainer.m_driverController, Button.kX.value)
-                .whenPressed(m_robotContainer.getAutonomousCommand());
+//        new JoystickButton(m_robotContainer.m_driverController, Button.kX.value)
+//                .whenPressed(m_robotContainer.getAutonomousCommand());
 //        m_robotContainer.iacCommand = new InterstellarAccuracyCommand(m_robotContainer.m_robotDrive, "IAC", m_robotContainer.iacButton);
 //        m_robotContainer.iacCommand.logInit();
 //        m_robotContainer.iacButton.whenPressed(m_robotContainer.iacCommand);
