@@ -150,7 +150,7 @@ public class RobotContainer {
                 .whileHeld(() -> m_PreLaunch.spin(-1), m_PreLaunch);
 
         new JoystickButton(m_driverController, Button.kStart.value)
-                .whenPressed(() -> m_robotDrive.toggleDirection());
+                .whenPressed(m_robotDrive::toggleDirection);
 
         m_PreLaunch.setDefaultCommand(new RunCommand(() -> m_PreLaunch.spin(0), m_PreLaunch));
 
@@ -236,8 +236,6 @@ public class RobotContainer {
         // Configure default commands
         // Set the default drive command to split-stick arcade drive
         m_robotDrive.setDefaultCommand(
-                // A split-stick arcade command, with forward/backward controlled by the left
-                // hand, and turning controlled by the right.
                 new RunCommand(() -> m_robotDrive.tankDrivePercentOutput(m_driverController.getY(GenericHID.Hand.kLeft),
                         m_driverController.getY(GenericHID.Hand.kRight))
                         , m_robotDrive));

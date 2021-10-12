@@ -84,6 +84,7 @@ public class Constants {
         public static final double snowThrowerSpeed = 8.5;//14.76
 
 
+        public static final double kS = 0.498;
     }
 
     public static final class LimelightConstants {
@@ -104,7 +105,7 @@ public class Constants {
     public static final class PixyConstants {
         public static final HashMap<String, Translation2d> PathCoordinates;
         static {
-            PathCoordinates = new HashMap<String, Translation2d>();
+            PathCoordinates = new HashMap<>();
             PathCoordinates.put("ARed", new Translation2d(0,0));
             PathCoordinates.put("ABlue", new Translation2d(0,0));
             PathCoordinates.put("BRed", new Translation2d(0,0));

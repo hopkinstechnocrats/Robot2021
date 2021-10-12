@@ -5,11 +5,13 @@
 package frc.robot.subsystems;
 
 import badlog.lib.BadLog;
+import badlog.lib.DataInferMode;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonFX;
 import edu.wpi.first.wpilibj.controller.PIDController;
 import edu.wpi.first.wpilibj.controller.SimpleMotorFeedforward;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.Constants;
 import frc.robot.Constants.LauncherConstants;
 import lib.Loggable;
 import lib.MotorFaultLogger;
@@ -26,7 +28,7 @@ public class LauncherSubsystem extends SubsystemBase implements Loggable {
         follower.follow(master);
         follower.setInverted(true);
         pidController = new PIDController(LauncherConstants.kP, LauncherConstants.kI, LauncherConstants.kD);
-        feedforward = new SimpleMotorFeedforward(0.498, LauncherConstants.kV, LauncherConstants.kA);
+        feedforward = new SimpleMotorFeedforward(LauncherConstants.kS, LauncherConstants.kV, LauncherConstants.kA);
         MotorFaultLogger.getInstance().add("LauncherMasterMotor", master);
         MotorFaultLogger.getInstance().add("LauncherFollowerMotor", follower);
     }
@@ -34,16 +36,18 @@ public class LauncherSubsystem extends SubsystemBase implements Loggable {
     public void logInit() {
         BadLog.createValue("Launcher/kP", "" + LauncherConstants.kP);
         BadLog.createValue("Launcher/kD", "" + LauncherConstants.kD);
-        BadLog.createTopic("Launcher/Target Velocity", "rpm", pidController::getSetpoint);
-        BadLog.createTopic("Launcher/Error", "rpm", pidController::getPositionError);
-        BadLog.createTopic("Launcher/Launcher Velocity", "rpm", master::getSelectedSensorVelocity);
         BadLog.createValue("Launcher/kI", "" + LauncherConstants.kI);
+
+        BadLog.createTopic("Launcher/Target Velocity", "rpm", pidController::getSetpoint, "join: Launcher/Launcher PID Loop");
+        BadLog.createTopic("Launcher/Error", "rpm", pidController::getPositionError, "join: Launcher/Launcher PID Loop");
+        BadLog.createTopicSubscriber("Launcher/Launcher Velocity", "rpm", DataInferMode.DEFAULT, "join: Launcher/Launcher PID Loop");
     }
 
 
     // speed is in flywheel rpm
     public void spinLauncher(double speed) {
         double currentRPM = 10 * master.getSelectedSensorVelocity(0) / LauncherConstants.kEncoderUnitsPerRevolution;
+        BadLog.publish("Launcher/Launcher Velocity", currentRPM);
         double motorVoltage = pidController.calculate(currentRPM, speed)+feedforward.calculate(speed);
         master.setVoltage(motorVoltage);
         follower.feed();
