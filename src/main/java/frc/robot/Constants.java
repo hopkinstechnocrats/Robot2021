@@ -72,9 +72,12 @@ public class Constants {
         public static final double kI = 0.00; //0.28
         public static final double kD = 0.00; //0.07
         public static final double speed = 10000;
-        public static final double kV = 0.427;
-        public static final double kA = 0.174;
-        public static final double kEncoderUnitsPerRevolution = 4096;
+        public static final double kV = 0.427; // TODO: Update to new characterization
+        public static final double kA = 0.174; // TODO: Update to new characterization
+        public static final double kEncoderEPR = 8192;
+        public static final double kGearing = 2.75;
+        public static final double kEncoderUnitsPerRevolution = kEncoderEPR * kGearing;
+        public static final double kRawVelocityToRPM = 600 / kEncoderUnitsPerRevolution;
         public static final double greenZoneSpeed = 8.5;//18
         public static final double yellowZoneSpeed = 8.5;//15.25
         public static final double blueZoneSpeed = 8.5;//14.20
