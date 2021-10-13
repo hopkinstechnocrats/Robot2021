@@ -48,7 +48,7 @@ public class LauncherSubsystem extends SubsystemBase implements Loggable {
     public void spinLauncher(double speed) {
         double currentRPM = 10 * master.getSelectedSensorVelocity(0) / LauncherConstants.kEncoderUnitsPerRevolution;
         BadLog.publish("Launcher/Launcher Velocity", currentRPM);
-        double motorVoltage = pidController.calculate(currentRPM, speed)+feedforward.calculate(speed);
+        double motorVoltage = pidController.calculate(currentRPM, speed);//+feedforward.calculate(speed);
         master.setVoltage(motorVoltage);
         follower.feed();
         SmartDashboard.putNumber("Launcher/Target Velocity", pidController.getSetpoint());

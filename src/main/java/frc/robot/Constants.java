@@ -68,9 +68,9 @@ public class Constants {
     public static final class LauncherConstants {
         public static final int Motor1CANID = 5;
         public static final int Motor2CANID = 6;
-        public static final double kP = 0.75;
-        public static final double kI = 0.28;
-        public static final double kD = 0.07;
+        public static final double kP = 2.64; //0.75
+        public static final double kI = 0.00; //0.28
+        public static final double kD = 0.00; //0.07
         public static final double speed = 10000;
         public static final double kV = 0.427;
         public static final double kA = 0.174;
